@@ -1,2 +1,2 @@
-# expiry
-Something fun
+# Expiry
+Something descriptional
