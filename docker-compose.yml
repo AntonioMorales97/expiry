@@ -17,6 +17,15 @@ services:
     container_name: potter
     networks:
       - hogwarts
+  hagrid:
+    build: 
+      context: ./hagrid
+      dockerfile:  ./Dockerfile
+    ports:
+      - 9090:9090
+    container_name: hagrid
+    networks:
+      - hogwarts
 networks:
   hogwarts:
     driver: bridge
