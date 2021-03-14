@@ -10,17 +10,17 @@ services:
       - 15672:15672
     networks:
       - hogwarts
-  potter:
-    build: ./potter
+  hermione:
+    build: ./hermione
     ports:
       - 8080:8080
-    container_name: potter
+    container_name: hermione
     networks:
       - hogwarts
   hagrid:
-    build: 
+    build:
       context: ./hagrid
-      dockerfile:  ./Dockerfile
+      dockerfile: ./Dockerfile
     ports:
       - 9090:9090
     container_name: hagrid
