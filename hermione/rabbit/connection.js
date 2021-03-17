@@ -1,7 +1,7 @@
 const amqp = require('amqplib/callback_api');
 
 let amqpConn = null;
-let rabbitURL = 'amqp://guest:guest@localhost';
+let rabbitURL = 'amqp://guest:guest@rabbitmq';
 
 const startRabbit = (cb) => {
   amqp.connect(rabbitURL + '?heartbeat=60', function (err, conn) {
