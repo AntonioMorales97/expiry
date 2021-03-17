@@ -6,4 +6,9 @@ spring:
     password: guest
     host: rabbitmq
     port: 5672
+  data:
+    mongodb:
+      user: root
+      password: example
+      uri: mongodb://root:example@ron:27017/testdb?authSource=admin
     
