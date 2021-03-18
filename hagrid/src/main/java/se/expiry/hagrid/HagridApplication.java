@@ -44,7 +44,7 @@ public class HagridApplication implements CommandLineRunner {
 		Date date = new Date(); 	
     	// save a couple of customers
     	repository.save(new Produkt("Gallerian", "123423421", "2", "testProdukten", dateFormat.format(date)));
-    	
+    	repository.save(new Produkt("Nacka", "483929102", "3", "test2Produkten", dateFormat.format(date)));
     	// fetch all customers
     	System.out.println("Produkter funna med findAll():");
     	System.out.println("-------------------------------");

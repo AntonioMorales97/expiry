@@ -1,5 +1,6 @@
 package se.expiry.hagrid.service;
 
+import java.util.List;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,15 +26,12 @@ public class SendExpireService {
     public void getExpiredItems(){
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
 		Date date = new Date(); 
-        Produkt produkt = repository.findByDate(dateFormat.format(date));
-        System.out.println(produkt.toString());
-        //TODO for each item in db, run send to expired.
-        /*JSONObject obj = new JSONObject();
-        obj.put("name", "Gallerian");
-        obj.put("id", 1);
-        obj.put("hylla", 21);
-        obj.put("produkt", "någon produkt");*/
-        sendExpiredToRabbit(produkt);
+        List<Produkt> produkt = repository.findByDate(dateFormat.format(date));
+        produkt.forEach((prod) ->{
+            System.out.println(prod.toString());
+            sendExpiredToRabbit(prod);
+        });
+     
     }
     public void sendExpiredToRabbit(Produkt produkt){
         
