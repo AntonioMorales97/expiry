@@ -1,0 +1,9 @@
+server:
+  port : 9091
+spring:
+  data:
+    mongodb:
+      user: root
+      password: example
+      uri: mongodb://root:example@localhost:27017/testdb?authSource=admin
+    

@@ -26,6 +26,15 @@ services:
     container_name: hagrid
     networks:
       - hogwarts
+  dumbledore:
+    build:
+      context: ./dumbledore
+      dockerfile: ./Dockerfile
+    ports:
+      - 9091:9091
+    container_name: dumbledore
+    networks:
+      - hogwarts
   mongo:
     image: mongo
     hostname: ron
@@ -33,6 +42,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - 27017:27017
     networks:
       - hogwarts
   mongo-express:

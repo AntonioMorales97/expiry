@@ -10,10 +10,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>se.expiry</groupId>
-	<artifactId>hagrid</artifactId>
+	<artifactId>dumbledore</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hagrid</name>
-	<description>Restful janitor of Expiry</description>
+	<name>dumbledore</name>
+	<description>Restful wizard of Expiry</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
@@ -32,15 +32,6 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-amqp</artifactId>
-		</dependency>
-		<dependency>
-        	<groupId>com.googlecode.json-simple</groupId>
-        	<artifactId>json-simple</artifactId>
-        	<version>1.1.1</version>
-    	</dependency>
 		 <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-mongodb</artifactId>
