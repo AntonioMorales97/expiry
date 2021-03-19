@@ -5,5 +5,5 @@ spring:
     mongodb:
       user: root
       password: example
-      uri: mongodb://root:example@localhost:27017/testdb?authSource=admin
+      uri: mongodb://root:example@ron:27017/testdb?authSource=admin
     

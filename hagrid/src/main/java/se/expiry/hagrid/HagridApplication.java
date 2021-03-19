@@ -17,8 +17,8 @@ import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
 
-import se.expiry.hagrid.domain.Produkt;
-import se.expiry.hagrid.repository.ProduktRepository;
+import se.expiry.hagrid.domain.Product;
+import se.expiry.hagrid.repository.ProductRepository;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.text.DateFormat;
@@ -27,16 +27,16 @@ import java.text.DateFormat;
 
 
 @SpringBootApplication
-public class HagridApplication implements CommandLineRunner {
+public class HagridApplication /*implements CommandLineRunner*/ {
 
-	@Autowired
-  	private ProduktRepository repository;
+	/*@Autowired
+  	private ProduktRepository repository;*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(HagridApplication.class, args);
 	}
 
-	@Override
+	/*@Override
   	public void run(String... args) throws Exception {
 
     	repository.deleteAll();
@@ -51,6 +51,6 @@ public class HagridApplication implements CommandLineRunner {
     	for (Produkt produkt : repository.findAll()) {
       		System.out.println(produkt);
     	}
-	}
+	}*/
 }
 
