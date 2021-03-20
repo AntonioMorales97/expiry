@@ -28,7 +28,7 @@ public class ProductController {
     }
 
     @PostMapping(ADD_PRODUCT)
-    public String addProduct() {
+    public String addProduct(String id) {
         //TODO: Implement
         return "Message sent!";
     }

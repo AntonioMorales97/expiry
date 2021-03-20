@@ -15,4 +15,5 @@ public class Store {
         this.name = name;
         this.products = products;
     }
+ 
 }
