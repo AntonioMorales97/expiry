@@ -1,10 +1,19 @@
 package se.expiry.dumbledore.application;
 
+import com.mongodb.client.result.UpdateResult;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import se.expiry.dumbledore.common.ExceptionDetail;
+import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
+import se.expiry.dumbledore.domain.User;
+import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.repository.StoreRepository;
+import se.expiry.dumbledore.repository.UserRepository;
 
 import java.util.List;
 import java.util.Random;
@@ -21,23 +30,54 @@ public class AdminService {
     @Autowired
     StoreRepository storeRepo;
 
-    public List<Store> createTestData(List<String> storeNames){
+    @Autowired
+    UserRepository userRepo;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public User addUser(AddUserRequestModel newUser) {
+        String hashedPassword = passwordEncoder.encode(newUser.getPassword());
+        User savedUser = userRepo.save(new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), hashedPassword));
+        if (newUser.getStores() != null) {
+
+            UpdateResult updateResult = storeRepo.addUserToStores(savedUser, newUser.getStores());
+
+            if (newUser.getStores().size() == updateResult.getMatchedCount()) {
+
+                ExceptionDetail exceptionDetail = new ExceptionDetail(400, "Some stores could not be found!");
+                throw new ExpiryException(exceptionDetail);
+            }
+
+            if (newUser.getStores().size() != updateResult.getModifiedCount()) {
+                ExceptionDetail exceptionDetail = new ExceptionDetail(500, "Some stores could not be updated. Please contact Hagrid.");
+                throw new ExpiryException(exceptionDetail);
+            }
+
+
+        }
+
+        return savedUser;
+    }
+
+
+    public List<Store> createTestData(List<String> storeNames) {
         List<Store> stores = new ArrayList<>();
         Random random = new Random();
         storeNames.forEach((storeName) -> {
-            Optional<Store> opStore= storeRepo.findByName(storeName);
+            Optional<Store> opStore = storeRepo.findByName(storeName);
             Store store;
             int ammountofProducts = random.nextInt(4 - 1) + 1;
-            if(opStore.isEmpty()){
+            if (opStore.isEmpty()) {
                 List<Product> products = new ArrayList<>();
-                for(int i = 0; i<ammountofProducts; i++){
+                for (int i = 0; i < ammountofProducts; i++) {
                     products.add(generateRandomProduct());
                 }
-               store = new Store(storeName, products); 
-            }else{
+                store = new Store(storeName, products);
+            } else {
                 store = opStore.get();
                 List<Product> products = store.getProducts();
-                for(int i = 0; i<ammountofProducts; i++){
+                for (int i = 0; i < ammountofProducts; i++) {
                     products.add(generateRandomProduct());
                 }
             }
@@ -45,47 +85,51 @@ public class AdminService {
         });
         return stores;
     }
-    public Store addStore(String storeName){
+
+    public Store addStore(String storeName) {
         List<Product> products = new ArrayList<>();
         Optional<Store> opStore = storeRepo.findByName(storeName);
         Store store;
-        if(opStore.isEmpty()){
+        if (opStore.isEmpty()) {
             store = new Store(storeName, products);
             storeRepo.save(store);
-        }else{
+        } else {
             store = opStore.get();
         }
         return store;
     }
 
-    private Product generateRandomProduct(){
+    private Product generateRandomProduct() {
         return new Product(randomString(), randomQrCode(), randomDate());
     }
-    private String randomString(){
+
+    private String randomString() {
         Random random = new Random();
-        int aLimit = 97; 
-        int zLimit = 122; 
+        int aLimit = 97;
+        int zLimit = 122;
         int targetStringLength = random.nextInt(10 - 5) + 1;
         return random.ints(aLimit, zLimit + 1)
-        .limit(targetStringLength)
-        .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-        .toString();
+                .limit(targetStringLength)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
     }
-    private String randomQrCode(){
+
+    private String randomQrCode() {
         Random random = new Random();
         int qrCode = random.nextInt(1000 - 100) + 1;
-        return Integer.toString(qrCode); 
+        return Integer.toString(qrCode);
     }
-    private String randomDate(){
+
+    private String randomDate() {
         Random random = new Random();
         DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        int startYear=2021;									
-		int endYear=2021;									
-		long start = Timestamp.valueOf(startYear+1+"-1-1 0:0:0").getTime();
-		long end = Timestamp.valueOf(endYear+"-1-1 0:0:0").getTime();
-		long ms=(long) ((end-start)*Math.random()+start);	
-		Date date=new Date(ms);
-		return dateFormat.format(date);
+        int startYear = 2021;
+        int endYear = 2021;
+        long start = Timestamp.valueOf(startYear + 1 + "-1-1 0:0:0").getTime();
+        long end = Timestamp.valueOf(endYear + "-1-1 0:0:0").getTime();
+        long ms = (long) ((end - start) * Math.random() + start);
+        Date date = new Date(ms);
+        return dateFormat.format(date);
 
     }
 }

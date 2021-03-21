@@ -15,7 +15,7 @@ public class ProductService {
     StoreRepository storeRepo;
 
     public List<Product> getProducts(){
-        Store store = storeRepo.getStore("Gallerian");
+        Store store = storeRepo.findByName("Gallerian").get();
         return store.getProducts();
     }
 }
