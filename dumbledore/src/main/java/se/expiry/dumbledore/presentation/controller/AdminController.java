@@ -22,8 +22,8 @@ public class AdminController {
     AdminService adminService;
 
     @PostMapping(CREATE_DATA)
-    public List<Store> createTestData(@RequestBody List<String> storeNames) {
-        return adminService.createTestData(storeNames);
+    public void createTestData(@RequestBody List<String> storeNames) {
+        adminService.createTestData(storeNames);
     }
 
     @PostMapping(ADD_STORE)

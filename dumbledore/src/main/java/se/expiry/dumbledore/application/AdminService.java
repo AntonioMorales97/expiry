@@ -61,29 +61,20 @@ public class AdminService {
     }
 
 
-    public List<Store> createTestData(List<String> storeNames) {
-        List<Store> stores = new ArrayList<>();
-        Random random = new Random();
+    public void createTestData(List<String> storeNames) {
+        
         storeNames.forEach((storeName) -> {
-            Optional<Store> opStore = storeRepo.findByName(storeName);
-            Store store;
+            Random random = new Random();
             int ammountofProducts = random.nextInt(4 - 1) + 1;
-            if (opStore.isEmpty()) {
+            
                 List<Product> products = new ArrayList<>();
                 for (int i = 0; i < ammountofProducts; i++) {
                     products.add(generateRandomProduct());
                 }
-                store = new Store(storeName, products);
-            } else {
-                store = opStore.get();
-                List<Product> products = store.getProducts();
-                for (int i = 0; i < ammountofProducts; i++) {
-                    products.add(generateRandomProduct());
-                }
-            }
-            stores.add(storeRepo.save(store));
+             
+            UpdateResult updateResult = storeRepo.addTestData(storeName,products);
+          
         });
-        return stores;
     }
 
     public Store addStore(String storeName) {
