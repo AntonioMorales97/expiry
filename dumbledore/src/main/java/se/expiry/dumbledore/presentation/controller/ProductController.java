@@ -4,36 +4,35 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import se.expiry.dumbledore.application.ProductService;
 import se.expiry.dumbledore.domain.Product;
+import se.expiry.dumbledore.presentation.request.product.DeleteProductRequestModel;
 
 import java.util.List;
 
 @RestController
 public class ProductController {
-    private static final String GET_PRODUCTS = "/get-products";
-    private static final String REMOVE_PRODUCT = "/remove-product";
-    private static final String ADD_PRODUCT = "/add-product";
-    private static final String UPDATE_PRODUCT = "/update-product";
+    private static final String PRODUCTS = "/products";
+    private static final String PRODUCT = "/product";
 
     @Autowired
     ProductService productService;
 
-    @GetMapping(GET_PRODUCTS)
-    public List<Product> getProducts() {
-        return productService.getProducts();
+    @GetMapping(PRODUCTS + "/{id}")
+    public List<Product> getProducts(@PathVariable String id) {
+        return productService.getProducts(id);
     }
 
-    @DeleteMapping(REMOVE_PRODUCT)
-    public void deleteProduct() {
-        //TODO: Implement
+    @DeleteMapping(PRODUCT)
+    public void deleteProduct(@RequestBody DeleteProductRequestModel deleteProductRequestModel) {
+        productService.deleteProduct(deleteProductRequestModel.getStoreId(), deleteProductRequestModel.getProductId());
     }
 
-    @PostMapping(ADD_PRODUCT)
+    @PostMapping(PRODUCT)
     public String addProduct(String id) {
         //TODO: Implement
         return "Message sent!";
     }
 
-    @PutMapping(UPDATE_PRODUCT)
+    @PutMapping(PRODUCT)
     public void updateProduct() {
         //TODO: Implement
     }

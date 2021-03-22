@@ -34,5 +34,15 @@ public class StoreRepositoryImpl implements  StoreRepositoryCustom{
         return mongoTemplate.upsert(query, update, Store.class);
     }
 
+
+    @Override
+    public UpdateResult deleteProductFromStore(String storeId, String productId){
+        Query query = new Query(Criteria.where("_id").is(storeId));
+        Query productQuery = new Query(Criteria.where("_id").is(productId));
+        Update update = new Update();
+        update.pull("products", productQuery);
+
+        return mongoTemplate.updateFirst(query, update, Store.class);
+    }
    
 }
