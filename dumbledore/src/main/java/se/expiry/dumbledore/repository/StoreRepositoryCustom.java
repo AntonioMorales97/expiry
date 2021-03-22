@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface StoreRepositoryCustom {
     UpdateResult addUserToStores(User user, List<String> stores);
-    public UpdateResult addTestData(String storeName, List<Product> products);
+    public UpdateResult addProductsToStore(String storeName, List<Product> products);
     
 }

@@ -26,14 +26,11 @@ public class StoreRepositoryImpl implements  StoreRepositoryCustom{
         return mongoTemplate.updateMulti(query, update, Store.class);
     }
     @Override
-    public UpdateResult addTestData(String storeName, List<Product> products){
+    public UpdateResult addProductsToStore(String storeName, List<Product> products){
         Query query = new Query(Criteria.where("name").is(storeName));
-        
         Update update = new Update();        
         update.push("products").each(products);
-        
         update.setOnInsert("name", storeName);
-       
         return mongoTemplate.upsert(query, update, Store.class);
     }
 

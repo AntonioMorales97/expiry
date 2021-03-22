@@ -12,6 +12,7 @@ import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
+import se.expiry.dumbledore.presentation.request.admin.UpdateUserRequestModel;
 import se.expiry.dumbledore.repository.StoreRepository;
 import se.expiry.dumbledore.repository.UserRepository;
 
@@ -72,7 +73,7 @@ public class AdminService {
                     products.add(generateRandomProduct());
                 }
              
-            UpdateResult updateResult = storeRepo.addTestData(storeName,products);
+            UpdateResult updateResult = storeRepo.addProductsToStore(storeName,products);
           
         });
     }
@@ -88,6 +89,44 @@ public class AdminService {
             store = opStore.get();
         }
         return store;
+    }
+
+    public User getUser(String email){
+        Optional<User> user = userRepo.findByEmail(email);
+        if(user.isEmpty()){
+            //THROW exception user does not found.
+        }
+            return user.get();
+
+    }
+    public User updateUser(UpdateUserRequestModel user){
+        Optional<User> opUserToUpdate;
+        String email;      
+        if(user.getId()!= null){
+            opUserToUpdate = userRepo.findById(user.getId());
+        }else{
+            email = user.getEmail();
+            opUserToUpdate = userRepo.findByEmail(email);
+        }
+        if(opUserToUpdate.isEmpty()){
+            //throw user does not exist..
+        }
+        User userToUpdate = opUserToUpdate.get();
+        if(user.getFirstName() != null){
+            userToUpdate.setFirstName(user.getFirstName());
+        }
+        if(user.getLastName() != null){
+            userToUpdate.setLastName(user.getLastName());
+        }
+        if(user.getEmail() != null){
+            userToUpdate.setEmail(user.getEmail());
+        }
+        if(user.getPassword() != null){
+            String hashedPassword = passwordEncoder.encode(user.getPassword());
+            userToUpdate.setPassword(hashedPassword);
+        }
+
+        return userRepo.save(userToUpdate);
     }
 
     private Product generateRandomProduct() {
