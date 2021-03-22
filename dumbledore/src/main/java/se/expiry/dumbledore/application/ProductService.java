@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
+import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestModel;
 import se.expiry.dumbledore.repository.StoreRepository;
 
 import java.util.List;
@@ -30,4 +31,19 @@ public class ProductService {
         System.out.println(res);
     }
 
+
+    public Product addProduct(String storeId, String name, String qrCode, String date) {
+        Product product = new Product(name, qrCode, date);
+        UpdateResult res = storeRepo.addProductToStore(storeId, product);
+        if(res.getModifiedCount() == 0){
+            //throw cant find store by id.
+        }
+        return product;
+    }
+
+    public void updateProduct(UpdateProductRequestModel product) {
+
+        Store res = storeRepo.updateProduct(product.getStoreId(), product);
+        System.out.println(res);
+    }
 }

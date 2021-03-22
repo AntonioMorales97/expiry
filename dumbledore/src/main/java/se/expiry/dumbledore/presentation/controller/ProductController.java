@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import se.expiry.dumbledore.application.ProductService;
 import se.expiry.dumbledore.domain.Product;
+import se.expiry.dumbledore.presentation.request.product.AddProductRequestModel;
 import se.expiry.dumbledore.presentation.request.product.DeleteProductRequestModel;
+import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestModel;
 
 import java.util.List;
 
@@ -27,13 +29,12 @@ public class ProductController {
     }
 
     @PostMapping(PRODUCT)
-    public String addProduct(String id) {
-        //TODO: Implement
-        return "Message sent!";
+    public Product addProduct(@RequestBody AddProductRequestModel product) {
+        return productService.addProduct(product.getStoreId(), product.getName(), product.getQrCode(), product.getDate());
     }
 
     @PutMapping(PRODUCT)
-    public void updateProduct() {
-        //TODO: Implement
+    public void updateProduct(@RequestBody UpdateProductRequestModel product) {
+       productService.updateProduct(product);
     }
 }
