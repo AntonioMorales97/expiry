@@ -1,135 +1,25 @@
 package se.expiry.dumbledore.application;
 
-import com.mongodb.client.result.UpdateResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import se.expiry.dumbledore.common.ExceptionDetail;
-import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.UpdateUserRequestModel;
-import se.expiry.dumbledore.repository.StoreRepository;
-import se.expiry.dumbledore.repository.UserRepository;
 
-import java.util.List;
-import java.util.Random;
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.sql.Timestamp;
-import java.util.Optional;
+import java.util.List;
+import java.util.Random;
 
-@Service
-public class AdminService {
-
-    @Autowired
-    StoreRepository storeRepo;
-
-    @Autowired
-    UserRepository userRepo;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
-
-    public User addUser(AddUserRequestModel newUser) {
-        String hashedPassword = passwordEncoder.encode(newUser.getPassword());
-        User savedUser = userRepo.save(new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), hashedPassword));
-        if (newUser.getStores() != null) {
-
-            UpdateResult updateResult = storeRepo.addUserToStores(savedUser, newUser.getStores());
-
-            if (newUser.getStores().size() == updateResult.getMatchedCount()) {
-
-                ExceptionDetail exceptionDetail = new ExceptionDetail(400, "Some stores could not be found!");
-                throw new ExpiryException(exceptionDetail);
-            }
-
-            if (newUser.getStores().size() != updateResult.getModifiedCount()) {
-                ExceptionDetail exceptionDetail = new ExceptionDetail(500, "Some stores could not be updated. Please contact Hagrid.");
-                throw new ExpiryException(exceptionDetail);
-            }
-
-
-        }
-
-        return savedUser;
-    }
-
-
-    public void createTestData(List<String> storeNames) {
-        
-        storeNames.forEach((storeName) -> {
-            Random random = new Random();
-            int ammountofProducts = random.nextInt(4 - 1) + 1;
-            
-                List<Product> products = new ArrayList<>();
-                for (int i = 0; i < ammountofProducts; i++) {
-                    products.add(generateRandomProduct());
-                }
-             
-            UpdateResult updateResult = storeRepo.addProductsToStore(storeName,products);
-          
-        });
-    }
-
-    public Store addStore(String storeName) {
-        List<Product> products = new ArrayList<>();
-        Optional<Store> opStore = storeRepo.findByName(storeName);
-        Store store;
-        if (opStore.isEmpty()) {
-            store = new Store(storeName, products);
-            storeRepo.save(store);
-        } else {
-            store = opStore.get();
-        }
-        return store;
-    }
-
-    public User getUser(String email){
-        Optional<User> user = userRepo.findByEmail(email);
-        if(user.isEmpty()){
-            //THROW exception user does not found.
-        }
-            return user.get();
-
-    }
-    public User updateUser(UpdateUserRequestModel user){
-        Optional<User> opUserToUpdate;
-        String email;      
-        if(user.getId()!= null){
-            opUserToUpdate = userRepo.findById(user.getId());
-        }else{
-            email = user.getEmail();
-            opUserToUpdate = userRepo.findByEmail(email);
-        }
-        if(opUserToUpdate.isEmpty()){
-            //throw user does not exist..
-        }
-        User userToUpdate = opUserToUpdate.get();
-        if(user.getFirstName() != null){
-            userToUpdate.setFirstName(user.getFirstName());
-        }
-        if(user.getLastName() != null){
-            userToUpdate.setLastName(user.getLastName());
-        }
-        if(user.getEmail() != null){
-            userToUpdate.setEmail(user.getEmail());
-        }
-        if(user.getPassword() != null){
-            String hashedPassword = passwordEncoder.encode(user.getPassword());
-            userToUpdate.setPassword(hashedPassword);
-        }
-
-        return userRepo.save(userToUpdate);
-    }
-
-    private Product generateRandomProduct() {
+public interface AdminService {
+    public User addUser(AddUserRequestModel newUser);
+    public void createTestData(List<String> storeNames);
+    public Store addStore(String storeName);
+    public User getUser(String email);
+    public User updateUser(UpdateUserRequestModel user);
+    default Product generateRandomProduct() {
         return new Product(randomString(), randomQrCode(), randomDate());
     }
 

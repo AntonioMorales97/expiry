@@ -1,5 +1,6 @@
 package se.expiry.dumbledore.presentation.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import se.expiry.dumbledore.application.ProductService;
@@ -11,12 +12,12 @@ import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestMod
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ProductController {
     private static final String PRODUCTS = "/products";
     private static final String PRODUCT = "/product";
 
-    @Autowired
-    ProductService productService;
+    private final ProductService productService;
 
     @GetMapping(PRODUCTS + "/{id}")
     public List<Product> getProducts(@PathVariable String id) {

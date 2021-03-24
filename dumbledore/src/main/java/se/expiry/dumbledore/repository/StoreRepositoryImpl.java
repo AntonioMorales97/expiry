@@ -67,5 +67,4 @@ public class StoreRepositoryImpl implements  StoreRepositoryCustom{
         return mongoTemplate.findAndModify(query, update, Store.class);
 
     }
-   
 }

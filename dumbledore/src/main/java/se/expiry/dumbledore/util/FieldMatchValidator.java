@@ -17,12 +17,16 @@ public class FieldMatchValidator implements ConstraintValidator<FieldMatch, Obje
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
+        try {
+            BeanWrapperImpl wrapper = new BeanWrapperImpl(value);
+            BeanWrapperImpl wrapperTwo = new BeanWrapperImpl(value);
+            final Object firstObj = wrapper.getPropertyValue(firstFieldName);
+            final Object secondObj = wrapperTwo.getPropertyValue(secondFieldName);
+            return firstObj == null && secondObj == null || firstObj != null && !(firstObj.equals(secondObj));
+        }
+        catch(final Exception e){
 
-        BeanWrapperImpl wrapper = new BeanWrapperImpl(value);
-        BeanWrapperImpl wrapperTwo = new BeanWrapperImpl(value);
-        final Object firstObj = wrapper.getPropertyValue(firstFieldName);
-        final Object secondObj = wrapperTwo.getPropertyValue(secondFieldName);
-
-        return firstObj == null && secondObj == null || firstObj != null && !(firstObj.equals(secondObj));
+        }
+        return true;
     }
 }

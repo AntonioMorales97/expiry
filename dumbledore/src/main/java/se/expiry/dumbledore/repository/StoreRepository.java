@@ -7,6 +7,7 @@ import se.expiry.dumbledore.domain.Store;
 import java.util.Optional;
 
 public interface StoreRepository extends MongoRepository<Store, String>, StoreRepositoryCustom{
+
     Optional<Store> findByName(String name);
 
     @Query("{ '_id' : ?0 }")
