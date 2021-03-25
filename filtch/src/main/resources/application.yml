@@ -1,0 +1,62 @@
+spring:
+  profiles:
+    active:
+      - dev
+---
+spring:
+  config:
+    activate:
+      on-profile: local
+  data:
+    mongodb:
+      user: root
+      password: example
+      uri: mongodb://root:example@localhost:27017/testdb?authSource=admin
+      auto-index-creation: true
+  jackson:
+    default-property-inclusion: NON_NULL
+logging:
+  level:
+    org.springframework.data.mongodb: DEBUG
+server:
+  port : 9092
+jwt:
+  secret: hVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: dev
+  data:
+    mongodb:
+      user: root
+      password: example
+      uri: mongodb://root:example@ron:27017/testdb?authSource=admin
+      auto-index-creation: true
+  jackson:
+    default-property-inclusion: NON_NULL
+server:
+  port : 9092
+jwt:
+  secret: hVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w
+
+---
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+  data:
+    mongodb:
+      user: ${MONGO_USER}
+      password: ${MONGO_PASSWORD}
+      uri: mongodb://${MONGO_USER}:${MONGO_PASSWORD}@ron:27017/testdb?authSource=admin
+      auto-index-creation: true
+  jackson:
+    default-property-inclusion: NON_NULL
+server:
+  port : 9092
+jwt:
+  secret: hVmYq3s6v9y$B&E)H@McQfTjWnZr4u7w
