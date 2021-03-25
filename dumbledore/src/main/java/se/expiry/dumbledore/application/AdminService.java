@@ -14,42 +14,15 @@ import java.util.List;
 import java.util.Random;
 
 public interface AdminService {
-    public User addUser(AddUserRequestModel newUser);
-    public void createTestData(List<String> storeNames);
-    public Store addStore(String storeName);
-    public User getUser(String email);
-    public User updateUser(UpdateUserRequestModel user);
-    default Product generateRandomProduct() {
-        return new Product(randomString(), randomQrCode(), randomDate());
-    }
+    User addUser(AddUserRequestModel newUser);
 
-    private String randomString() {
-        Random random = new Random();
-        int aLimit = 97;
-        int zLimit = 122;
-        int targetStringLength = random.nextInt(10 - 5) + 1;
-        return random.ints(aLimit, zLimit + 1)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-    }
+    void createTestData(List<String> storeNames);
 
-    private String randomQrCode() {
-        Random random = new Random();
-        int qrCode = random.nextInt(1000 - 100) + 1;
-        return Integer.toString(qrCode);
-    }
+    Store addStore(String storeName);
 
-    private String randomDate() {
-        Random random = new Random();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        int startYear = 2021;
-        int endYear = 2021;
-        long start = Timestamp.valueOf(startYear + 1 + "-1-1 0:0:0").getTime();
-        long end = Timestamp.valueOf(endYear + "-1-1 0:0:0").getTime();
-        long ms = (long) ((end - start) * Math.random() + start);
-        Date date = new Date(ms);
-        return dateFormat.format(date);
+    User getUser(String email);
 
-    }
+    User updateUser(UpdateUserRequestModel user);
+
+    Product generateRandomProduct();
 }

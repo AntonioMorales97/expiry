@@ -7,10 +7,14 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import se.expiry.dumbledore.domain.User;
 
+import java.util.Map;
+import java.util.Objects;
+
 @RequiredArgsConstructor
 public class UserRepositoryImpl implements  UserRepositoryCustom{
 
     private final MongoTemplate mongoTemplate;
+
     @Override
     public User changePassword(String id, String email,String hashedPassword) {
         Query query;
@@ -24,4 +28,16 @@ public class UserRepositoryImpl implements  UserRepositoryCustom{
         update.set("password",hashedPassword);
         return mongoTemplate.findAndModify(query, update, User.class);
     }
+
+    @Override
+    public User updateUser(String email, User user) {
+        Map<String, Object> objectMap = user.toMap();
+        objectMap.values().removeIf(Objects::isNull);
+        Update update = new Update();
+        objectMap.forEach(update::set);
+        Query query = new Query(Criteria.where("email").is(email));
+        return mongoTemplate.findAndModify(query, update, User.class);
+    }
+
+
 }

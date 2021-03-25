@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
 @Configuration
-public class Config extends WebSecurityConfigurerAdapter {
+public class WebConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * Layer below WebSecurity. Sets up security against the API and adds filters.
@@ -21,15 +21,5 @@ public class Config extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.csrf().disable().authorizeRequests().antMatchers("/*").permitAll();
-    }
-
-    /**
-     * Sets up bean for encryption of passwords.
-     *
-     * @return password encoder.
-     */
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder(13);
     }
 }

@@ -20,31 +20,32 @@ import java.util.List;
 public class AdminController {
     private static final String CREATE_DATA = "/create-data";
     private static final String ADD_STORE = "/add-store";
-    private static final String ADD_USER = "/add-user";
-    private static final String GET_USER = "/get-user";
-    private static final String UPDATE_USER = "/update-user";
+    private static final String USER = "/user";
 
     private final AdminService adminService;
-
 
     @PostMapping(CREATE_DATA)
     public void createTestData(@RequestBody List<String> storeNames) {
         adminService.createTestData(storeNames);
     }
+
     @PostMapping(ADD_STORE)
     public Store addStore(String storeName) {
         return adminService.addStore(storeName);
     }
-    @PostMapping(ADD_USER)
-    public User addUser(@RequestBody @Valid AddUserRequestModel newUser){
+
+    @PostMapping(USER)
+    public User addUser(@RequestBody @Valid AddUserRequestModel newUser) {
         return adminService.addUser(newUser);
     }
-    @GetMapping(GET_USER)
-    public User getUser(@RequestBody @NotNull(message = "Email cannot be null") String email){
+
+    @GetMapping(USER)
+    public User getUser(@RequestBody @NotNull(message = "Email cannot be null") String email) {
         return adminService.getUser(email);
     }
-    @PutMapping(UPDATE_USER)
-    public User updateUser(@RequestBody UpdateUserRequestModel user){
+
+    @PutMapping(USER)
+    public User updateUser(@RequestBody UpdateUserRequestModel user) {
         return adminService.updateUser(user);
     }
 
