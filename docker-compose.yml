@@ -35,6 +35,15 @@ services:
     container_name: dumbledore
     networks:
       - hogwarts
+  filtch:
+    build:
+      context: ./filtch
+      dockerfile: ./Dockerfile
+    ports:
+      - 9092:9092
+    container_name: filtch
+    networks:
+      - hogwarts
   mongo:
     image: mongo
     hostname: ron
