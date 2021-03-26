@@ -23,7 +23,6 @@ public class AuthenticationServiceImpl implements AuthenticateService{
 
 
     public String authenticateCredentials(String email, String password){
-
         Optional<User> user = userRepository.findByEmail(email);
         if(user.isEmpty()){
             throw new RuntimeException("Customer don't exist");
@@ -42,9 +41,7 @@ public class AuthenticationServiceImpl implements AuthenticateService{
         Claims claims = jwtTokenUtil.extractAllTokenClaims(token);
         String id = claims.getSubject();
         String email = (String) claims.get("Email");
-
         UserDTO userDTO = new UserDTO(id, email);
-
         return userDTO;
     }
 }
