@@ -40,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticateService{
     @Override
     public UserDTO authorize(String token) {
         Claims claims = jwtTokenUtil.extractAllTokenClaims(token);
-        String id = claims.getId();
+        String id = claims.getSubject();
         String email = (String) claims.get("Email");
 
         UserDTO userDTO = new UserDTO(id, email);
