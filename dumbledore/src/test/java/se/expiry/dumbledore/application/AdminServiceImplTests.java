@@ -2,13 +2,20 @@ package se.expiry.dumbledore.application;
 
 import com.mongodb.client.result.UpdateResult;
 import org.bson.BsonValue;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
+import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.repository.StoreRepository;
@@ -33,38 +40,82 @@ public class AdminServiceImplTests {
     @MockBean
     private PasswordEncoder passwordEncoder;
 
+    @Mock
+    private UpdateResult updateResult;
+
+    private static final String FIRST_NAME = "John";
+    private static final String LAST_NAME = "Doe";
+    private static final String EMAIL = "john@email.com";
+    private static final String PASSWORD = "secret";
+    private static final String HASHED_PASSWORD = "hashed123";
+    private static final int NUMBER_OF_STORES = 2;
+
+    private User user;
+
+    @Value("${}")
+
     @BeforeEach
-    public void setUp() throws Exception {
+    public void setUp() {
         this.adminService = new AdminServiceImpl(storeRepository, userRepository, passwordEncoder);
+        Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn(HASHED_PASSWORD);
+        this.user = new User(FIRST_NAME, LAST_NAME, EMAIL, HASHED_PASSWORD);
+        Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
     }
 
     @Test
     @DisplayName("add user successfully")
     public void addUserSuccessfully(){
         AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
-        String hashedPassword = "hashed";
-        Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn(hashedPassword);
-        User user = new User(addUserRequestModel.getFirstName(), addUserRequestModel.getLastName(), addUserRequestModel.getEmail(), hashedPassword);
-        Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
 
-        Mockito.when(storeRepository.addUserToStores(user, addUserRequestModel.getStores())).thenReturn(getUpdatedResult(
-                addUserRequestModel.getStores().size(), addUserRequestModel.getStores().size()
-        ));
+        Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
+        Mockito.when(updateResult.getMatchedCount()).thenReturn((long) NUMBER_OF_STORES);
+        Mockito.when(updateResult.getModifiedCount()).thenReturn((long) NUMBER_OF_STORES);
 
         User returnedUser = adminService.addUser(addUserRequestModel);
 
         assertNotNull(returnedUser);
         assertEquals(user, returnedUser);
     }
+    @Test
+    @DisplayName("all stores not found")
+    public void allStoresCouldNotBeFound(){
+        AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
+
+        Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
+        Mockito.when(updateResult.getMatchedCount()).thenReturn((long) 0);
+
+        ExpiryException expiryException = assertThrows(ExpiryException.class, () -> adminService.addUser(addUserRequestModel),
+                "Expected addUser() to throw ExpiryException but did not"
+                );
+
+        assertTrue(expiryException.getExceptionDetail().getDetail().contains("found"));
+    }
+
+    @Test
+    @DisplayName("all stores not updated")
+    public void allStoresCouldNotBeUpdated(){
+        AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
+
+        Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
+        Mockito.when(updateResult.getMatchedCount()).thenReturn((long) NUMBER_OF_STORES);
+        Mockito.when(updateResult.getModifiedCount()).thenReturn((long) 0);
+
+        ExpiryException expiryException = assertThrows(ExpiryException.class, () -> adminService.addUser(addUserRequestModel),
+                "Expected addUser() to throw ExpiryException but did not"
+        );
+
+        assertTrue(expiryException.getExceptionDetail().getDetail().contains("updated"));
+    }
+
 
 
     private AddUserRequestModel createValidAddUserRequestModel(){
         AddUserRequestModel addUserRequestModel = new AddUserRequestModel();
-        addUserRequestModel.setEmail("john@email.com");
-        addUserRequestModel.setFirstName("john");
-        addUserRequestModel.setLastName("doe");
-        addUserRequestModel.setPassword("123123");
-        addUserRequestModel.setRePassword("123123");
+        addUserRequestModel.setEmail(EMAIL);
+        addUserRequestModel.setFirstName(FIRST_NAME);
+        addUserRequestModel.setLastName(LAST_NAME);
+        addUserRequestModel.setPassword(PASSWORD);
+        addUserRequestModel.setRePassword(PASSWORD);
         List<String> stores = new ArrayList<>();
         stores.add("gallerian");
         stores.add("normal");
