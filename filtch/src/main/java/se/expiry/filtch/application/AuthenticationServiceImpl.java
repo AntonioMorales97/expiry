@@ -1,11 +1,14 @@
 package se.expiry.filtch.application;
 
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import se.expiry.filtch.domain.User;
+import se.expiry.filtch.presentation.response.UserDTO;
 import se.expiry.filtch.repository.UserRepository;
 import se.expiry.filtch.util.JwtTokenUtil;
+
 
 import java.util.Optional;
 
@@ -18,22 +21,30 @@ public class AuthenticationServiceImpl implements AuthenticateService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
+
     public String authenticateCredentials(String email, String password){
 
         Optional<User> user = userRepository.findByEmail(email);
         if(user.isEmpty()){
-            System.out.println("hej");
+            throw new RuntimeException("Customer don't exist");
         }
         if( passwordEncoder.matches(password, user.get().getPassword())){
             String token = jwtTokenUtil.createToken(user.get());
             return token;
         }
-        return null;
+        else{
+            throw new RuntimeException("Password dont match");
+        }
     }
 
     @Override
-    public String authorize(String token) {
-        String id = jwtTokenUtil.getTokenUserId(token);
-        return id;
+    public UserDTO authorize(String token) {
+        Claims claims = jwtTokenUtil.extractAllTokenClaims(token);
+        String id = claims.getId();
+        String email = (String) claims.get("Email");
+
+        UserDTO userDTO = new UserDTO(id, email);
+
+        return userDTO;
     }
 }

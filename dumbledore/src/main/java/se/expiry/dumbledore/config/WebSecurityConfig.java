@@ -43,8 +43,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private FiltchJwtFilter filtchJwtFilter;
 
-    public WebSecurityConfig(FiltchJwtFilter filtchJwtFilter){
-        this.filtchJwtFilter = filtchJwtFilter;
+    public WebSecurityConfig(){
+        this.filtchJwtFilter =  new FiltchJwtFilter();
     }
 
 
@@ -66,15 +66,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
 
-    @Bean
-    public FiltchJwtFilter filtchJwtFilter(){
-        return new FiltchJwtFilter();
-    }
-
     public static class FiltchJwtFilter extends OncePerRequestFilter {
 
-        @Autowired
-        private RestTemplate restTemplate;
+
 
         @Override
         protected void doFilterInternal(HttpServletRequest request,
@@ -90,20 +84,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             // Get jwt token and validate
             final String token = header.split(" ")[1].trim();
-
+            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", header);
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> res =  restTemplate.exchange("http://localhost:9092/validate-token", HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> res =  restTemplate.exchange("http://localhost:9092/validate-token", HttpMethod.POST, entity, String.class);
 
             if(res.getStatusCodeValue() != 200){
                 System.out.println("Invalid");
                 //TODO: Error handling
             }
-
+            System.out.println(res.getBody());
             UsernamePasswordAuthenticationToken
                     authentication = new UsernamePasswordAuthenticationToken(
-                    res, null,
+                    res.getBody(), null,
                    null
             );
 

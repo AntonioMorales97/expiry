@@ -59,6 +59,7 @@ public class JwtTokenUtil {
         return claimsResolver.apply(claims);
     }
 
+
     /**
      * Creates a JWT.
      *
@@ -82,7 +83,7 @@ public class JwtTokenUtil {
         return getTokenExpirationDate(token).before(new Date());
     }
 
-    private Claims extractAllTokenClaims(String token) {
+    public Claims extractAllTokenClaims(String token) {
         return Jwts.parser().setSigningKey(secret.getBytes()).parseClaimsJws(token).getBody();
     }
 }
