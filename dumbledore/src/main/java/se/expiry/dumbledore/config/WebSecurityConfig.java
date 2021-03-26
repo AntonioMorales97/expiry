@@ -38,6 +38,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      * @param http The <code>HttpSecurity</code> to configure.
      *
      **/
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests().antMatchers("/*").permitAll();
@@ -74,20 +75,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
             // Get jwt token and validate
             final String token = header.split(" ")[1].trim();
-
+            RestTemplate restTemplate = new RestTemplate();
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", header);
             HttpEntity<String> entity = new HttpEntity<>(headers);
+
             ResponseEntity<UserDTO> res =  restTemplate.exchange(FILTCH_URI, HttpMethod.GET, entity, UserDTO.class);
 
             if(res.getStatusCodeValue() != 200){
                 System.out.println("Invalid");
                 //TODO: Error handling
             }
-
+            System.out.println(res.getBody());
             UsernamePasswordAuthenticationToken
                     authentication = new UsernamePasswordAuthenticationToken(
-                    res, null,
+                    res.getBody(), null,
                    null
             );
 
