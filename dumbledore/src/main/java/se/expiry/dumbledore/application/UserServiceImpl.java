@@ -8,7 +8,6 @@ import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.repository.UserRepository;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 

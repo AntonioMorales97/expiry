@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class AdminServiceImpl implements AdminService {
     private final StoreRepository storeRepo;

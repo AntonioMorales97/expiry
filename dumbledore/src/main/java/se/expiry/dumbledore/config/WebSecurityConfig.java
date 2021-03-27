@@ -25,7 +25,8 @@ import java.io.IOException;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-
+    @Value("${filtch.uri}")
+    private String FILTCH_URI;
     private FiltchJwtFilter filtchJwtFilter;
 
     public WebSecurityConfig(RestTemplateBuilder restTemplateBuilder){
@@ -50,10 +51,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         );
     }
 
-    public static class FiltchJwtFilter extends OncePerRequestFilter {
+    public class FiltchJwtFilter extends OncePerRequestFilter {
 
-        @Value("${filtch.uri}")
-        private String FILTCH_URI;
+
 
         private RestTemplate restTemplate;
 
@@ -86,7 +86,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 System.out.println("Invalid");
                 //TODO: Error handling
             }
-            System.out.println(res.getBody());
+
             UsernamePasswordAuthenticationToken
                     authentication = new UsernamePasswordAuthenticationToken(
                     res.getBody(), null,
