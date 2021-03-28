@@ -9,8 +9,6 @@ import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.user.PasswordResetRequestModel;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

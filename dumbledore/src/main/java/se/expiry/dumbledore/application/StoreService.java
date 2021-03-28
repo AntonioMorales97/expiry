@@ -5,9 +5,9 @@ import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestMod
 
 import java.util.List;
 
-public interface ProductService {
-    List<Product> getProducts(String id);
+public interface StoreService {
+    List<Product> getProducts(String storeId);
      void deleteProduct(String storeId, String productId);
      Product addProduct(String storeId, String name, String qrCode, String date);
-     void updateProduct(UpdateProductRequestModel product);
+     void updateProduct(String storeId, UpdateProductRequestModel product);
 }

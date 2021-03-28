@@ -3,9 +3,6 @@ package se.expiry.dumbledore.presentation.request.admin;
 import lombok.Data;
 import se.expiry.dumbledore.util.FieldMatch;
 
-import java.util.HashMap;
-import java.util.Map;
-
 @FieldMatch(first = "password", second = "rePassword", message = "Passwords do not match!")
 @Data
 public class UpdateUserRequestModel {

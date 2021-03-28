@@ -20,19 +20,19 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
     protected MongoTemplate mongoTemplate;
 
     @Override
-    public UpdateResult addUserToStores(User user, List<String> storeNames) {
-        Query query = new Query(Criteria.where("name").in(storeNames));
+    public UpdateResult addUserToStores(User user, List<String> storeIds) {
+        Query query = new Query(Criteria.where("_id").in(storeIds));
         Update update = new Update();
         update.push("users").value(user);
         return mongoTemplate.updateMulti(query, update, Store.class);
     }
 
     @Override
-    public UpdateResult addProductsToStore(String storeName, List<Product> products) {
-        Query query = new Query(Criteria.where("name").is(storeName));
+    public UpdateResult addProductsToStore(String storeId, List<Product> products) {
+        Query query = new Query(Criteria.where("_id").is(storeId));
         Update update = new Update();
         update.push("products").each(products);
-        update.setOnInsert("name", storeName);
+        update.setOnInsert("_id", storeId);
         return mongoTemplate.upsert(query, update, Store.class);
     }
 

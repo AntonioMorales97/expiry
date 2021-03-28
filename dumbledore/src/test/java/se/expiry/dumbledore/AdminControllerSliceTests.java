@@ -37,6 +37,7 @@ public class AdminControllerSliceTests {
     @MockBean
     private FiltchAuthProvider filtchAuthProvider;
 
+    //TODO: Add admin role
     @DisplayName("User with admin role add user successfully")
     @Test
     @WithMockUser(username = "John")
@@ -54,7 +55,7 @@ public class AdminControllerSliceTests {
         given(adminService.addUser(req)).willReturn(user);
 
         mockMvc.perform(
-                post("/user")
+                post("/admin/user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(req))
                 )

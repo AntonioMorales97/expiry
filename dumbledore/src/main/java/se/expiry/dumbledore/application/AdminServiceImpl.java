@@ -36,16 +36,16 @@ public class AdminServiceImpl implements AdminService {
     public User addUser(AddUserRequestModel newUser) {
         String hashedPassword = passwordEncoder.encode(newUser.getPassword());
         User savedUser = userRepo.save(new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), hashedPassword));
-        if (newUser.getStores() != null) {
+        if (newUser.getStoreIds() != null) {
 
-            UpdateResult updateResult = storeRepo.addUserToStores(savedUser, newUser.getStores());
+            UpdateResult updateResult = storeRepo.addUserToStores(savedUser, newUser.getStoreIds());
 
-            if (newUser.getStores().size() != updateResult.getMatchedCount()) {
+            if (newUser.getStoreIds().size() != updateResult.getMatchedCount()) {
                 ExceptionDetail exceptionDetail = new ExceptionDetail(400, "Some stores could not be found.");
                 throw new ExpiryException(exceptionDetail);
             }
 
-            if (newUser.getStores().size() != updateResult.getModifiedCount()) {
+            if (newUser.getStoreIds().size() != updateResult.getModifiedCount()) {
                 ExceptionDetail exceptionDetail = new ExceptionDetail(500, "Some stores could not be updated. Please contact Hagrid.");
                 throw new ExpiryException(exceptionDetail);
             }
@@ -86,8 +86,8 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public User getUser(String email) {
-        Optional<User> user = userRepo.findByEmail(email);
+    public User getUser(String id) {
+        Optional<User> user = userRepo.findById(id);
         if (user.isEmpty()) {
             ExceptionDetail exceptionDetail = new ExceptionDetail(404, "User could not be found.");
             throw new ExpiryException(exceptionDetail);
@@ -96,16 +96,16 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public User updateUser(UpdateUserRequestModel newUser) {
+    public User updateUser(String id, UpdateUserRequestModel updateUserReq) {
 
         User user = new User(
-                newUser.getFirstName(),
-                newUser.getLastName(),
-                newUser.getEmail(),
-                newUser.getPassword()
+                updateUserReq.getFirstName(),
+                updateUserReq.getLastName(),
+                updateUserReq.getEmail(),
+                updateUserReq.getPassword()
                 );
 
-        return userRepo.updateUser(newUser.getEmail(), user);
+        return userRepo.updateUser(id, user);
     }
 
     @Override

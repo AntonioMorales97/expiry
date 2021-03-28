@@ -6,5 +6,5 @@ import javax.validation.constraints.NotNull;
 
 public interface UserService {
 
-    User changePassword(@NotNull String passwordResetRequestModelId, String id, String password);
+    User changePassword(@NotNull String id, String email, String password);
 }

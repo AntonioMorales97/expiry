@@ -10,9 +10,9 @@ import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestMod
 import java.util.List;
 
 public interface StoreRepositoryCustom {
-    UpdateResult addUserToStores(User user, List<String> stores);
+    UpdateResult addUserToStores(User user, List<String> storeIds);
 
-    UpdateResult addProductsToStore(String storeName, List<Product> products);
+    UpdateResult addProductsToStore(String storeId, List<Product> products);
 
     UpdateResult deleteProductFromStore(String storeId, String productId);
 

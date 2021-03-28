@@ -16,7 +16,7 @@ public class UserRepositoryImpl implements  UserRepositoryCustom{
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public User changePassword(String id, String email,String hashedPassword) {
+    public User changePassword(String id, String email, String hashedPassword) {
         Query query;
         if(id != null) {
             query = new Query(Criteria.where("_id").is(id));
@@ -30,12 +30,12 @@ public class UserRepositoryImpl implements  UserRepositoryCustom{
     }
 
     @Override
-    public User updateUser(String email, User user) {
+    public User updateUser(String id, User user) {
         Map<String, Object> objectMap = user.toMap();
         objectMap.values().removeIf(Objects::isNull);
         Update update = new Update();
         objectMap.forEach(update::set);
-        Query query = new Query(Criteria.where("email").is(email));
+        Query query = new Query(Criteria.where("_id").is(id));
         return mongoTemplate.findAndModify(query, update, User.class);
     }
 

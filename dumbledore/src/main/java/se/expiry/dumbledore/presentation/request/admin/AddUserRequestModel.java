@@ -25,7 +25,7 @@ public class AddUserRequestModel {
     @NotNull(message = "Please re-enter password")
     private String rePassword;
 
-    public List<String> stores;
+    public List<String> storeIds;
 
     public AddUserRequestModel() {
     }

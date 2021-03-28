@@ -110,7 +110,7 @@ public class AdminServiceImplTests {
         List<String> stores = new ArrayList<>();
         stores.add("gallerian");
         stores.add("normal");
-        addUserRequestModel.setStores(stores);
+        addUserRequestModel.setStoreIds(stores);
         return addUserRequestModel;
     }
 }

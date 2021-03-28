@@ -6,12 +6,7 @@ import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.UpdateUserRequestModel;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 public interface AdminService {
     User addUser(AddUserRequestModel newUser);
@@ -20,9 +15,9 @@ public interface AdminService {
 
     Store addStore(String storeName);
 
-    User getUser(String email);
+    User getUser(String id);
 
-    User updateUser(UpdateUserRequestModel user);
+    User updateUser(String id, UpdateUserRequestModel user);
 
     Product generateRandomProduct();
 }

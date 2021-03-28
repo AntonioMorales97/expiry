@@ -15,8 +15,6 @@ public class AddProductRequestModel {
     @NotNull(message="Expiry date cannot be empty!")
     private String date;
 
-    @NotNull(message="storeId cannot be empty!")
-    private String storeId;
     public AddProductRequestModel() {
     }
 }
