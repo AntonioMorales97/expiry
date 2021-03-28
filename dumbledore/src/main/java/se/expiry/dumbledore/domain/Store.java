@@ -35,5 +35,6 @@ public class Store {
         this.products = new ArrayList<>();
         this.users = new ArrayList<>();
     }
- 
+
+    public Store(){}
 }

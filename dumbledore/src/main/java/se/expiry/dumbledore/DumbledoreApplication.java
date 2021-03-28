@@ -6,7 +6,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import se.expiry.dumbledore.domain.Product;
+import se.expiry.dumbledore.domain.Role;
 import se.expiry.dumbledore.domain.Store;
+import se.expiry.dumbledore.repository.role.RoleRepository;
 import se.expiry.dumbledore.repository.store.StoreRepository;
 
 import java.text.DateFormat;
@@ -25,11 +27,14 @@ public class DumbledoreApplication {
     @Autowired
     StoreRepository storeRepo;
 
+    @Autowired
+    RoleRepository roleRepository;
+
     @Bean
     CommandLineRunner preLoadMongo(){
         return args -> {
             List<Store> stores = storeRepo.findAll();
-            if(stores == null){
+            if(stores == null || stores.isEmpty()){
                 //TODO: Add new stores
                 stores = new ArrayList<>();
                 Store gallerian = new Store("Gallerian");
@@ -62,6 +67,7 @@ public class DumbledoreApplication {
             }
 
             storeRepo.saveAll(stores);
+
             System.out.println("SAVED TO RON");
 
         };

@@ -35,7 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .mvcMatchers("/**").authenticated()
+                .mvcMatchers("/**").permitAll()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new FiltchAuthEntryPoint())
                 .and()

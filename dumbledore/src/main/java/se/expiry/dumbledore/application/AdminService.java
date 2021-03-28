@@ -20,4 +20,8 @@ public interface AdminService {
     User updateUser(String id, UpdateUserRequestModel user);
 
     Product generateRandomProduct();
+
+    void addUserToStore(String storeId, String userId);
+
+    List<Store> getStores();
 }

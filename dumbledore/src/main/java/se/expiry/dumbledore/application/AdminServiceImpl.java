@@ -40,6 +40,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public List<Store> getStores(){
+        return storeRepo.findAll();
+    }
+
+    //TODO: Improve
+    @Override
+    public void addUserToStore(String storeId, String userId){
+        User user = userRepo.findById(userId).get();
+        Store store = storeRepo.findById(storeId).get();
+        store.getUsers().add(user);
+        storeRepo.save(store);
+    }
+
+    @Override
     public User addUser(AddUserRequestModel newUser) {
         String hashedPassword = passwordEncoder.encode(newUser.getPassword());
 

@@ -23,8 +23,8 @@ public class FiltchAuthProvider {
 
     private RestTemplate restTemplate;
 
-    public FiltchAuthProvider(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    public FiltchAuthProvider(RestTemplateBuilder restTemplateBuilder) {
+        this.restTemplate = restTemplateBuilder.build();
     }
 
     public Authentication getAuthentication(String token){
