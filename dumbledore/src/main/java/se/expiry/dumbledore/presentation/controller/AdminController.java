@@ -2,7 +2,7 @@ package se.expiry.dumbledore.presentation.controller;
 
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.*;
 import se.expiry.dumbledore.application.AdminService;
@@ -11,7 +11,7 @@ import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.UpdateUserRequestModel;
-import se.expiry.dumbledore.repository.store.StoreRepository;
+
 
 import javax.validation.Valid;
 import java.util.List;

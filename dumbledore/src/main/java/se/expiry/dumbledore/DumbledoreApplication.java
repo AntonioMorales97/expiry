@@ -5,17 +5,22 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Role;
 import se.expiry.dumbledore.domain.Store;
+import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.repository.role.RoleRepository;
 import se.expiry.dumbledore.repository.store.StoreRepository;
+import se.expiry.dumbledore.repository.user.UserRepository;
+import se.expiry.dumbledore.util.Roles;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @SpringBootApplication
 public class DumbledoreApplication {
@@ -30,9 +35,48 @@ public class DumbledoreApplication {
     @Autowired
     RoleRepository roleRepository;
 
+    @Autowired
+    UserRepository userRepository;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+
+
     @Bean
     CommandLineRunner preLoadMongo(){
         return args -> {
+            /**
+             * Adds all roles if they dont exist.
+             *  REMOVE BEFORE PROD
+             */
+            List<Role> roles = roleRepository.findAll();
+            if(roles == null || roles.isEmpty()){
+                Role adminRole = new Role(Roles.ROLE_ADMIN);
+                Role userRole = new Role(Roles.ROLE_USER);
+                Role managerRole = new Role(Roles.ROLE_MANAGER);
+
+                roleRepository.save(adminRole);
+                roleRepository.save(userRole);
+                roleRepository.save(managerRole);
+            }
+            /**
+             * Adds Admimn if he dont exist they dont exist.
+             * REMOVE BEFORE PROD
+             */
+            Optional<User> user = userRepository.findByEmail("admin@admin.se");
+            if(user.isEmpty()){
+                List<Role> rolesList = new ArrayList<>();
+
+                rolesList.add(roleRepository.findByName("ADMIN"));
+
+                User admin = new User("admin","admin", "admin@admin.se",passwordEncoder.encode("admin"), rolesList );
+
+                userRepository.save(admin);
+            }
+            /**
+             * Adds stores Nacka and Gallerian if they dont exist they dont exist.
+             * REMOVE BEFORE PROD
+             */
             List<Store> stores = storeRepo.findAll();
             if(stores == null || stores.isEmpty()){
                 //TODO: Add new stores
@@ -42,7 +86,10 @@ public class DumbledoreApplication {
                 stores.add(gallerian);
                 stores.add(nacka);
             }
-
+            /**
+             * Adds products Nacka and Gallerian if they dont have products.
+             * REMOVE BEFORE PROD
+             */
             if(!doStoresHaveProducts(stores)){
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
                 Date date = new Date();
@@ -67,6 +114,7 @@ public class DumbledoreApplication {
             }
 
             storeRepo.saveAll(stores);
+
 
             System.out.println("SAVED TO RON");
 

@@ -5,12 +5,16 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import se.expiry.dumbledore.domain.Role;
 import se.expiry.dumbledore.dto.UserDTO;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Component
@@ -29,11 +33,16 @@ public class FiltchAuthProvider {
 
     public Authentication getAuthentication(String token){
         UserDTO authUser = filtchAuth(token);
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        if(!authUser.getRoles().isEmpty()) {
+            addAuthorities(authorities, authUser.getRoles());
+        }
+
         //TODO: Waz is dis?
 //        authentication.setDetails(
 //                new WebAuthenticationDetailsSource().buildDetails(request)
 //        );
-        return new UsernamePasswordAuthenticationToken(authUser, "", null);
+        return new UsernamePasswordAuthenticationToken(authUser, "", authorities);
     }
 
     public String resolveToken(HttpServletRequest request){
@@ -44,7 +53,12 @@ public class FiltchAuthProvider {
 
         return null;
     }
-
+    private  List<SimpleGrantedAuthority> addAuthorities(List<SimpleGrantedAuthority> authorities, List<Role> roles){
+        roles.forEach(role ->{
+            authorities.add(new SimpleGrantedAuthority("ROLE_"+role.getName()));
+        });
+        return authorities;
+    }
     private UserDTO filtchAuth(String token){
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.AUTHORIZATION, TOKEN_PREFIX + token);
