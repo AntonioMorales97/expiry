@@ -1,4 +1,4 @@
-package se.expiry.dumbledore.repository;
+package se.expiry.dumbledore.repository.user;
 
 import se.expiry.dumbledore.domain.User;
 

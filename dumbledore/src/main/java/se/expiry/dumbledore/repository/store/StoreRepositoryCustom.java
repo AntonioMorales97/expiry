@@ -1,4 +1,4 @@
-package se.expiry.dumbledore.repository;
+package se.expiry.dumbledore.repository.store;
 
 import com.mongodb.client.result.UpdateResult;
 import se.expiry.dumbledore.domain.Store;

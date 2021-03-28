@@ -29,5 +29,11 @@ public class Store {
         this.products = products;
         this.users = new ArrayList<>();
     }
+
+    public Store(String name){
+        this.name = name;
+        this.products = new ArrayList<>();
+        this.users = new ArrayList<>();
+    }
  
 }

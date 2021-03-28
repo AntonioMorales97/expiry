@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -23,11 +24,14 @@ public class User {
 
     private String password;
 
-    public User(String firstName, String lastName, String email, String password) {
+    private List<Role> roles;
+
+    public User(String firstName, String lastName, String email, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+        this.roles = roles;
     }
 
     public Map<String, Object> toMap(){
@@ -36,6 +40,7 @@ public class User {
         objectMap.put("firstName", this.firstName);
         objectMap.put("lastName", this.lastName);
         objectMap.put("password", this.password);
+        objectMap.put("roles", this.roles);
         return objectMap;
     }
 }

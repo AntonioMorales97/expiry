@@ -10,12 +10,16 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import se.expiry.dumbledore.common.ExpiryException;
+import se.expiry.dumbledore.domain.Role;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
-import se.expiry.dumbledore.repository.StoreRepository;
-import se.expiry.dumbledore.repository.UserRepository;
+import se.expiry.dumbledore.repository.role.RoleRepository;
+import se.expiry.dumbledore.repository.store.StoreRepository;
+import se.expiry.dumbledore.repository.user.UserRepository;
+import se.expiry.dumbledore.util.Roles;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +36,9 @@ public class AdminServiceImplTests {
     private StoreRepository storeRepository;
 
     @MockBean
+    private RoleRepository roleRepository;
+
+    @MockBean
     private PasswordEncoder passwordEncoder;
 
     @Mock
@@ -42,15 +49,16 @@ public class AdminServiceImplTests {
     private static final String EMAIL = "john@email.com";
     private static final String PASSWORD = "secret";
     private static final String HASHED_PASSWORD = "hashed123";
+    private static final List<Role> ROLES = Arrays.asList(new Role(Roles.ROLE_USER));
     private static final int NUMBER_OF_STORES = 2;
 
     private User user;
 
     @BeforeEach
     public void setUp() {
-        this.adminService = new AdminServiceImpl(storeRepository, userRepository, passwordEncoder);
+        this.adminService = new AdminServiceImpl(storeRepository, roleRepository, userRepository, passwordEncoder);
         Mockito.when(passwordEncoder.encode(Mockito.anyString())).thenReturn(HASHED_PASSWORD);
-        this.user = new User(FIRST_NAME, LAST_NAME, EMAIL, HASHED_PASSWORD);
+        this.user = new User(FIRST_NAME, LAST_NAME, EMAIL, HASHED_PASSWORD,ROLES);
         Mockito.when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
     }
 

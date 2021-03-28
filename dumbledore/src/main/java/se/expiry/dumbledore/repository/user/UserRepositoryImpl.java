@@ -1,4 +1,4 @@
-package se.expiry.dumbledore.repository;
+package se.expiry.dumbledore.repository.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -38,6 +38,4 @@ public class UserRepositoryImpl implements  UserRepositoryCustom{
         Query query = new Query(Criteria.where("_id").is(id));
         return mongoTemplate.findAndModify(query, update, User.class);
     }
-
-
 }

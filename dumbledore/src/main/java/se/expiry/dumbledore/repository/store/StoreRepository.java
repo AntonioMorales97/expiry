@@ -1,4 +1,4 @@
-package se.expiry.dumbledore.repository;
+package se.expiry.dumbledore.repository.store;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;

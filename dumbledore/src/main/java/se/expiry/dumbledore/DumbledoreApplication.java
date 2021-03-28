@@ -4,10 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Bean;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
-import se.expiry.dumbledore.repository.StoreRepository;
+import se.expiry.dumbledore.repository.store.StoreRepository;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -15,43 +15,65 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 @SpringBootApplication
-public class DumbledoreApplication implements CommandLineRunner {
+public class DumbledoreApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DumbledoreApplication.class, args);
     }
 
     @Autowired
-    StoreRepository repository;
+    StoreRepository storeRepo;
 
-    @Override
-    public void run(String... args) throws Exception {
+    @Bean
+    CommandLineRunner preLoadMongo(){
+        return args -> {
+            List<Store> stores = storeRepo.findAll();
+            if(stores == null){
+                //TODO: Add new stores
+                stores = new ArrayList<>();
+                Store gallerian = new Store("Gallerian");
+                Store nacka = new Store("Nacka");
+                stores.add(gallerian);
+                stores.add(nacka);
+            }
 
-        repository.deleteAll();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = new Date();
+            if(!doStoresHaveProducts(stores)){
+                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+                Date date = new Date();
 
-        Product product1 = new Product("Milk", "123", dateFormat.format(date));
-        Product product2 = new Product("Milk", "123", dateFormat.format(date));
-        Product product3 = new Product("Milk", "123", dateFormat.format(date));
+                Product product1 = new Product("Milk", "123", dateFormat.format(date));
+                Product product2 = new Product("Milk", "123", dateFormat.format(date));
+                Product product3 = new Product("Milk", "123", dateFormat.format(date));
 
-        List<Product> products = new ArrayList<>();
-        products.add(product1);
-        products.add(product2);
-        products.add(product3);
-        Store store = new Store("Gallerian", products);
-        List<Product> products1 = new ArrayList<>();
-        products1.add(product1);
-        products1.add(product2);
+                Product product4 = new Product("Kex", "456", dateFormat.format(date));
+                Product product5 = new Product("Milk", "123", dateFormat.format(date));
 
-        Store store1 = new Store("Nacka", products1);
+                List<Product> products = stores.get(0).getProducts();
+                products.add(product1);
+                products.add(product2);
+                products.add(product3);
+                if(stores.size() > 1) {
+                    products = stores.get(1).getProducts();
+                }
 
-        // save a couple of customers
-        repository.save(store);
-        repository.save(store1);
-        System.out.println("SAVED TO RON");
+                products.add(product4);
+                products.add(product5);
+            }
+
+            storeRepo.saveAll(stores);
+            System.out.println("SAVED TO RON");
+
+        };
+    }
+
+    private boolean doStoresHaveProducts(List<Store> stores){
+        for(Store store : stores){
+            if(store.getProducts().size() > 0){
+                return true;
+            }
+        }
+        return false;
     }
 }
 

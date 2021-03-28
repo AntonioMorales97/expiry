@@ -3,9 +3,8 @@ package se.expiry.dumbledore.application;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import se.expiry.dumbledore.domain.User;
-import se.expiry.dumbledore.repository.UserRepository;
+import se.expiry.dumbledore.repository.user.UserRepository;
 
 @Service
 @RequiredArgsConstructor

@@ -9,7 +9,7 @@ import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestModel;
-import se.expiry.dumbledore.repository.StoreRepository;
+import se.expiry.dumbledore.repository.store.StoreRepository;
 
 import java.util.List;
 import java.util.Optional;

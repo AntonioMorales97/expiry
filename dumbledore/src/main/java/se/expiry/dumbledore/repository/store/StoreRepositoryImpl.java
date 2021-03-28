@@ -1,7 +1,6 @@
-package se.expiry.dumbledore.repository;
+package se.expiry.dumbledore.repository.store;
 
 import com.mongodb.client.result.UpdateResult;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -16,8 +15,11 @@ import java.util.List;
 
 public class StoreRepositoryImpl implements StoreRepositoryCustom {
 
-    @Autowired
-    protected MongoTemplate mongoTemplate;
+    private MongoTemplate mongoTemplate;
+
+    public StoreRepositoryImpl(MongoTemplate mongoTemplate){
+        this.mongoTemplate = mongoTemplate;
+    }
 
     @Override
     public UpdateResult addUserToStores(User user, List<String> storeIds) {

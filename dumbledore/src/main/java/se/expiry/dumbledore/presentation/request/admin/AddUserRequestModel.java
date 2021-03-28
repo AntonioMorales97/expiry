@@ -27,6 +27,8 @@ public class AddUserRequestModel {
 
     public List<String> storeIds;
 
+    public List<String> roleIds;
+
     public AddUserRequestModel() {
     }
 }
