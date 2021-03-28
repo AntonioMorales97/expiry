@@ -14,9 +14,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import se.expiry.dumbledore.application.AdminService;
 import se.expiry.dumbledore.config.security.FiltchAuthProvider;
 import se.expiry.dumbledore.config.WebSecurityConfig;
+import se.expiry.dumbledore.domain.Role;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.controller.AdminController;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
+import se.expiry.dumbledore.util.Roles;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.mockito.BDDMockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -50,7 +55,9 @@ public class AdminControllerSliceTests {
         req.setLastName("Doe");
         req.setEmail("john@email.com");
 
-        User user = new User("John", "Doe", "john@email.com", "123123");
+        List<Role> roles = Arrays.asList(new Role(Roles.ROLE_USER));
+
+        User user = new User("John", "Doe", "john@email.com", "123123", roles);
 
         given(adminService.addUser(req)).willReturn(user);
 
