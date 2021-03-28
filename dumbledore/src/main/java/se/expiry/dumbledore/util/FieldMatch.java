@@ -19,7 +19,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface FieldMatch {
 
-    String message() default "Fields values do not match!";
+    String message() default "Field values do not match!";
 
     Class<?>[] groups() default {};
 

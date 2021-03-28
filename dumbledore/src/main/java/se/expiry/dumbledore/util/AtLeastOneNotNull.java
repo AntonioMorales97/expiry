@@ -17,9 +17,9 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Constraint(validatedBy = FieldMatchValidator.class)
 @Documented
-public @interface AtleastOneNotNull {
+public @interface AtLeastOneNotNull {
 
-    String message() default "Atleast one field must be inputed.";
+    String message() default "At least one field must be given.";
 
     Class<?>[] groups() default {};
 

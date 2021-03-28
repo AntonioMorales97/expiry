@@ -1,19 +1,13 @@
 package se.expiry.dumbledore.application;
 
 import com.mongodb.client.result.UpdateResult;
-import org.bson.BsonValue;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.User;
@@ -52,8 +46,6 @@ public class AdminServiceImplTests {
 
     private User user;
 
-    @Value("${}")
-
     @BeforeEach
     public void setUp() {
         this.adminService = new AdminServiceImpl(storeRepository, userRepository, passwordEncoder);
@@ -76,6 +68,7 @@ public class AdminServiceImplTests {
         assertNotNull(returnedUser);
         assertEquals(user, returnedUser);
     }
+
     @Test
     @DisplayName("all stores not found")
     public void allStoresCouldNotBeFound(){
@@ -107,8 +100,6 @@ public class AdminServiceImplTests {
         assertTrue(expiryException.getExceptionDetail().getDetail().contains("updated"));
     }
 
-
-
     private AddUserRequestModel createValidAddUserRequestModel(){
         AddUserRequestModel addUserRequestModel = new AddUserRequestModel();
         addUserRequestModel.setEmail(EMAIL);
@@ -121,29 +112,5 @@ public class AdminServiceImplTests {
         stores.add("normal");
         addUserRequestModel.setStores(stores);
         return addUserRequestModel;
-    }
-
-    private UpdateResult getUpdatedResult(int matchedCount, int modifiedCount){
-        return new UpdateResult() {
-            @Override
-            public boolean wasAcknowledged() {
-                return false;
-            }
-
-            @Override
-            public long getMatchedCount() {
-                return matchedCount;
-            }
-
-            @Override
-            public long getModifiedCount() {
-                return modifiedCount;
-            }
-
-            @Override
-            public BsonValue getUpsertedId() {
-                return null;
-            }
-        };
     }
 }

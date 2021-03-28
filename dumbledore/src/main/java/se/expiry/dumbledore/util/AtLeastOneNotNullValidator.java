@@ -5,7 +5,7 @@ import org.springframework.beans.BeanWrapperImpl;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class AtleastOneNotNullValidator implements ConstraintValidator<FieldMatch, Object> {
+public class AtLeastOneNotNullValidator implements ConstraintValidator<FieldMatch, Object> {
     private String firstFieldName;
     private String secondFieldName;
 
@@ -22,9 +22,7 @@ public class AtleastOneNotNullValidator implements ConstraintValidator<FieldMatc
         BeanWrapperImpl wrapperTwo = new BeanWrapperImpl(value);
         final Object firstObj = wrapper.getPropertyValue(firstFieldName);
         final Object secondObj = wrapperTwo.getPropertyValue(secondFieldName);
-        if(firstObj != null || secondObj != null){
-            return true;
-        }
-        return false;
+
+        return firstObj != null || secondObj != null;
     }
 }
