@@ -41,7 +41,13 @@ public class AuthenticationServiceImpl implements AuthenticateService{
         Claims claims = jwtTokenUtil.extractAllTokenClaims(token);
         String id = claims.getSubject();
         String email = (String) claims.get("Email");
-        UserDTO userDTO = new UserDTO(id, email);
+        Optional<User> user = userRepository.findById(id);
+        if(user.isEmpty()){
+            //throw user not found.
+        }
+
+        UserDTO userDTO = new UserDTO(id, email, user.get().getRoles());
+
         return userDTO;
     }
 }
