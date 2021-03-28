@@ -13,7 +13,7 @@ public class Role {
     private String name;
 
     public Role(String name){
-        this.id = name;
+        this.name = name;
     }
 
 }
