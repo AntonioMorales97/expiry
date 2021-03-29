@@ -47,9 +47,13 @@ public class AdminServiceImpl implements AdminService {
     //TODO: Improve
     @Override
     public void addUserToStore(String storeId, String userId){
-        User user = userRepo.findById(userId).get();
+        Optional<User> user = userRepo.findById(userId);
+        if (user.isEmpty()) {
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "User could not be found.");
+            throw new ExpiryException(exceptionDetail);
+        }
         Store store = storeRepo.findById(storeId).get();
-        store.getUsers().add(user);
+        store.getUsers().add(user.get());
         storeRepo.save(store);
     }
 
@@ -62,8 +66,9 @@ public class AdminServiceImpl implements AdminService {
         if (newUser.getRoleIds() != null) {
             matchingRoles = roleRepo.getMatchingRolesForIds(newUser.getRoleIds());
             if (Objects.isNull(matchingRoles) || matchingRoles.size() == 0) {
-                //TODO: Error handling
-            }
+                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Roles dont match");
+                throw new ExpiryException(exceptionDetail);
+           }
         } else {
             Role userRole = roleRepo.findByName(Roles.ROLE_USER);
             //TODO: Error handling
