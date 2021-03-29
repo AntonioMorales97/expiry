@@ -4,6 +4,8 @@ import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import se.expiry.filtch.common.ExceptionDetail;
+import se.expiry.filtch.common.ExpiryException;
 import se.expiry.filtch.domain.User;
 import se.expiry.filtch.presentation.response.UserDTO;
 import se.expiry.filtch.repository.UserRepository;
@@ -25,14 +27,14 @@ public class AuthenticationServiceImpl implements AuthenticateService{
     public String authenticateCredentials(String email, String password){
         Optional<User> user = userRepository.findByEmail(email);
         if(user.isEmpty()){
-            throw new RuntimeException("Customer don't exist");
+            throw new ExpiryException(new ExceptionDetail(404, "Customer not found"));
         }
         if( passwordEncoder.matches(password, user.get().getPassword())){
             String token = jwtTokenUtil.createToken(user.get());
             return token;
         }
         else{
-            throw new RuntimeException("Password dont match");
+            throw new ExpiryException(new ExceptionDetail(403, "Password dont match"));
         }
     }
 
@@ -42,8 +44,8 @@ public class AuthenticationServiceImpl implements AuthenticateService{
         String id = claims.getSubject();
         String email = (String) claims.get("Email");
         Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()){
-            //throw user not found.
+        if(user.isEmpty()   ){
+           throw new ExpiryException(new ExceptionDetail(404, "Customer not found"));
         }
 
         UserDTO userDTO = new UserDTO(id, email, user.get().getRoles());
