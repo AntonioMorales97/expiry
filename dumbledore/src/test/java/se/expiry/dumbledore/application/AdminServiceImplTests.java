@@ -63,13 +63,14 @@ public class AdminServiceImplTests {
     }
 
     @Test
-    @DisplayName("add user successfully")
+    @DisplayName("add user with ROLE_USER successfully")
     public void addUserSuccessfully(){
         AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
 
         Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
         Mockito.when(updateResult.getMatchedCount()).thenReturn((long) NUMBER_OF_STORES);
         Mockito.when(updateResult.getModifiedCount()).thenReturn((long) NUMBER_OF_STORES);
+        Mockito.when(roleRepository.findByName(Mockito.anyString())).thenReturn(java.util.Optional.of(new Role("ROLE_USER")));
 
         User returnedUser = adminService.addUser(addUserRequestModel);
 
@@ -100,6 +101,7 @@ public class AdminServiceImplTests {
         Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
         Mockito.when(updateResult.getMatchedCount()).thenReturn((long) NUMBER_OF_STORES);
         Mockito.when(updateResult.getModifiedCount()).thenReturn((long) 0);
+        Mockito.when(roleRepository.findByName(Mockito.anyString())).thenReturn(java.util.Optional.of(new Role("ROLE_USER")));
 
         ExpiryException expiryException = assertThrows(ExpiryException.class, () -> adminService.addUser(addUserRequestModel),
                 "Expected addUser() to throw ExpiryException but did not"

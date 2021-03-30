@@ -42,10 +42,9 @@ public class AdminControllerSliceTests {
     @MockBean
     private FiltchAuthProvider filtchAuthProvider;
 
-    //TODO: Add admin role
     @DisplayName("User with admin role add user successfully")
     @Test
-    @WithMockUser(username = "John")
+    @WithMockUser(username = "John", authorities = "ROLE_ADMIN")
     public void adminAddUser() throws Exception {
 
         AddUserRequestModel req = new AddUserRequestModel();
@@ -70,6 +69,36 @@ public class AdminControllerSliceTests {
                 .andExpect(jsonPath("firstName").value("John"));
 
         verify(adminService, Mockito.times(1)).addUser(req);
+    }
+
+    @DisplayName("Unauthenticated user gets 403")
+    @Test
+    public void unauthenticatedUserAddUser() throws Exception {
+
+        AddUserRequestModel req = new AddUserRequestModel();
+        req.setFirstName("John");
+        req.setPassword("123123");
+        req.setRePassword("123123");
+        req.setLastName("Doe");
+        req.setEmail("john@email.com");
+
+        User user = new User("John", "Doe", "john@email.com", "123123", Arrays.asList(getRole(Roles.ROLE_USER)));
+
+        given(adminService.addUser(req)).willReturn(user);
+
+        mockMvc.perform(
+                post("/admin/user")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(req))
+        )
+                .andExpect(status().isForbidden())
+                .andExpect(jsonPath("detail",org.hamcrest.Matchers.containsString("Authentication needed") ));
+
+        verify(adminService, Mockito.times(0)).addUser(req);
+    }
+
+    private static Role getRole(String role){
+        return new Role(role);
     }
 
     protected static String asJsonString(final Object obj) {

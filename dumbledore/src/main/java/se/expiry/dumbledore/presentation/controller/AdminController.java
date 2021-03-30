@@ -26,12 +26,12 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @DeleteMapping(STORE + "/{storeId}/user/{userId}")
+    @DeleteMapping(STORE + "/{storeId}" + USER + "/{userId}")
     public void removeUserFromStore(@PathVariable String storeId, @PathVariable String userId){
         adminService.removeUserFromStore(storeId, userId);
     }
 
-    @PutMapping(STORE + "/{storeId}/user/{userId}")
+    @PutMapping(STORE + "/{storeId}" + USER + "/{userId}")
     public void addUserToStore(@PathVariable String storeId, @PathVariable String userId){
         adminService.addUserToStore(storeId, userId);
     }
