@@ -28,7 +28,7 @@ public class AdminController {
 
     @DeleteMapping(STORE + "/{storeId}/user/{userId}")
     public void removeUserFromStore(@PathVariable String storeId, @PathVariable String userId){
-        //TODO: Implement
+        adminService.removeUserFromStore(storeId, userId);
     }
 
     @PutMapping(STORE + "/{storeId}/user/{userId}")

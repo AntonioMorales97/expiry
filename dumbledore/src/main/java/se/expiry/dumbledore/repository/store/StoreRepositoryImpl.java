@@ -60,6 +60,8 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
         Query query = new Query(Criteria.where("_id").is(storeId));
         Update update = new Update();
         update.set("products.$[id].name", product.getName());
+        update.set("products.$[id].qrCode", product.getQrCode());
+        update.set("products.$[id].date", product.getDate());
         update.filterArray(Criteria.where("id.productId").is(product.getProductId()));
         return mongoTemplate.findAndModify(query, update, Store.class);
     }

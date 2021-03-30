@@ -9,6 +9,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import se.expiry.dumbledore.common.ExceptionDetail;
+import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.Role;
 import se.expiry.dumbledore.dto.UserDTO;
 
@@ -38,10 +40,7 @@ public class FiltchAuthProvider {
             addAuthorities(authorities, authUser.getRoles());
         }
 
-        //TODO: Waz is dis?
-//        authentication.setDetails(
-//                new WebAuthenticationDetailsSource().buildDetails(request)
-//        );
+
         return new UsernamePasswordAuthenticationToken(authUser, "", authorities);
     }
 
@@ -65,10 +64,9 @@ public class FiltchAuthProvider {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<UserDTO> res =  restTemplate.exchange(FILTCH_URI, HttpMethod.GET, entity, UserDTO.class);
         if(res.getStatusCode().value() != 200){
-            //TODO: Throw exc
-            System.out.println("Nooo");
+            ExceptionDetail exceptionDetail = new ExceptionDetail(403, "Token invalid!");
+            throw new ExpiryException(exceptionDetail);
         }
-        System.out.println("Siiii");
         return res.getBody();
     }
 

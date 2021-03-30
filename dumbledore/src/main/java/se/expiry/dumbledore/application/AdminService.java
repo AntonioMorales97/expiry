@@ -24,4 +24,6 @@ public interface AdminService {
     void addUserToStore(String storeId, String userId);
 
     List<Store> getStores();
+
+    void removeUserFromStore(String storeId, String userId);
 }

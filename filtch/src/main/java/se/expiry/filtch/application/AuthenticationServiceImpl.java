@@ -34,7 +34,7 @@ public class AuthenticationServiceImpl implements AuthenticateService{
             return token;
         }
         else{
-            throw new ExpiryException(new ExceptionDetail(403, "Password dont match"));
+            throw new ExpiryException(new ExceptionDetail(403, "Password don't match."));
         }
     }
 

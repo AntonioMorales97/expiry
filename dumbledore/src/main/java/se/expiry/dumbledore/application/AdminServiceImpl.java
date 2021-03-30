@@ -44,7 +44,12 @@ public class AdminServiceImpl implements AdminService {
         return storeRepo.findAll();
     }
 
-    //TODO: Improve
+    @Override
+    public void removeUserFromStore(String storeId, String userId) {
+
+    }
+
+    //TODO: Improve not rly needed nei ?
     @Override
     public void addUserToStore(String storeId, String userId){
         Optional<User> user = userRepo.findById(userId);
@@ -70,10 +75,13 @@ public class AdminServiceImpl implements AdminService {
                 throw new ExpiryException(exceptionDetail);
            }
         } else {
-            Role userRole = roleRepo.findByName(Roles.ROLE_USER);
-            //TODO: Error handling
+            Optional<Role> userRole = roleRepo.findByName(Roles.ROLE_USER);
+            if(userRole.isEmpty()){
+                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Role not found match");
+                throw new ExpiryException(exceptionDetail);
+            }
             matchingRoles = new ArrayList<>();
-            matchingRoles.add(userRole);
+            matchingRoles.add(userRole.get());
         }
 
         User savedUser = userRepo.save(new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), hashedPassword, matchingRoles));
@@ -82,7 +90,7 @@ public class AdminServiceImpl implements AdminService {
             UpdateResult updateResult = storeRepo.addUserToStores(savedUser, newUser.getStoreIds());
 
             if (newUser.getStoreIds().size() != updateResult.getMatchedCount()) {
-                ExceptionDetail exceptionDetail = new ExceptionDetail(400, "Some stores could not be found.");
+                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Some stores could not be found.");
                 throw new ExpiryException(exceptionDetail);
             }
 
