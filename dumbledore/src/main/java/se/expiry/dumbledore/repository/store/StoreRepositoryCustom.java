@@ -19,4 +19,6 @@ public interface StoreRepositoryCustom {
     UpdateResult addProductToStore(String storeId, Product products);
 
     Store updateProduct(String storeId, UpdateProductRequestModel product);
+
+    UpdateResult removeStoreUser(String storeId, String userId);
 }

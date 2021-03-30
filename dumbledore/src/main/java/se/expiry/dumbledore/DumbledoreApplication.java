@@ -67,7 +67,7 @@ public class DumbledoreApplication {
             if(user.isEmpty()){
                 List<Role> rolesList = new ArrayList<>();
 
-                rolesList.add(roleRepository.findByName("ADMIN"));
+                rolesList.add(roleRepository.findByName("ADMIN").get());
 
                 User admin = new User("admin","admin", "admin@admin.se",passwordEncoder.encode("admin"), rolesList );
 

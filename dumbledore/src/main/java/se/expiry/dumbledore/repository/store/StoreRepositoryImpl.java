@@ -65,4 +65,14 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
         update.filterArray(Criteria.where("id.productId").is(product.getProductId()));
         return mongoTemplate.findAndModify(query, update, Store.class);
     }
+
+   @Override
+    public UpdateResult removeStoreUser(String storeId, String userId) {
+        Query query =  new Query(Criteria.where("_id").is(storeId));
+        Update update = new Update();
+        update.pull("users", new User(userId));
+        return mongoTemplate.updateFirst(query, update, Store.class);
+    }
+
+
 }

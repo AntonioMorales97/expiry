@@ -35,6 +35,10 @@ public class User {
         this.password = password;
         this.roles = roles;
     }
+    public User(){}
+    public User(String id){
+        this.id=id;
+    }
 
     public Map<String, Object> toMap(){
         Map<String, Object> objectMap = new HashMap<>();

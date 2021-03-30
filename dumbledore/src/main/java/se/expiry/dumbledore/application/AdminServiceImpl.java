@@ -46,7 +46,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void removeUserFromStore(String storeId, String userId) {
-
+        UpdateResult updateResult = storeRepo.removeStoreUser(storeId, userId);
+        if(updateResult.getModifiedCount() == 0){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store with user not found.");
+            throw new ExpiryException(exceptionDetail);
+        }
     }
 
     //TODO: Improve not rly needed nei ?
