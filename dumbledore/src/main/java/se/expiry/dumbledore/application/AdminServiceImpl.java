@@ -71,7 +71,7 @@ public class AdminServiceImpl implements AdminService {
         if (newUser.getRoleIds() != null) {
             matchingRoles = roleRepo.getMatchingRolesForIds(newUser.getRoleIds());
             if (Objects.isNull(matchingRoles) || matchingRoles.size() == 0) {
-                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Roles dont match");
+                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Roles do not match");
                 throw new ExpiryException(exceptionDetail);
            }
         } else {
