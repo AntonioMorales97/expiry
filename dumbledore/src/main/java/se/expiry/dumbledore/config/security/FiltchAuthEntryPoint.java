@@ -29,6 +29,9 @@ public class FiltchAuthEntryPoint implements AuthenticationEntryPoint {
             jsonString = "{\"status\":500,\"detail\":\"Server error\"}";
         }
 
-        httpServletResponse.sendError(status, jsonString);
+        httpServletResponse.setStatus(status);
+        httpServletResponse.getOutputStream().println(jsonString);
+        httpServletResponse.getOutputStream().flush();
+//        httpServletResponse.sendError(status, jsonString);
     }
 }
