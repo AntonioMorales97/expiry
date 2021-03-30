@@ -49,16 +49,14 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    //TODO: Improve not rly needed nei ?
     @Override
     public void addUserToStore(String storeId, String userId){
-        Optional<User> user = userRepo.findById(userId);
-        if (user.isEmpty()) {
-            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "User could not be found.");
-            throw new ExpiryException(exceptionDetail);
-        }
-        Store store = storeRepo.findById(storeId).get();
-        store.getUsers().add(user.get());
+        User user = userRepo.findById(userId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No user could be found.")));
+
+        Store store = storeRepo.findById(storeId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No store could be found.")));
+
+        store.getUsers().add(user);
+
         storeRepo.save(store);
     }
 
@@ -68,20 +66,16 @@ public class AdminServiceImpl implements AdminService {
 
         List<Role> matchingRoles = null;
 
-        if (newUser.getRoleIds() != null) {
+        if (newUser.getRoleIds() != null && newUser.getRoleIds().size() > 0) {
             matchingRoles = roleRepo.getMatchingRolesForIds(newUser.getRoleIds());
-            if (Objects.isNull(matchingRoles) || matchingRoles.size() == 0) {
-                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Roles do not match");
+            if (Objects.isNull(matchingRoles) || matchingRoles.size() != newUser.getRoleIds().size()) {
+                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Some roles could not be found.");
                 throw new ExpiryException(exceptionDetail);
            }
         } else {
-            Optional<Role> userRole = roleRepo.findByName(Roles.ROLE_USER);
-            if(userRole.isEmpty()){
-                ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Role not found match");
-                throw new ExpiryException(exceptionDetail);
-            }
+            Role userRole = roleRepo.findByName(Roles.ROLE_USER).orElseThrow(() -> new ExpiryException(new ExceptionDetail(500, "User role could not be found.")));
             matchingRoles = new ArrayList<>();
-            matchingRoles.add(userRole.get());
+            matchingRoles.add(userRole);
         }
 
         User savedUser = userRepo.save(new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), hashedPassword, matchingRoles));
@@ -95,7 +89,7 @@ public class AdminServiceImpl implements AdminService {
             }
 
             if (newUser.getStoreIds().size() != updateResult.getModifiedCount()) {
-                ExceptionDetail exceptionDetail = new ExceptionDetail(500, "Some stores could not be updated. Please contact Hagrid.");
+                ExceptionDetail exceptionDetail = new ExceptionDetail(500, "Some stores could not be updated");
                 throw new ExpiryException(exceptionDetail);
             }
         }
@@ -115,7 +109,7 @@ public class AdminServiceImpl implements AdminService {
                 products.add(generateRandomProduct());
             }
 
-            UpdateResult updateResult = storeRepo.addProductsToStore(storeName, products);
+            storeRepo.addProductsToStore(storeName, products);
 
         });
     }
@@ -123,32 +117,29 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Store addStore(String storeName) {
         List<Product> products = new ArrayList<>();
-        Optional<Store> opStore = storeRepo.findByName(storeName);
+        Optional<Store> optStore = storeRepo.findByName(storeName);
         Store store;
-        if (opStore.isEmpty()) {
+        if (optStore.isEmpty()) {
             store = new Store(storeName, products);
             storeRepo.save(store);
         } else {
-            store = opStore.get();
+            store = optStore.get();
         }
         return store;
     }
 
     @Override
     public User getUser(String id) {
-        Optional<User> user = userRepo.findById(id);
-        if (user.isEmpty()) {
-            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "User could not be found.");
-            throw new ExpiryException(exceptionDetail);
-        }
-        return user.get();
+       return userRepo.findById(id).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No user could be found.")));
     }
 
     @Override
     public User updateUser(String id, UpdateUserRequestModel updateUserReq) {
         List<Role> matchingRoles = null;
-        if (updateUserReq.getRoleIds() != null) {
+        if (updateUserReq.getRoleIds() != null && updateUserReq.getRoleIds().size() > 0) {
             matchingRoles = roleRepo.getMatchingRolesForIds(updateUserReq.getRoleIds());
+            if(matchingRoles.size() != updateUserReq.getRoleIds().size())
+                throw new ExpiryException(new ExceptionDetail(404, "Some roles could not be found."));
         }
 
         String hashedPassword = passwordEncoder.encode(updateUserReq.getPassword());
