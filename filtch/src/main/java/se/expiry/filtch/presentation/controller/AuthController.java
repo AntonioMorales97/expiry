@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import se.expiry.filtch.application.AuthenticateService;
 import se.expiry.filtch.presentation.request.UserCredentialsRequestModel;
 import se.expiry.filtch.presentation.response.UserDTO;
+import se.expiry.filtch.presentation.response.ValidateResponseModel;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -24,8 +25,10 @@ public class AuthController {
     private final AuthenticateService authenticateService;
 
     @PostMapping(VALIDATECREDENTIALS)
-    public String validateCredentials(@RequestBody @Valid UserCredentialsRequestModel userCredentials){
-        return authenticateService.authenticateCredentials(userCredentials.getEmail(), userCredentials.getPassword());
+    public ValidateResponseModel validateCredentials(@RequestBody @Valid UserCredentialsRequestModel userCredentials){
+        String token = authenticateService.authenticateCredentials(userCredentials.getEmail(), userCredentials.getPassword());
+        ValidateResponseModel response = new ValidateResponseModel(token);
+        return response;
     }
     @GetMapping(AUTHENTICATION)
     public UserDTO authorizeToken(@RequestHeader HttpHeaders headers){
