@@ -6,10 +6,10 @@ class ApiException implements Exception {
   ApiException.fromJson(Map<String, dynamic> json)
       : status = json['status'],
         detail = json['detail'],
-        errors = json['errors']
-            ? (json['errors'] as List)
-                .map((error) => ErrorDetail.fromJson(error))
-            : null;
+        errors = json['errors'] == null
+            ? null
+            : (json['errors'] as List)
+                .map((error) => ErrorDetail.fromJson(error));
 
   @override
   String toString() {

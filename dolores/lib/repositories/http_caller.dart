@@ -20,7 +20,9 @@ class HttpCaller {
       {HttpHeaders headers, Map<String, dynamic> body}) async {
     final extractedHeaders = _extractHeaders(headers);
     try {
-      _dio.post(path, data: body, options: Options(headers: extractedHeaders));
+      Response resp = await _dio.post(path,
+          data: body, options: Options(headers: extractedHeaders));
+      return resp.data;
     } on DioError catch (error) {
       _handleError(error);
     }
@@ -29,7 +31,9 @@ class HttpCaller {
   Future<dynamic> doGet(String path, {HttpHeaders headers}) async {
     final extractedHeaders = _extractHeaders(headers);
     try {
-      _dio.get(path, options: Options(headers: extractedHeaders));
+      Response resp =
+          await _dio.get(path, options: Options(headers: extractedHeaders));
+      return resp.data;
     } on DioError catch (error) {
       _handleError(error);
     }
@@ -38,7 +42,7 @@ class HttpCaller {
   Future<dynamic> doDelete(String path, {HttpHeaders headers}) async {
     final extractedHeaders = _extractHeaders(headers);
     try {
-      _dio.delete(path, options: Options(headers: extractedHeaders));
+      await _dio.delete(path, options: Options(headers: extractedHeaders));
     } on DioError catch (error) {
       _handleError(error);
     }
@@ -48,7 +52,9 @@ class HttpCaller {
       {HttpHeaders headers, Map<String, dynamic> body}) async {
     final extractedHeaders = _extractHeaders(headers);
     try {
-      _dio.put(path, data: body, options: Options(headers: extractedHeaders));
+      Response resp = await _dio.put(path,
+          data: body, options: Options(headers: extractedHeaders));
+      return resp.data;
     } on DioError catch (error) {
       _handleError(error);
     }
@@ -82,17 +88,7 @@ class HttpCaller {
       throw Exception("Something went wrong with the communication.");
     }
 
-    Map<String, dynamic> resp;
-
-    try {
-      resp = jsonDecode(error.response.data);
-    } catch (error) {
-      //TODO: Log
-      print(error);
-      throw Exception("Parsing JSON went wrong.");
-    }
-
-    throw ApiException.fromJson(resp);
+    throw ApiException.fromJson(error.response.data);
   }
 }
 
