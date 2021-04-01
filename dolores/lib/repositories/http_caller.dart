@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
+import 'package:dolores/helpers/api_exception.dart';
 
 class HttpCaller {
   static const String APPLICATION_JSON = 'application/json';
@@ -19,13 +22,36 @@ class HttpCaller {
     try {
       _dio.post(path, data: body, options: Options(headers: extractedHeaders));
     } on DioError catch (error) {
-      //TODO: Implement
-      _handleError();
+      _handleError(error);
     }
   }
 
   Future<dynamic> doGet(String path, {HttpHeaders headers}) async {
-    //TODO: Implement
+    final extractedHeaders = _extractHeaders(headers);
+    try {
+      _dio.get(path, options: Options(headers: extractedHeaders));
+    } on DioError catch (error) {
+      _handleError(error);
+    }
+  }
+
+  Future<dynamic> doDelete(String path, {HttpHeaders headers}) async {
+    final extractedHeaders = _extractHeaders(headers);
+    try {
+      _dio.delete(path, options: Options(headers: extractedHeaders));
+    } on DioError catch (error) {
+      _handleError(error);
+    }
+  }
+
+  Future<dynamic> doPut(String path,
+      {HttpHeaders headers, Map<String, dynamic> body}) async {
+    final extractedHeaders = _extractHeaders(headers);
+    try {
+      _dio.put(path, data: body, options: Options(headers: extractedHeaders));
+    } on DioError catch (error) {
+      _handleError(error);
+    }
   }
 
   Map<String, String> _extractHeaders(HttpHeaders headers) {
@@ -47,8 +73,26 @@ class HttpCaller {
     return headersMap;
   }
 
-  void _handleError() {
-    //TODO: Implement
+  void _handleError(DioError error) {
+    DioErrorType errorType = error.type;
+
+    if (errorType != DioErrorType.response) {
+      //TODO: Log
+      print(error);
+      throw Exception("Something went wrong with the communication.");
+    }
+
+    Map<String, dynamic> resp;
+
+    try {
+      resp = jsonDecode(error.response.data);
+    } catch (error) {
+      //TODO: Log
+      print(error);
+      throw Exception("Parsing JSON went wrong.");
+    }
+
+    throw ApiException.fromJson(resp);
   }
 }
 
