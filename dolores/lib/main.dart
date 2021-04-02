@@ -1,3 +1,4 @@
+import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:flutter/material.dart';
 
@@ -49,11 +50,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
   final FiltchRepository repository = FiltchRepository();
+  final DumbledoreRepository drepository = DumbledoreRepository();
 
   void _incrementCounter() async {
     print("Calling repo");
 
     await repository.authenticate("admin@admin.se", "admin");
+    print(await drepository.getStore('6066413a362bd4211dd66fa4'));
 
     final token = await repository.getToken();
 
