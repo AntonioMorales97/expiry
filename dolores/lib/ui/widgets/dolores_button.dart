@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
-class DoloresButton extends StatelessWidget {
-  const DoloresButton({
-    Key key,
-  }) : super(key: key);
+class DoloresButton extends StatefulWidget {
+  final String text;
+  final Function onPressed;
 
+  DoloresButton({@required this.text, this.onPressed});
+  @override
+  _DoloresButton createState() => _DoloresButton();
+}
+
+class _DoloresButton extends State<DoloresButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -24,8 +29,8 @@ class DoloresButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           elevation: 8.0,
         ),
-        onPressed: () {},
-        child: Text('Login'),
+        onPressed: widget.onPressed,
+        child: Text(widget.text),
       ),
     );
   }

@@ -1,5 +1,5 @@
-import 'package:dolores/ui/widgets/dolores_checkbox.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
+import 'package:dolores/ui/widgets/dolores_checkbox.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -14,7 +14,27 @@ class LoginScreen extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Hej'),
+                Text(
+                  'EXPIRY',
+                  style: TextStyle(
+                    height: 1,
+                    fontSize: 48,
+                    fontFamily: 'Redressed',
+                    color: Color.fromRGBO(203, 178, 106, 1),
+                  ),
+                ),
+                Text(
+                  'Never leave wand',
+                  style: TextStyle(
+                    height: 2,
+                    fontSize: 16,
+                    fontFamily: 'Roboto',
+                    color: Colors.black,
+                  ),
+                ),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
+                ),
                 TextFormField(
                   decoration: new InputDecoration(
                     focusedBorder: OutlineInputBorder(
@@ -32,6 +52,12 @@ class LoginScreen extends StatelessWidget {
                 ),
                 TextFormField(
                   decoration: new InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: () {
+                        print("Hide");
+                      },
+                      icon: Icon(Icons.visibility),
+                    ),
                     focusedBorder: const OutlineInputBorder(
                       borderSide: const BorderSide(
                           color: Colors.blueAccent, width: 1.0),
@@ -50,7 +76,11 @@ class LoginScreen extends StatelessWidget {
                     title: 'Kom ihåg mig',
                   ),
                 ),
-                DoloresButton(),
+                DoloresButton(
+                    text: "Login",
+                    onPressed: () {
+                      print("klickat");
+                    }),
               ],
             ),
           ),
