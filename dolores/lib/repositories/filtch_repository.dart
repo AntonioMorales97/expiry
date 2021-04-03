@@ -4,7 +4,7 @@ import 'package:localstorage/localstorage.dart';
 class FiltchRepository {
   static const String baseUrl = 'http://10.0.2.2:9092';
 
-  final LocalStorage _storage = new LocalStorage('filtch');
+  final LocalStorage _storage = LocalStorage('filtch');
 
   final HttpCaller _httpCaller = HttpCaller();
 
@@ -12,7 +12,8 @@ class FiltchRepository {
 
   String get token => _token;
 
-  Future<String> authenticate(String email, String password) async {
+  Future<String> authenticate(String email, String password,
+      {bool rememberMe = false}) async {
     final Map<String, dynamic> resp =
         await _httpCaller.doPost(baseUrl + '/validate-credentials', body: {
       'email': email,
@@ -22,8 +23,20 @@ class FiltchRepository {
     _token = resp['token'];
 
     await _saveToken(_token);
-    await _saveEmail(email);
+
+    if (rememberMe) {
+      await _saveEmail(email);
+    } else {
+      await _saveEmail(null);
+    }
+
     return _token;
+  }
+
+  Future<void> logout() async {
+    //TODO: Logout filtch
+    _token = null;
+    await _saveToken(_token);
   }
 
   Future<void> _saveToken(String token) async {
@@ -32,6 +45,8 @@ class FiltchRepository {
 
   Future<String> getToken() async {
     if (_token != null) return _token;
+
+    await _storage.ready;
 
     _token = await _storage.getItem('filtch_token');
     return _token;

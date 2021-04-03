@@ -18,7 +18,6 @@ class _DoloresButton extends State<DoloresButton> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            color: Colors.black,
             blurRadius: 6.0,
             offset: Offset(0, 6),
             spreadRadius: -3.0,

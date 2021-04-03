@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class DoloresCheckbox extends StatefulWidget {
   final String title;
-  final Function onChange;
+  final Function(bool) onChange;
   bool value;
   final double padding;
 

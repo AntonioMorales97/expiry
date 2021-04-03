@@ -5,11 +5,15 @@ class DoloresPasswordField extends StatefulWidget {
   final String hintText;
   final Function(String value) onSaved;
   final Function(String value) validator;
+  final Function(String value) onSubmitted;
+  final TextInputAction textInputAction;
   bool obscureText;
   final String errorText;
 
   DoloresPasswordField({
+    this.onSubmitted,
     this.errorText,
+    this.textInputAction,
     this.controller,
     @required this.hintText,
     this.onSaved,
@@ -25,6 +29,8 @@ class _DoloresPasswordFieldState extends State<DoloresPasswordField> {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      onFieldSubmitted: widget.onSubmitted,
+      textInputAction: widget.textInputAction,
       controller: widget.controller,
       validator: widget.validator,
       onSaved: widget.onSaved,
@@ -32,25 +38,13 @@ class _DoloresPasswordFieldState extends State<DoloresPasswordField> {
       decoration: new InputDecoration(
         errorText: widget.errorText,
         suffixIcon: IconButton(
-          color: widget.obscureText ? Colors.grey : Colors.blueAccent,
+          color: widget.obscureText ? Colors.grey : null,
           icon: Icon(Icons.visibility),
           onPressed: () {
             setState(() {
               widget.obscureText = !widget.obscureText;
             });
           },
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.blueAccent, width: 1.0),
-        ),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.black54, width: 1.0),
-        ),
-        errorBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.redAccent, width: 1.0),
-        ),
-        focusedErrorBorder: const OutlineInputBorder(
-          borderSide: const BorderSide(color: Colors.redAccent, width: 2.0),
         ),
         hintText: widget.hintText,
       ),
