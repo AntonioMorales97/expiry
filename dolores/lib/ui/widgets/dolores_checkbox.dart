@@ -34,7 +34,7 @@ class _DoloresCheckboxState extends State<DoloresCheckbox> {
         ),
         if (widget.title != null)
           SizedBox(
-            width: widget.padding != null ? widget.padding : 8.0,
+            width: widget.padding ?? 8.0,
           ),
         if (widget.title != null) Text(widget.title),
       ],

@@ -1,7 +1,9 @@
+import 'package:dolores/providers/login_provider.dart';
 import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:dolores/ui/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,7 +27,9 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: LoginScreen() //MyHomePage(title: 'Flutter Demo Home Page'),
+        home: ChangeNotifierProvider(
+            create: (context) => LoginProvider(),
+            child: LoginScreen()) //MyHomePage(title: 'Flutter Demo Home Page'),
         );
   }
 }
