@@ -74,7 +74,7 @@ public class JwtTokenUtil {
 
     private String generateToken(Map<String, Object> claims, String userId) {
         return Jwts.builder().setClaims(claims).setSubject(userId).setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
+                //.setExpiration(new Date(System.currentTimeMillis() + JWT_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, secret.getBytes()).compact();
     }
 
