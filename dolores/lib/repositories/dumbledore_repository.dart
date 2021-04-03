@@ -1,3 +1,4 @@
+import 'package:dolores/models/product.dart';
 import 'package:dolores/repositories/http_caller.dart';
 
 import 'filtch_repository.dart';
@@ -45,7 +46,7 @@ class DumbledoreRepository {
   /**
    * STORE REQUESTS BELOW
    */
-  Future<List<dynamic>> getStore(String storeId) async {
+  Future<List<Product>> getStore(String storeId) async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
@@ -53,7 +54,10 @@ class DumbledoreRepository {
     final List<dynamic> resp = await _httpCaller.doGet(
         baseUrl + storeBaseUrl + storeId + productsUrl,
         headers: httpHeaders);
-    return resp;
+    List<Product> products =
+        resp.map((prod) => Product.fromJson(prod)).toList();
+
+    return products;
   }
 
   Future<void> deleteProductInStore(String storeId, String productsId) async {

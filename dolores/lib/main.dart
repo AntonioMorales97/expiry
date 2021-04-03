@@ -1,4 +1,5 @@
 import 'package:dolores/providers/auth_provider.dart';
+import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:dolores/theme.dart';
@@ -21,12 +22,14 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   AuthProvider authProvider;
+  ProductProvider productProvider;
 
   @override
   void initState() {
     super.initState();
     authProvider = AuthProvider();
     authProvider.init();
+    productProvider = ProductProvider();
   }
 
   @override
@@ -42,6 +45,9 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider.value(
           value: authProvider,
         ),
+        ChangeNotifierProvider.value(
+          value: productProvider,
+        )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
