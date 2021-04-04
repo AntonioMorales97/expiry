@@ -36,21 +36,27 @@ class _MyAppState extends State<MyApp> {
         title: 'Flutter Demo',
         theme: DoloresTheme.lightThemeData,
         home: Consumer<AuthProvider>(
-          builder: (context, authProv, child) => authProv.isAuth
-              ? ProductsScreen()
-              : FutureBuilder(
-                  future: authProv.tryAutoLogin(),
-                  builder: (ctx, authResultSnapshot) =>
-                      authResultSnapshot.connectionState ==
-                              ConnectionState.waiting
-                          ? Scaffold(
-                              body: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            )
-                          : LoginScreen(),
-                ),
-        ),
+          builder: (
+            context,
+            authProv,
+            child,
+          ) {
+            return authProv.isAuth
+                ? ProductsScreen()
+                : FutureBuilder(
+                    future: authProv.tryAutoLogin(),
+                    builder: (context, authResultSnap) =>
+                        authResultSnap.connectionState ==
+                                ConnectionState.waiting
+                            ? Scaffold(
+                                body: Center(
+                                  child: CircularProgressIndicator(),
+                                ),
+                              )
+                            : LoginScreen(),
+                  );
+          },
+        ), //MyHomePage(title: 'Flutter Demo Home Page'),
       ),
     );
   } //MyHomePage(title: 'Flutter Demo Home Page'),
