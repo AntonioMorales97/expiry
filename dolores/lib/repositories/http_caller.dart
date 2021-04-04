@@ -7,14 +7,17 @@ class HttpCaller {
   static const String APPLICATION_JSON = 'application/json';
   static const String BEARER_PREFIX = 'Bearer ';
 
-  final Dio _dio = Dio();
+  Dio _dio;
   static final HttpCaller _httpCaller = HttpCaller._internal();
 
   factory HttpCaller() {
     return _httpCaller;
   }
 
-  HttpCaller._internal();
+  HttpCaller._internal() {
+    _dio = Dio();
+    _dio.options.connectTimeout = 10 * 1000;
+  }
 
   Future<dynamic> doPost(String path,
       {HttpHeaders headers, Map<String, dynamic> body}) async {
