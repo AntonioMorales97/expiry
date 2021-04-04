@@ -13,6 +13,7 @@ enum Status {
 
 class AuthProvider with ChangeNotifier {
   FiltchRepository filtchRepository = FiltchRepository();
+  String _token;
 
   Status _authStatus = Status.LOADING;
 
@@ -23,12 +24,12 @@ class AuthProvider with ChangeNotifier {
   ValidationItem get errorMessage => _errorMessage;
 
   bool get isAuth {
-    return filtchRepository.token != null;
+    return _token != null;
   }
 
   Future<bool> init() async {
-    String token = await filtchRepository.getToken();
-    if (token == null) {
+    _token = await filtchRepository.getToken();
+    if (_token == null) {
       return false;
     }
     notifyListeners();
@@ -41,12 +42,11 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> logout() async {
     await filtchRepository.logout();
-    _authStatus = Status.LOGGED_OUT;
+    _token = null;
     notifyListeners();
   }
 
   Future<void> login(String email, String password, {bool rememberMe}) async {
-    _authStatus = Status.LOADING;
     notifyListeners();
 
     try {
