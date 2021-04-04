@@ -21,10 +21,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AuthProvider authProvider;
-  ProductProvider productProvider;
+  //AuthProvider authProvider;
+  // ProductProvider productProvider;
 
-  @override
+  /*@override
   void initState() {
     super.initState();
     authProvider = AuthProvider();
@@ -36,24 +36,36 @@ class _MyAppState extends State<MyApp> {
   void dispose() {
     super.dispose();
     authProvider.dispose();
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: authProvider,
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
         ),
-        ChangeNotifierProvider.value(
-          value: productProvider,
+        ChangeNotifierProvider(
+          create: (_) => ProductProvider(),
         )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: DoloresTheme.lightThemeData,
         home: Consumer<AuthProvider>(builder: (context, authProv, child) {
-          switch (authProv.authStatus) {
+          return authProv.isAuth
+              ? ProductsScreen()
+              : FutureBuilder(
+                  future: authProv.init(),
+                  builder: (context, authResultSnap) =>
+                      authResultSnap.connectionState == ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(
+                              child: CircularProgressIndicator(),
+                            ))
+                          : LoginScreen(),
+                );
+          /*switch (authProv.authStatus) {
             case Status.LOADING:
               return Scaffold(
                   body: Center(
@@ -63,7 +75,7 @@ class _MyAppState extends State<MyApp> {
               return LoginScreen();
             default:
               return ProductsScreen();
-          }
+          }*/
         }), //MyHomePage(title: 'Flutter Demo Home Page'),
       ),
     );

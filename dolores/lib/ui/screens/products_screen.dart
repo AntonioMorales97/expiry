@@ -37,6 +37,7 @@ class _ProductsScreen extends State<ProductsScreen> {
               shrinkWrap: true,
               itemCount: prod.storeProducts.length,
               itemBuilder: (BuildContext context, int index) {
+                //prod.getProducts("6066413a362bd4211dd66fa4");
                 Product product = prod.storeProducts[index];
                 return Dismissible(
                     key: UniqueKey(),
@@ -50,6 +51,7 @@ class _ProductsScreen extends State<ProductsScreen> {
                               " har tagits bort")));
                     },
                     background: Container(color: Colors.red),
+                    //TODO styling :-) + wheel
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [Text(product.name), Text(product.date)]));

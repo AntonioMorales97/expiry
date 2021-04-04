@@ -22,14 +22,17 @@ class AuthProvider with ChangeNotifier {
 
   ValidationItem get errorMessage => _errorMessage;
 
-  Future<String> init() async {
+  bool get isAuth {
+    return filtchRepository.token != null;
+  }
+
+  Future<bool> init() async {
     String token = await filtchRepository.getToken();
-    if (token != null) {
-      _authStatus = Status.LOGGED_IN;
-    } else {
-      _authStatus = Status.LOGGED_OUT;
+    if (token == null) {
+      return false;
     }
-    return token;
+    notifyListeners();
+    return true;
   }
 
   Future<String> getEmail() async {
