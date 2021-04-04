@@ -21,53 +21,40 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  AuthProvider authProvider;
-  ProductProvider productProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    authProvider = AuthProvider();
-    authProvider.init();
-    productProvider = ProductProvider();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    authProvider.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(
-          value: authProvider,
+        ChangeNotifierProvider(
+          create: (_) => AuthProvider(),
         ),
-        ChangeNotifierProvider.value(
-          value: productProvider,
+        ChangeNotifierProvider(
+          create: (_) => ProductProvider(),
         )
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: DoloresTheme.lightThemeData,
-        home: Consumer<AuthProvider>(builder: (context, authProv, child) {
-          switch (authProv.authStatus) {
-            case Status.LOADING:
-              return Scaffold(
-                  body: Center(
-                child: CircularProgressIndicator(),
-              ));
-            case Status.LOGGED_OUT:
-              return LoginScreen();
-            default:
-              return ProductsScreen();
-          }
-        }), //MyHomePage(title: 'Flutter Demo Home Page'),
+        home: Consumer<AuthProvider>(
+          builder: (context, authProv, child) => authProv.isAuth
+              ? ProductsScreen()
+              : FutureBuilder(
+                  future: authProv.tryAutoLogin(),
+                  builder: (ctx, authResultSnapshot) =>
+                      authResultSnapshot.connectionState ==
+                              ConnectionState.waiting
+                          ? Scaffold(
+                              body: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            )
+                          : LoginScreen(),
+                ),
+        ),
       ),
     );
-  }
+  } //MyHomePage(title: 'Flutter Demo Home Page'),
+
 }
 
 class MyHomePage extends StatefulWidget {

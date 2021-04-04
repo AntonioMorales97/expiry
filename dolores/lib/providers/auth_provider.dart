@@ -3,33 +3,29 @@ import 'package:dolores/models/validation_item.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:flutter/material.dart';
 
-enum Status {
-  INVALID_CREDENTIALS,
-  LOADING,
-  LOGGED_IN,
-  LOGGED_OUT,
-  ERROR,
-}
-
 class AuthProvider with ChangeNotifier {
   FiltchRepository filtchRepository = FiltchRepository();
 
-  Status _authStatus = Status.LOADING;
-
-  Status get authStatus => _authStatus;
-
   ValidationItem _errorMessage = ValidationItem(null, null);
-
   ValidationItem get errorMessage => _errorMessage;
 
-  Future<String> init() async {
+  String _token;
+
+  String get token => _token;
+
+  bool get isAuth {
+    return token != null;
+  }
+
+  Future<bool> tryAutoLogin() async {
     String token = await filtchRepository.getToken();
-    if (token != null) {
-      _authStatus = Status.LOGGED_IN;
-    } else {
-      _authStatus = Status.LOGGED_OUT;
+    if (token == null) {
+      return false;
     }
-    return token;
+
+    _token = token;
+    notifyListeners();
+    return true;
   }
 
   Future<String> getEmail() async {
@@ -38,30 +34,22 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> logout() async {
     await filtchRepository.logout();
-    _authStatus = Status.LOGGED_OUT;
+    _token = null;
     notifyListeners();
   }
 
   Future<void> login(String email, String password, {bool rememberMe}) async {
-    _authStatus = Status.LOADING;
-    notifyListeners();
-
     try {
-      await filtchRepository.authenticate(email, password,
+      String token = await filtchRepository.authenticate(email, password,
           rememberMe: rememberMe);
-      _authStatus = Status.LOGGED_IN;
+      _token = token;
+      notifyListeners();
     } on ApiException catch (apiException) {
-      if (apiException.status < 500) {
-        _authStatus = Status.INVALID_CREDENTIALS;
-      } else {
-        _authStatus = Status.ERROR;
-      }
       _errorMessage = ValidationItem(null, apiException.detail);
+      notifyListeners();
     } catch (error) {
-      _authStatus = Status.ERROR;
       _errorMessage = ValidationItem(null, error.toString());
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 }
