@@ -8,10 +8,6 @@ class FiltchRepository {
 
   final HttpCaller _httpCaller = HttpCaller();
 
-  String _token;
-
-  String get token => _token;
-
   Future<String> authenticate(String email, String password,
       {bool rememberMe = false}) async {
     final Map<String, dynamic> resp =
@@ -20,9 +16,9 @@ class FiltchRepository {
       'password': password,
     });
 
-    _token = resp['token'];
+    String token = resp['token'];
 
-    await _saveToken(_token);
+    await _saveToken(token);
 
     if (rememberMe) {
       await _saveEmail(email);
@@ -30,13 +26,13 @@ class FiltchRepository {
       await _saveEmail(null);
     }
 
-    return _token;
+    return token;
   }
 
   Future<void> logout() async {
     //TODO: Logout filtch
-    _token = null;
-    await _saveToken(_token);
+
+    await _saveToken(null);
   }
 
   Future<void> _saveToken(String token) async {
@@ -44,12 +40,8 @@ class FiltchRepository {
   }
 
   Future<String> getToken() async {
-    if (_token != null) return _token;
-
     await _storage.ready;
-
-    _token = await _storage.getItem('filtch_token');
-    return _token;
+    return await _storage.getItem('filtch_token');
   }
 
   Future<void> _saveEmail(String email) async {
