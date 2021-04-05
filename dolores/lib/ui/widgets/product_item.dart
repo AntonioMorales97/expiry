@@ -18,20 +18,35 @@ class ProductItem extends StatelessWidget {
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.all(10.0),
           height: 60,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              Text(
-                name,
-                style: Theme.of(context).textTheme.headline6,
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    name,
+                    style: Theme.of(context).textTheme.headline6,
+                  ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  Text(
+                    Formatter.dateToString(date),
+                    style: Theme.of(context).textTheme.subtitle1,
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                Formatter.dateToString(date),
-                style: Theme.of(context).textTheme.subtitle1,
+              Padding(
+                padding: const EdgeInsets.only(left: 260),
+                child: IconButton(
+                  icon: Icon(
+                    Icons.settings,
+                  ),
+                  onPressed: () {
+                    //TODO onPress toggle product options.
+                  },
+                ),
               ),
             ],
           ),

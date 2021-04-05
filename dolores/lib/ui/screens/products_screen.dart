@@ -14,6 +14,7 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreen extends State<ProductsScreen> {
+  String _email;
   @override
   void initState() {
     super.initState();
@@ -22,7 +23,9 @@ class _ProductsScreen extends State<ProductsScreen> {
 
   void setProducts() async {
     final prod = Provider.of<ProductProvider>(context, listen: false);
-    await prod.getProducts("6066413a362bd4211dd66fa4");
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    _email = await auth.getEmail();
+    await prod.getProducts(_email);
   }
 
   @override
@@ -40,7 +43,7 @@ class _ProductsScreen extends State<ProductsScreen> {
       ),
       drawer: AppDrawer(),
       body: FutureBuilder(
-        future: prod.getProducts("6066413a362bd4211dd66fa4"),
+        future: prod.getProducts(_email),
         builder: (context, snap) =>
             snap.connectionState == ConnectionState.waiting
                 ? Center(

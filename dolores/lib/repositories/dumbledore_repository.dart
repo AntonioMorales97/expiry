@@ -6,8 +6,8 @@ import 'filtch_repository.dart';
 class DumbledoreRepository {
   static const String baseUrl = 'http://10.0.2.2:9091';
   static const String changePasswordUrl = '/user/change-password';
-  static const String storeBaseUrl = '/store/';
-  static const String productsUrl = "/products";
+  static const String storeBaseUrl = '/store';
+  static const String productsUrl = "/products/";
 
   final HttpCaller _httpCaller = HttpCaller();
   final FiltchRepository filtchRepository = FiltchRepository();
@@ -15,7 +15,7 @@ class DumbledoreRepository {
   String _token;
 
   Future _getToken() async {
-    this._token = await filtchRepository.getToken();
+    _token = await filtchRepository.getToken();
   }
 
   _checkToken() async {
@@ -46,13 +46,13 @@ class DumbledoreRepository {
   /**
    * STORE REQUESTS BELOW
    */
-  Future<List<Product>> getStore(String storeId) async {
+  Future<List<Product>> getStore(String email) async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
     final List<dynamic> resp = await _httpCaller.doGet(
-        baseUrl + storeBaseUrl + storeId + productsUrl,
+        baseUrl + storeBaseUrl + productsUrl + email,
         headers: httpHeaders);
     List<Product> products =
         resp.map((prod) => Product.fromJson(prod)).toList();

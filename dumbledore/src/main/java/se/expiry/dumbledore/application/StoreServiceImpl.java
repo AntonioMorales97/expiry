@@ -8,8 +8,10 @@ import se.expiry.dumbledore.common.ExceptionDetail;
 import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
+import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestModel;
 import se.expiry.dumbledore.repository.store.StoreRepository;
+import se.expiry.dumbledore.repository.user.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepo;
+    private final UserRepository userRepo;
 
     @Override
     public List<Product> getProducts(String storeId) {
@@ -49,5 +52,21 @@ public class StoreServiceImpl implements StoreService {
     @Override
     public void updateProduct(String storeId, UpdateProductRequestModel product) {
         storeRepo.updateProduct(storeId, product);
+    }
+
+    @Override
+    //TODO Ändra flödet så ID från token används istället? Alt att vi har ID i appen som vi kan skicka?
+    public List<Product> getUserStoreProducts(String email) {
+        Optional<User> optUser= userRepo.findByEmail(email);
+        if (optUser.isEmpty()) {
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "No User with the given ID could be found.");
+            throw new ExpiryException(exceptionDetail);
+        }
+        Optional<Store> optStore = optUser.get().getStores().stream().findFirst();
+        if (optStore.isEmpty()) {
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "The User with the given Email do not have any stores.");
+            throw new ExpiryException(exceptionDetail);
+        }
+        return optStore.get().getProducts();
     }
 }

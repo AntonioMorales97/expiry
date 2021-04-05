@@ -48,8 +48,16 @@ public class AdminServiceImpl implements AdminService {
     public void removeUserFromStore(String storeId, String userId) {
         //TODO: Maybe check if store exists etc...
         UpdateResult storeResult = storeRepo.removeUserFromStore(storeId, userId);
+        if(storeResult.getModifiedCount() == 0){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store with user not found.");
+            throw new ExpiryException(exceptionDetail);
+        }
         UpdateResult userResult = userRepo.removeStoreFromUser(userId, storeId);
-        //TODO: Handle error...
+        if(userResult.getModifiedCount() == 0){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store not found in user.");
+            throw new ExpiryException(exceptionDetail);
+        }
+
     }
 
     @Override
@@ -106,7 +114,6 @@ public class AdminServiceImpl implements AdminService {
 
         return savedUser;
     }
-    //TODO ADD STORE TEST DATA
     @Override
     public void createTestData(List<String> storeNames) {
 

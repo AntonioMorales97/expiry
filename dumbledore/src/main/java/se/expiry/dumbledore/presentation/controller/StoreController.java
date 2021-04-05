@@ -21,6 +21,11 @@ public class StoreController {
     public List<Product> getProducts(@PathVariable String storeId) {
         return storeService.getProducts(storeId);
     }
+    @GetMapping(PRODUCTS+"/{email}")
+    public List<Product> getProductsFromUserStore(@PathVariable String email){
+        return storeService.getUserStoreProducts(email);
+
+    }
 
     @DeleteMapping("/{storeId}" + PRODUCTS + "/{productId}")
     public void deleteProduct(@PathVariable String storeId, @PathVariable String productId) {

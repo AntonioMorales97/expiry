@@ -8,8 +8,8 @@ class ProductProvider with ChangeNotifier {
 
   List<Product> get storeProducts => _storeProducts;
 
-  Future<void> getProducts(String storeId) async {
-    _storeProducts = await dumbledoreRepository.getStore(storeId);
+  Future<void> getProducts(String email) async {
+    _storeProducts = await dumbledoreRepository.getStore(email);
     notifyListeners();
   }
 }

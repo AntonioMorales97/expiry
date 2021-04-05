@@ -19,7 +19,7 @@ public class UserController {
     @PutMapping(CHANGE_PASSWORD)
     public User createTestData(@RequestBody @Valid PasswordResetRequestModel passwordResetRequestModel) {
         return userService.changePassword(passwordResetRequestModel.getId(),
-                passwordResetRequestModel.getEmail(),passwordResetRequestModel.getPassword());
+                passwordResetRequestModel.getEmail(), passwordResetRequestModel.getPassword());
     }
 
 }
