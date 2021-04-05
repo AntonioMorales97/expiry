@@ -21,8 +21,8 @@ public class Store {
 
     private List<Product> products;
 
-    @DBRef
-    private List<User> users;
+
+    private List<String> users;
 
     public Store(String name, List<Product> products){
         this.name = name;

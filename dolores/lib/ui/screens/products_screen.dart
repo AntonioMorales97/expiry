@@ -1,9 +1,7 @@
-import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
-import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/product_item.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,7 +22,7 @@ class _ProductsScreen extends State<ProductsScreen> {
 
   void setProducts() async {
     final prod = Provider.of<ProductProvider>(context, listen: false);
-    await prod.getProducts("6060a265834e373445677877");
+    await prod.getProducts("6066413a362bd4211dd66fa4");
   }
 
   @override
@@ -42,7 +40,7 @@ class _ProductsScreen extends State<ProductsScreen> {
       ),
       drawer: AppDrawer(),
       body: FutureBuilder(
-        future: prod.getProducts("6060a265834e373445677877"),
+        future: prod.getProducts("6066413a362bd4211dd66fa4"),
         builder: (context, snap) =>
             snap.connectionState == ConnectionState.waiting
                 ? Center(

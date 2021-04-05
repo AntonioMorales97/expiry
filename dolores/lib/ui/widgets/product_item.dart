@@ -12,45 +12,34 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.only(left: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Container(
-              height: 80,
-              child: Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(
-                      name,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      Formatter.dateToString(date),
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                      ),
-                    ),
-                  ],
-                ),
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: const EdgeInsets.all(10.0),
+          height: 60,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+                style: Theme.of(context).textTheme.headline6,
               ),
-            ),
-            Divider(
-              height: 1,
-            ),
-          ],
+              const SizedBox(
+                height: 8.0,
+              ),
+              Text(
+                Formatter.dateToString(date),
+                style: Theme.of(context).textTheme.subtitle1,
+              ),
+            ],
+          ),
         ),
-      ),
+        Divider(
+          height: 1.0,
+        ),
+      ],
     );
   }
 }
