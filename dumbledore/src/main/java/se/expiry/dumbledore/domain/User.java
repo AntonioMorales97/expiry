@@ -6,6 +6,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class User {
 
     @DBRef
     private List<Role> roles;
+
     @DBRef
     private List<Store> stores;
 
@@ -38,15 +40,18 @@ public class User {
         this.roles = roles;
         this.stores = stores;
     }
+
     public User(String firstName, String lastName, String email, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.roles = roles;
-
+        this.stores = new ArrayList<>();
     }
+
     public User(){}
+
     public User(String id){
         this.id=id;
     }

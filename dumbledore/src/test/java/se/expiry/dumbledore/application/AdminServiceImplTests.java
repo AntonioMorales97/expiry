@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 import se.expiry.dumbledore.common.ExpiryException;
 import se.expiry.dumbledore.domain.Role;
+import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.repository.role.RoleRepository;
@@ -44,6 +45,9 @@ public class AdminServiceImplTests {
     @Mock
     private UpdateResult updateResult;
 
+    @Mock
+    private List<Store> mockedStores;
+
     private static final String FIRST_NAME = "John";
     private static final String LAST_NAME = "Doe";
     private static final String EMAIL = "john@email.com";
@@ -67,9 +71,8 @@ public class AdminServiceImplTests {
     public void addUserSuccessfully(){
         AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
 
-        Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
-        Mockito.when(updateResult.getMatchedCount()).thenReturn((long) NUMBER_OF_STORES);
-        Mockito.when(updateResult.getModifiedCount()).thenReturn((long) NUMBER_OF_STORES);
+        Mockito.when(storeRepository.findAllById(Mockito.anyList())).thenReturn(mockedStores);
+        Mockito.when(mockedStores.size()).thenReturn(NUMBER_OF_STORES);
         Mockito.when(roleRepository.findByName(Mockito.anyString())).thenReturn(java.util.Optional.of(new Role("ROLE_USER")));
 
         User returnedUser = adminService.addUser(addUserRequestModel);
@@ -80,34 +83,18 @@ public class AdminServiceImplTests {
 
     @Test
     @DisplayName("all stores not found")
-    public void allStoresCouldNotBeFound(){
+    public void someStoresCouldNotBeFound(){
         AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
 
-        Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
-        Mockito.when(updateResult.getMatchedCount()).thenReturn((long) 0);
+        Mockito.when(storeRepository.findAllById(Mockito.anyList())).thenReturn(mockedStores);
+        Mockito.when(mockedStores.size()).thenReturn(0);
+        Mockito.when(roleRepository.findByName(Mockito.anyString())).thenReturn(java.util.Optional.of(new Role("ROLE_USER")));
 
         ExpiryException expiryException = assertThrows(ExpiryException.class, () -> adminService.addUser(addUserRequestModel),
                 "Expected addUser() to throw ExpiryException but did not"
                 );
 
         assertTrue(expiryException.getExceptionDetail().getDetail().contains("found"));
-    }
-
-    @Test
-    @DisplayName("all stores not updated")
-    public void allStoresCouldNotBeUpdated(){
-        AddUserRequestModel addUserRequestModel = createValidAddUserRequestModel();
-
-        Mockito.when(storeRepository.addUserToStores(Mockito.eq(user), Mockito.anyList())).thenReturn(updateResult);
-        Mockito.when(updateResult.getMatchedCount()).thenReturn((long) NUMBER_OF_STORES);
-        Mockito.when(updateResult.getModifiedCount()).thenReturn((long) 0);
-        Mockito.when(roleRepository.findByName(Mockito.anyString())).thenReturn(java.util.Optional.of(new Role("ROLE_USER")));
-
-        ExpiryException expiryException = assertThrows(ExpiryException.class, () -> adminService.addUser(addUserRequestModel),
-                "Expected addUser() to throw ExpiryException but did not"
-        );
-
-        assertTrue(expiryException.getExceptionDetail().getDetail().contains("updated"));
     }
 
     private AddUserRequestModel createValidAddUserRequestModel(){

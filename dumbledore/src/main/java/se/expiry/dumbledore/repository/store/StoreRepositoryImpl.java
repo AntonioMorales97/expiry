@@ -67,7 +67,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
     }
 
    @Override
-    public UpdateResult removeStoreUser(String storeId, String userId) {
+    public UpdateResult removeUserFromStore(String storeId, String userId) {
         Query query =  new Query(Criteria.where("_id").is(storeId));
         Update update = new Update();
         update.pull("users", userId);

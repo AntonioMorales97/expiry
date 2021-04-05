@@ -17,6 +17,8 @@ public interface AdminService {
 
     User getUser(String id);
 
+    List<User> getUsers();
+
     User updateUser(String id, UpdateUserRequestModel user);
 
     Product generateRandomProduct();

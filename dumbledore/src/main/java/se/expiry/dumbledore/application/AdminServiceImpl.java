@@ -46,13 +46,15 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void removeUserFromStore(String storeId, String userId) {
-        UpdateResult updateResult = storeRepo.removeStoreUser(storeId, userId);
-        //TODO remove store from user.
-        //UpdateResult updateUserResult = userRepo.removeStoreFromUser(storeId, userId);
-        if(updateResult.getModifiedCount() == 0 ){
-            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store with user not found.");
-            throw new ExpiryException(exceptionDetail);
-        }
+        //TODO: Maybe check if store exists etc...
+        UpdateResult storeResult = storeRepo.removeUserFromStore(storeId, userId);
+        UpdateResult userResult = userRepo.removeStoreFromUser(userId, storeId);
+        //TODO: Handle error...
+    }
+
+    @Override
+    public List<User> getUsers(){
+        return userRepo.findAll();
     }
 
     @Override
@@ -70,7 +72,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    //TODO FIX FOR STORES.
     @Override
     public User addUser(AddUserRequestModel newUser) {
         String hashedPassword = passwordEncoder.encode(newUser.getPassword());
@@ -92,17 +93,15 @@ public class AdminServiceImpl implements AdminService {
         User savedUser = userRepo.save(new User(newUser.getFirstName(), newUser.getLastName(), newUser.getEmail(), hashedPassword, matchingRoles));
         if (newUser.getStoreIds() != null) {
 
-            UpdateResult updateResult = storeRepo.addUserToStores(savedUser, newUser.getStoreIds());
+            List<Store> stores = (List<Store>) storeRepo.findAllById(newUser.getStoreIds());
 
-            if (newUser.getStoreIds().size() != updateResult.getMatchedCount()) {
+            if(stores.size() != newUser.getStoreIds().size()){
                 ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Some stores could not be found.");
                 throw new ExpiryException(exceptionDetail);
             }
 
-            if (newUser.getStoreIds().size() != updateResult.getModifiedCount()) {
-                ExceptionDetail exceptionDetail = new ExceptionDetail(500, "Some stores could not be updated");
-                throw new ExpiryException(exceptionDetail);
-            }
+            savedUser.setStores(stores);
+            userRepo.save(savedUser);
         }
 
         return savedUser;
@@ -131,7 +130,7 @@ public class AdminServiceImpl implements AdminService {
         Optional<Store> optStore = storeRepo.findByName(storeName);
         Store store;
         if (optStore.isEmpty()) {
-            store = new Store(storeName, products);
+            store = new Store(storeName, products, null);
             storeRepo.save(store);
         } else {
             store = optStore.get();

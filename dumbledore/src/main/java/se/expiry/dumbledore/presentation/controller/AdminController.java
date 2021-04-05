@@ -42,7 +42,12 @@ public class AdminController {
         adminService.createTestData(storeNames);
     }
 
-    @GetMapping("/stores")
+    @GetMapping(USER)
+    public List<User> getUsers(){
+        return adminService.getUsers();
+    }
+
+    @GetMapping(STORE)
     public List<Store> getStores(){
         return adminService.getStores();
     }

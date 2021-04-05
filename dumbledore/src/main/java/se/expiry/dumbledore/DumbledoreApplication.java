@@ -81,8 +81,8 @@ public class DumbledoreApplication {
             if(stores == null || stores.isEmpty()){
                 //TODO: Add new stores
                 stores = new ArrayList<>();
-                Store gallerian = new Store("Gallerian");
-                Store nacka = new Store("Nacka");
+                Store gallerian = new Store("Gallerian", new ArrayList<>(), new ArrayList<>());
+                Store nacka = new Store("Nacka",new ArrayList<>(),new ArrayList<>());
                 stores.add(gallerian);
                 stores.add(nacka);
             }
