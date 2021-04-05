@@ -25,7 +25,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
     public UpdateResult addUserToStores(User user, List<String> storeIds) {
         Query query = new Query(Criteria.where("_id").in(storeIds));
         Update update = new Update();
-        update.push("users").value(user);
+        update.push("users").value(user.getId());
         return mongoTemplate.updateMulti(query, update, Store.class);
     }
 
@@ -70,7 +70,7 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
     public UpdateResult removeStoreUser(String storeId, String userId) {
         Query query =  new Query(Criteria.where("_id").is(storeId));
         Update update = new Update();
-        update.pull("users", new User(userId));
+        update.pull("users", userId);
         return mongoTemplate.updateFirst(query, update, Store.class);
     }
 

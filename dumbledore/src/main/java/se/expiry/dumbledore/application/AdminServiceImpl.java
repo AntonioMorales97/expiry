@@ -47,7 +47,9 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void removeUserFromStore(String storeId, String userId) {
         UpdateResult updateResult = storeRepo.removeStoreUser(storeId, userId);
-        if(updateResult.getModifiedCount() == 0){
+        //TODO remove store from user.
+        //UpdateResult updateUserResult = userRepo.removeStoreFromUser(storeId, userId);
+        if(updateResult.getModifiedCount() == 0 ){
             ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store with user not found.");
             throw new ExpiryException(exceptionDetail);
         }
@@ -56,14 +58,19 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public void addUserToStore(String storeId, String userId){
         User user = userRepo.findById(userId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No user could be found.")));
-
         Store store = storeRepo.findById(storeId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No store could be found.")));
 
-        store.getUsers().add(user);
-
-        storeRepo.save(store);
+        if(!store.getUsers().contains(user.getId())){
+            store.getUsers().add(user.getId());
+            storeRepo.save(store);
+        }
+        if(!user.getStores().contains(store)){
+            user.getStores().add(store);
+            userRepo.save(user);
+        }
     }
 
+    //TODO FIX FOR STORES.
     @Override
     public User addUser(AddUserRequestModel newUser) {
         String hashedPassword = passwordEncoder.encode(newUser.getPassword());
@@ -100,7 +107,7 @@ public class AdminServiceImpl implements AdminService {
 
         return savedUser;
     }
-
+    //TODO ADD STORE TEST DATA
     @Override
     public void createTestData(List<String> storeNames) {
 

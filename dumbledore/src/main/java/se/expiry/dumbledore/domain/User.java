@@ -27,13 +27,24 @@ public class User {
 
     @DBRef
     private List<Role> roles;
+    @DBRef
+    private List<Store> stores;
 
+    public User(String firstName, String lastName, String email, String password, List<Role> roles, List<Store> stores) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.stores = stores;
+    }
     public User(String firstName, String lastName, String email, String password, List<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
         this.roles = roles;
+
     }
     public User(){}
     public User(String id){
@@ -47,6 +58,7 @@ public class User {
         objectMap.put("lastName", this.lastName);
         objectMap.put("password", this.password);
         objectMap.put("roles", this.roles);
+        objectMap.put("stores", this.stores);
         return objectMap;
     }
 }

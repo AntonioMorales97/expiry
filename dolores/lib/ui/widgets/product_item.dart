@@ -12,19 +12,29 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(name),
-          Text(
-            Formatter.dateToString(date),
+    return Column(
+      children: [
+        Container(
+          alignment: Alignment.centerLeft,
+          margin: EdgeInsets.only(left: 10),
+          height: 60,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                name,
+              ),
+              Text(
+                Formatter.dateToString(date),
+              ),
+            ],
           ),
-          Divider(
-            height: 1.0,
-          ),
-        ],
-      ),
+        ),
+        Divider(
+          height: 1.0,
+        ),
+      ],
     );
   }
 }

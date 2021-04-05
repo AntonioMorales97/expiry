@@ -66,10 +66,10 @@ public class DumbledoreApplication {
             Optional<User> user = userRepository.findByEmail("admin@admin.se");
             if(user.isEmpty()){
                 List<Role> rolesList = new ArrayList<>();
-
+                List<Store> storeList = new ArrayList<>();
                 rolesList.add(roleRepository.findByName("ADMIN").get());
 
-                User admin = new User("admin","admin", "admin@admin.se",passwordEncoder.encode("admin"), rolesList );
+                User admin = new User("admin","admin", "admin@admin.se",passwordEncoder.encode("admin"), rolesList,storeList);
 
                 userRepository.save(admin);
             }
