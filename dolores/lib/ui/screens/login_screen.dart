@@ -53,7 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context);
     return SafeArea(
       child: Scaffold(
         body: SingleChildScrollView(
@@ -110,7 +109,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       onSubmitted: (_) {
                         doLogin();
                       },
-                      errorText: auth.errorMessage.error,
                       hintText: 'Lösenord',
                       onSaved: (value) => _password = value,
                       validator: (value) =>
@@ -127,7 +125,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     DoloresButton(
-                      text: "Login",
+                      child: Text('Logga in'),
                       onPressed: doLogin,
                     ),
                   ],

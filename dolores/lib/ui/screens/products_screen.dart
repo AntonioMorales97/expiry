@@ -1,8 +1,10 @@
+import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
+import 'package:dolores/ui/widgets/product_item.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,7 +34,11 @@ class _ProductsScreen extends State<ProductsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Products'),
+        title: Text('Produkter'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Text('Logout'),
+        onPressed: () => auth.logout(),
       ),
       drawer: AppDrawer(),
       body: FutureBuilder(
@@ -61,7 +67,7 @@ class _ProductsScreen extends State<ProductsScreen> {
                                   SnackBar(
                                       content: Text(product.name +
                                           "som går ut den: " +
-                                          product.date +
+                                          product.date.toString() +
                                           " har tagits bort")));
                             },
                             background: Container(
@@ -79,17 +85,9 @@ class _ProductsScreen extends State<ProductsScreen> {
                               ),
                             ),
                             //TODO styling :-) + wheel
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(product.name),
-                                  Text(product.date),
-                                  Divider(
-                                    height: 1.0,
-                                  ),
-                                ],
-                              ),
+                            child: ProductItem(
+                              name: product.name,
+                              date: product.date,
                             ),
                           );
                         },

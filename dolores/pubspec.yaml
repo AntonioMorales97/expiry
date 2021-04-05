@@ -18,6 +18,7 @@ dependencies:
   provider: ^5.0.0
   dio: ^4.0.0
   localstorage: ^3.0.6
+  intl: ^0.17.0
 
 
 dev_dependencies:

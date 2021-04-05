@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 class DoloresButton extends StatefulWidget {
-  final String text;
+  final Widget child;
   final Function onPressed;
 
-  DoloresButton({@required this.text, this.onPressed});
+  DoloresButton({@required this.child, this.onPressed});
   @override
   _DoloresButton createState() => _DoloresButton();
 }
@@ -29,7 +29,7 @@ class _DoloresButton extends State<DoloresButton> {
           elevation: 8.0,
         ),
         onPressed: widget.onPressed,
-        child: Text(widget.text),
+        child: widget.child,
       ),
     );
   }
