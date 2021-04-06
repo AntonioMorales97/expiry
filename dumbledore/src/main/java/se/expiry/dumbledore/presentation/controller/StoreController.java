@@ -1,9 +1,12 @@
 package se.expiry.dumbledore.presentation.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import se.expiry.dumbledore.application.StoreService;
 import se.expiry.dumbledore.domain.Product;
+import se.expiry.dumbledore.domain.Store;
+import se.expiry.dumbledore.dto.UserDTO;
 import se.expiry.dumbledore.presentation.request.product.AddProductRequestModel;
 import se.expiry.dumbledore.presentation.request.product.UpdateProductRequestModel;
 
@@ -21,24 +24,29 @@ public class StoreController {
     public List<Product> getProducts(@PathVariable String storeId) {
         return storeService.getProducts(storeId);
     }
-    @GetMapping(PRODUCTS+"/{email}")
-    public List<Product> getProductsFromUserStore(@PathVariable String email){
-        return storeService.getUserStoreProducts(email);
+    @GetMapping(PRODUCTS)
+    public List<Store> getProductsFromUserStore(){
+        UserDTO user = (UserDTO)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return storeService.getUserStoreProducts(user.getId());
 
     }
 
     @DeleteMapping("/{storeId}" + PRODUCTS + "/{productId}")
     public void deleteProduct(@PathVariable String storeId, @PathVariable String productId) {
-        storeService.deleteProduct(storeId, productId);
+        UserDTO user = (UserDTO)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        storeService.deleteProduct(storeId, productId, user.getId());
     }
 
     @PostMapping("/{storeId}" + PRODUCTS)
     public Product addProduct(@PathVariable String storeId, @RequestBody AddProductRequestModel product) {
-        return storeService.addProduct(storeId, product.getName(), product.getQrCode(), product.getDate());
+        UserDTO user = (UserDTO)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return storeService.addProduct(storeId, product.getName(), product.getQrCode(), product.getDate(), user.getId());
     }
 
     @PutMapping("/{storeId}" + PRODUCTS + "/{productId}")
     public void updateProduct(@PathVariable String storeId, @RequestBody UpdateProductRequestModel product) {
-       storeService.updateProduct(storeId, product);
+        UserDTO user = (UserDTO)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+       storeService.updateProduct(storeId, product,user.getId());
     }
 }

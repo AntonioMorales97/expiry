@@ -34,12 +34,14 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void deleteProduct(String storeId, String productId) {
+    public void deleteProduct(String storeId, String productId, String userId) {
+        checkIfUserOwnsStore(userId, storeId);
         storeRepo.deleteProductFromStore(storeId, productId);
     }
-
     @Override
-    public Product addProduct(String storeId, String name, String qrCode, String date) {
+    public Product addProduct(String storeId, String name, String qrCode, String date, String userId) {
+
+        checkIfUserOwnsStore(userId, storeId);
         Product product = new Product(name, qrCode, date);
         UpdateResult res = storeRepo.addProductToStore(storeId, product);
         if (res.getMatchedCount() == 0) {
@@ -50,23 +52,44 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void updateProduct(String storeId, UpdateProductRequestModel product) {
+    public void updateProduct(String storeId, UpdateProductRequestModel product, String userId) {
+        checkIfUserOwnsStore(userId, storeId);
+
         storeRepo.updateProduct(storeId, product);
     }
 
     @Override
-    //TODO Ändra flödet så ID från token används istället? Alt att vi har ID i appen som vi kan skicka?
-    public List<Product> getUserStoreProducts(String email) {
-        Optional<User> optUser= userRepo.findByEmail(email);
+
+    public List<Store> getUserStoreProducts(String userId) {
+        Optional<User> optUser= userRepo.findById(userId);
         if (optUser.isEmpty()) {
             ExceptionDetail exceptionDetail = new ExceptionDetail(404, "No User with the given ID could be found.");
             throw new ExpiryException(exceptionDetail);
         }
-        Optional<Store> optStore = optUser.get().getStores().stream().findFirst();
+        List<Store> optStore = optUser.get().getStores();
         if (optStore.isEmpty()) {
             ExceptionDetail exceptionDetail = new ExceptionDetail(404, "The User with the given Email do not have any stores.");
             throw new ExpiryException(exceptionDetail);
         }
-        return optStore.get().getProducts();
+
+        return optUser.get().getStores();
+    }
+
+
+    /**
+     * Helper function checks if user is allowed to modify store.
+     * @param userId User
+     * @param storeId The store to modify.
+     */
+    private void checkIfUserOwnsStore(String userId, String storeId){
+        Optional<User> user = userRepo.findById(userId);
+        if(user.isEmpty()){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "No user with the given ID could be found.");
+            throw new ExpiryException(exceptionDetail);
+        }
+        if(!user.get().getStores().stream().anyMatch(store -> store.getId().equals(storeId))){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(405, "User is not allowed to access store.");
+            throw new ExpiryException(exceptionDetail);
+        }
     }
 }
