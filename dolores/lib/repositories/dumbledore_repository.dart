@@ -85,13 +85,13 @@ class DumbledoreRepository {
     return response;
   }
 
-  Future<void> updateProductInStore(String storeId, String productId,
+  Future<Store> updateProductInStore(String storeId, String productId,
       String name, String qrCode, String date) async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
-    await _httpCaller.doPut(
+    final Map<String, dynamic> resp = await _httpCaller.doPut(
         baseUrl + storeBaseUrl + '/' + storeId + productsUrl,
         headers: httpHeaders,
         body: {
@@ -100,5 +100,8 @@ class DumbledoreRepository {
           'qrCode': qrCode,
           'date': date,
         });
+    Store stores = Store.fromJson(resp);
+
+    return stores;
   }
 }

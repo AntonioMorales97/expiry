@@ -61,8 +61,10 @@ class _ProductsScreen extends State<ProductsScreen> {
                   ],
                 ),
                 floatingActionButton: FloatingActionButton(
-                  child: Text('Logout'),
-                  onPressed: () => auth.logout(),
+                  child: Icon(Icons.add),
+                  onPressed: () => auth.logout(), //addProduct(); ,
+                  //Text('Logout'),
+                  //onPressed: () => auth.logout(),
                 ),
                 drawer: AppDrawer(),
                 body: Consumer<ProductProvider>(

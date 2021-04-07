@@ -36,8 +36,10 @@ class ProductProvider with ChangeNotifier {
 
   void modifyProduct(String productId, String newQrCode, String newName,
       String newDate) async {
-    await dumbledoreRepository.updateProductInStore(
-        _currentStore.storeId, productId, newName, newQrCode, newDate);
+    String storeId = _currentStore.storeId;
+    _currentStore = await dumbledoreRepository.updateProductInStore(
+        storeId, productId, newName, newQrCode, newDate);
+    _storeProducts = _currentStore.products;
     notifyListeners();
   }
 }
