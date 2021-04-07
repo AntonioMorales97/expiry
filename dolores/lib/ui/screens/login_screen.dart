@@ -3,7 +3,6 @@ import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/dolores_checkbox.dart';
 import 'package:dolores/ui/widgets/dolores_password_field.dart';
-import 'package:dolores/ui/widgets/dolores_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -86,10 +85,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 0, 100),
                     ),
-                    DoloresTextField(
+                    TextFormField(
                       textInputAction: TextInputAction.next,
-                      textEditingController: _emailEditingController,
-                      hintText: 'E-postadress',
+                      controller: _emailEditingController,
+                      decoration: new InputDecoration(
+                        hintText: 'E-postadress',
+                      ),
                       onSaved: (value) => _email = value,
                       validator: (value) {
                         if (value.isEmpty) {

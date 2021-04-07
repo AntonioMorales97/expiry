@@ -23,6 +23,7 @@ class ProductProvider with ChangeNotifier {
   Future<void> getStores() async {
     _stores = await dumbledoreRepository.getStore();
     _storeProducts = _stores[0].products;
+
     _currentStore = _stores[0];
     notifyListeners();
   }
@@ -31,5 +32,12 @@ class ProductProvider with ChangeNotifier {
     //TRY CATCH??
     await dumbledoreRepository.deleteProductInStore(storeId, productId);
     _storeProducts.removeWhere((product) => product.productId == productId);
+  }
+
+  void modifyProduct(String productId, String newQrCode, String newName,
+      String newDate) async {
+    await dumbledoreRepository.updateProductInStore(
+        _currentStore.storeId, productId, newName, newQrCode, newDate);
+    notifyListeners();
   }
 }

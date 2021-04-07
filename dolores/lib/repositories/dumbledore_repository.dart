@@ -85,16 +85,17 @@ class DumbledoreRepository {
     return response;
   }
 
-  Future<void> updateProductInStore(String storeId, String productsId,
+  Future<void> updateProductInStore(String storeId, String productId,
       String name, String qrCode, String date) async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
     await _httpCaller.doPut(
-        baseUrl + storeBaseUrl + storeId + productsUrl + '/' + productsId,
+        baseUrl + storeBaseUrl + '/' + storeId + productsUrl,
         headers: httpHeaders,
         body: {
+          'productId': productId,
           'name': name,
           'qrCode': qrCode,
           'date': date,

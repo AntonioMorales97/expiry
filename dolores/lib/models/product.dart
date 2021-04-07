@@ -1,4 +1,4 @@
-import 'package:intl/intl.dart';
+import 'package:dolores/helpers/formatter.dart';
 
 class Product {
   final String productId;
@@ -13,7 +13,7 @@ class Product {
       productId: json['productId'],
       name: json['name'],
       qrCode: json['qrCode'],
-      date: DateFormat('yyyy/M/d').parse(json['date']),
+      date: Formatter.stringToDate(json['date']),
     );
   }
 }

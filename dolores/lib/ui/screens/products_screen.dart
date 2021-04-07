@@ -106,10 +106,7 @@ class _ProductsScreen extends State<ProductsScreen> {
                                 ),
                               ),
                               //TODO styling :-) + wheel
-                              child: ProductItem(
-                                name: product.name,
-                                date: product.date,
-                              ),
+                              child: ProductItem(product: product),
                             );
                           },
                         ),
