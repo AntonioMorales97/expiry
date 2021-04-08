@@ -50,8 +50,11 @@ class ProductItem extends StatelessWidget {
                     String barcodeScanRes =
                         await FlutterBarcodeScanner.scanBarcode(
                             "#FF0000", "Avbryt", true, ScanMode.DEFAULT);
+                    if (barcodeScanRes == '-1') {
+                      barcodeScanRes = product.qrCode;
+                    }
                     prod.modifyProduct(product.productId, barcodeScanRes,
-                        product.name, product.productId);
+                        product.name, Formatter.dateToString(product.date));
                     print(barcodeScanRes);
                   },
                 ),
