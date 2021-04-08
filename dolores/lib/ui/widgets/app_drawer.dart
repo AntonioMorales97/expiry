@@ -1,4 +1,6 @@
+import 'package:dolores/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
   void _changeScreenTo(BuildContext context, String routeName) {
@@ -7,6 +9,7 @@ class AppDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -30,7 +33,7 @@ class AppDrawer extends StatelessWidget {
           _DrawerListItem(
             icon: Icons.logout,
             title: 'Logout',
-            nav: () => {},
+            nav: () => {auth.logout()},
           ),
         ],
       ),

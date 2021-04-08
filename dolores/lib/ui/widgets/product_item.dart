@@ -2,6 +2,7 @@ import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
@@ -40,19 +41,32 @@ class ProductItem extends StatelessWidget {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.only(left: 260),
+                padding: const EdgeInsets.only(left: 200, right: 10),
                 child: IconButton(
                   icon: Icon(
-                    Icons.settings,
+                    Icons.camera,
                   ),
-                  onPressed: () {
-                    showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return ProductScreenDialog(product: product);
-                        });
+                  onPressed: () async {
+                    String barcodeScanRes =
+                        await FlutterBarcodeScanner.scanBarcode(
+                            "#FF0000", "Avbryt", true, ScanMode.DEFAULT);
+                    prod.modifyProduct(product.productId, barcodeScanRes,
+                        product.name, product.productId);
+                    print(barcodeScanRes);
                   },
                 ),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.settings,
+                ),
+                onPressed: () {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return ProductScreenDialog(product: product);
+                      });
+                },
               ),
             ],
           ),

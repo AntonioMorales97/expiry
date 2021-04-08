@@ -1,5 +1,6 @@
+import 'dart:math';
+
 import 'package:dolores/models/product.dart';
-import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
@@ -9,16 +10,24 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'add_product_screen.dart';
+
 class ProductsScreen extends StatefulWidget {
   @override
   _ProductsScreen createState() => _ProductsScreen();
 }
 
-class _ProductsScreen extends State<ProductsScreen> {
+class _ProductsScreen extends State<ProductsScreen>
+    with TickerProviderStateMixin {
+  AnimationController _controller;
   @override
   void initState() {
     super.initState();
     setProducts();
+    _controller = new AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
   }
 
   void setProducts() async {
@@ -29,7 +38,6 @@ class _ProductsScreen extends State<ProductsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
     final prod = Provider.of<ProductProvider>(context, listen: false);
 
     return FutureBuilder(
@@ -61,10 +69,29 @@ class _ProductsScreen extends State<ProductsScreen> {
                   ],
                 ),
                 floatingActionButton: FloatingActionButton(
-                  child: Icon(Icons.add),
-                  onPressed: () => auth.logout(), //addProduct(); ,
-                  //Text('Logout'),
-                  //onPressed: () => auth.logout(),
+                  heroTag: null,
+                  child: new AnimatedBuilder(
+                    animation: _controller,
+                    builder: (BuildContext context, Widget child) {
+                      return new Transform(
+                        transform:
+                            new Matrix4.rotationZ(_controller.value * 0.5 * pi),
+                        alignment: FractionalOffset.center,
+                        child: new Icon(Icons.add),
+                      );
+                    },
+                  ),
+                  onPressed: () {
+                    if (_controller.isDismissed) {
+                      _controller.forward();
+                    } else {
+                      _controller.reverse();
+                    }
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => AddProductScreen()));
+                  },
                 ),
                 drawer: AppDrawer(),
                 body: Consumer<ProductProvider>(

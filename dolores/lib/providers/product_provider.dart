@@ -36,10 +36,13 @@ class ProductProvider with ChangeNotifier {
 
   void modifyProduct(String productId, String newQrCode, String newName,
       String newDate) async {
-    String storeId = _currentStore.storeId;
+    String prevStoreId = _currentStore.storeId;
     _currentStore = await dumbledoreRepository.updateProductInStore(
-        storeId, productId, newName, newQrCode, newDate);
+        prevStoreId, productId, newName, newQrCode, newDate);
     _storeProducts = _currentStore.products;
+
+    int index = _stores.indexWhere((store) => store.storeId == prevStoreId);
+    _stores[index] = _currentStore;
     notifyListeners();
   }
 }

@@ -19,6 +19,7 @@ dependencies:
   dio: ^4.0.0
   localstorage: ^3.0.6
   intl: ^0.17.0
+  flutter_barcode_scanner: ^1.0.2
 
 
 dev_dependencies:
