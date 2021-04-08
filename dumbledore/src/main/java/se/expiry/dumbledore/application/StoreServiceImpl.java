@@ -52,10 +52,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-    public void updateProduct(String storeId, UpdateProductRequestModel product, String userId) {
+    public Store updateProduct(String storeId, UpdateProductRequestModel product, String userId) {
         checkIfUserOwnsStore(userId, storeId);
 
-        storeRepo.updateProduct(storeId, product);
+        Store store = storeRepo.updateProduct(storeId, product);
+        if(store == null){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store could not be updated");
+            throw new ExpiryException(exceptionDetail);
+        }
+        return store;
     }
 
     @Override

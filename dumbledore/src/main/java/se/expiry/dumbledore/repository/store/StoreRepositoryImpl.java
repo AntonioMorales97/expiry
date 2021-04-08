@@ -1,6 +1,7 @@
 package se.expiry.dumbledore.repository.store;
 
 import com.mongodb.client.result.UpdateResult;
+import org.springframework.data.mongodb.core.FindAndModifyOptions;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -63,7 +64,8 @@ public class StoreRepositoryImpl implements StoreRepositoryCustom {
         update.set("products.$[id].qrCode", product.getQrCode());
         update.set("products.$[id].date", product.getDate());
         update.filterArray(Criteria.where("id.productId").is(product.getProductId()));
-        return mongoTemplate.findAndModify(query, update, Store.class);
+        FindAndModifyOptions options = new FindAndModifyOptions().returnNew(true);
+        return mongoTemplate.findAndModify(query, update,options, Store.class);
     }
 
    @Override

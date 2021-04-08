@@ -45,8 +45,8 @@ public class StoreController {
     }
 
     @PutMapping("/{storeId}" + PRODUCTS)
-    public void updateProduct(@PathVariable String storeId, @RequestBody UpdateProductRequestModel product) {
+    public Store updateProduct(@PathVariable String storeId, @RequestBody UpdateProductRequestModel product) {
         UserDTO user = (UserDTO)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-       storeService.updateProduct(storeId, product,user.getId());
+       return storeService.updateProduct(storeId, product,user.getId());
     }
 }

@@ -10,7 +10,7 @@ public interface StoreService {
     List<Product> getProducts(String storeId);
      void deleteProduct(String storeId, String productId, String userId);
      Product addProduct(String storeId, String name, String qrCode, String date, String userId);
-     void updateProduct(String storeId, UpdateProductRequestModel product, String userId);
+     Store updateProduct(String storeId, UpdateProductRequestModel product, String userId);
 
     List<Store> getUserStoreProducts(String userId);
 
