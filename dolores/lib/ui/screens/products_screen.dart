@@ -51,21 +51,17 @@ class _ProductsScreen extends State<ProductsScreen>
                 appBar: AppBar(
                   title: Text('Produkter'),
                   actions: [
-                    Row(
-                      children: [
-                        DropdownButton(
-                          hint: Text(prod.currentStore.name),
-                          onChanged: (value) {
-                            prod.setProduct(value);
-                          },
-                          items: prod.store
-                              .map((store) => DropdownMenuItem(
-                                  child: Text(store.name),
-                                  value: store.storeId))
-                              .toList(),
-                        ),
-                      ],
-                    )
+                    DropdownButton(
+                      underline: Container(),
+                      hint: Text(prod.currentStore.name),
+                      onChanged: (value) {
+                        prod.setProduct(value);
+                      },
+                      items: prod.store
+                          .map((store) => DropdownMenuItem(
+                              child: Text(store.name), value: store.storeId))
+                          .toList(),
+                    ),
                   ],
                 ),
                 floatingActionButton: FloatingActionButton(
