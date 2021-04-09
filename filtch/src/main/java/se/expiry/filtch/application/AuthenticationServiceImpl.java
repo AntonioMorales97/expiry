@@ -7,12 +7,10 @@ import org.springframework.stereotype.Service;
 import se.expiry.filtch.common.ExceptionDetail;
 import se.expiry.filtch.common.ExpiryException;
 import se.expiry.filtch.domain.User;
+import se.expiry.filtch.presentation.response.AuthenticationResponseModel;
 import se.expiry.filtch.presentation.response.UserDTO;
 import se.expiry.filtch.repository.UserRepository;
 import se.expiry.filtch.util.JwtTokenUtil;
-
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,19 +21,16 @@ public class AuthenticationServiceImpl implements AuthenticateService{
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
 
+    public AuthenticationResponseModel authenticate(String email, String password){
+       User user = userRepository.findByEmail(email).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "User does not exists")));
 
-    public String authenticateCredentials(String email, String password){
-        Optional<User> user = userRepository.findByEmail(email);
-        if(user.isEmpty()){
-            throw new ExpiryException(new ExceptionDetail(404, "Customer not found"));
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw new ExpiryException(new ExceptionDetail(403, "Invalid credentials"));
         }
-        if( passwordEncoder.matches(password, user.get().getPassword())){
-            String token = jwtTokenUtil.createToken(user.get());
-            return token;
-        }
-        else{
-            throw new ExpiryException(new ExceptionDetail(403, "Password don't match."));
-        }
+
+       String token = jwtTokenUtil.createToken(user);
+
+        return new AuthenticationResponseModel(user.getEmail(), user.getFirstName(), user.getLastName(), token);
     }
 
     @Override
@@ -43,12 +38,9 @@ public class AuthenticationServiceImpl implements AuthenticateService{
         Claims claims = jwtTokenUtil.extractAllTokenClaims(token);
         String id = claims.getSubject();
         String email = (String) claims.get("Email");
-        Optional<User> user = userRepository.findById(id);
-        if(user.isEmpty()   ){
-           throw new ExpiryException(new ExceptionDetail(404, "Customer not found"));
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "User does not exists")));
 
-        UserDTO userDTO = new UserDTO(id, email, user.get().getRoles());
+        UserDTO userDTO = new UserDTO(id, email, user.getRoles());
 
         return userDTO;
     }
