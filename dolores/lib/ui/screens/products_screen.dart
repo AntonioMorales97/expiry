@@ -109,12 +109,6 @@ class _ProductsScreen extends State<ProductsScreen>
                           });
                     },
                   );
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => AddProductScreen(),
-                  //   ),
-                  // );
                 },
               ),
               drawer: AppDrawer(),

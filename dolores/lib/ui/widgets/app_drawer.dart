@@ -1,4 +1,5 @@
 import 'package:dolores/providers/auth_provider.dart';
+import 'package:dolores/ui/screens/account_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +29,12 @@ class AppDrawer extends StatelessWidget {
           _DrawerListItem(
             icon: Icons.account_circle_sharp,
             title: 'Account',
-            nav: () => {},
+            nav: () => {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AccountScreen()),
+              ),
+            },
           ),
           _DrawerListItem(
             icon: Icons.logout,

@@ -28,6 +28,8 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  //TODO sorting
+  void sortProducts() {}
   void removeProduct(String productId, String storeId) async {
     //TRY CATCH??
     await dumbledoreRepository.deleteProductInStore(storeId, productId);
