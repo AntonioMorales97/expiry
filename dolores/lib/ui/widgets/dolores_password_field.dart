@@ -46,7 +46,7 @@ class _DoloresPasswordFieldState extends State<DoloresPasswordField> {
             });
           },
         ),
-        hintText: widget.hintText,
+        labelText: widget.hintText,
       ),
     );
   }

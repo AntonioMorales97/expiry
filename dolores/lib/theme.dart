@@ -32,9 +32,11 @@ class DoloresTheme {
       inputDecorationTheme: InputDecorationTheme(
         focusColor: colorScheme.primary,
         focusedBorder: OutlineInputBorder(
+          borderRadius: new BorderRadius.circular(25.0),
           borderSide: BorderSide(color: colorScheme.primary, width: 1.0),
         ),
         enabledBorder: OutlineInputBorder(
+          borderRadius: new BorderRadius.circular(25.0),
           borderSide: BorderSide(color: colorScheme.onSurface, width: 1.0),
         ),
         errorBorder: OutlineInputBorder(

@@ -64,7 +64,6 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
-
     public List<Store> getUserStoreProducts(String userId) {
         Optional<User> optUser= userRepo.findById(userId);
         if (optUser.isEmpty()) {

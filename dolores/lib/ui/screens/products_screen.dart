@@ -101,7 +101,7 @@ class _ProductsScreen extends State<ProductsScreen>
                           qrCodeHintText: 'Skriv in eller scanna QR kod',
                           productNameHintText: 'Skriv in produktnamn',
                           dateHintText: 'Välj utgångsdatum',
-                          submitButtonText: 'Lägg till',
+                          submitButtonText: 'LÄGG TILL',
                           onSubmit: (newQrCode, newName, newDate) {
                             //TODO: Add item
                             prod.addProduct(newQrCode, newName, newDate);

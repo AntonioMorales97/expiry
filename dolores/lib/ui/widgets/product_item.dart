@@ -73,7 +73,7 @@ class ProductItem extends StatelessWidget {
                         initProductName: product.name,
                         initDate: product.date,
                         title: 'Ändra produkt',
-                        submitButtonText: 'Ändra',
+                        submitButtonText: 'ÄNDRA',
                         onSubmit: (newQrCode, newName, newDate) {
                           prod.modifyProduct(
                               product.productId, newQrCode, newName, newDate);

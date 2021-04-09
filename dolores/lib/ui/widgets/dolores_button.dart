@@ -18,15 +18,18 @@ class _DoloresButton extends State<DoloresButton> {
       decoration: BoxDecoration(
         boxShadow: [
           BoxShadow(
-            blurRadius: 6.0,
+            blurRadius: 4.0,
             offset: Offset(0, 6),
-            spreadRadius: -3.0,
+            spreadRadius: -8.0,
           ),
         ],
       ),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           elevation: 8.0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
         ),
         onPressed: widget.onPressed,
         child: widget.child,

@@ -1,3 +1,4 @@
+import 'package:dolores/models/user.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
@@ -12,12 +13,21 @@ class AccountScreen extends StatefulWidget {
   _AccountScreen createState() => _AccountScreen();
 }
 
-class _AccountScreen extends State<AccountScreen>
-    with TickerProviderStateMixin {
-  AnimationController _controller;
+class _AccountScreen extends State<AccountScreen> {
+  User _user;
+
   @override
   void initState() {
     super.initState();
+    setUserData();
+  }
+
+  setUserData() async {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+
+    setState(() async {
+      this._user = await auth.getUser();
+    });
   }
 
   @override
@@ -31,65 +41,103 @@ class _AccountScreen extends State<AccountScreen>
         actions: [],
       ),
       drawer: AppDrawer(),
-      body: Form(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              TextFormField(
-                textInputAction: TextInputAction.next,
-                decoration: new InputDecoration(
-                  hintText: 'Förnamn',
-                ),
-                onSaved: (value) => value,
+      body: SingleChildScrollView(
+        padding: EdgeInsets.only(top: 40, left: 5, right: 5),
+        child: _user == null
+            ? Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ],
+              )
+            : Column(
+                children: [
+                  Icon(Icons.account_circle_rounded,
+                      size: 150,
+                      color: Theme.of(context).colorScheme.secondary),
+                  Form(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        children: [
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            initialValue: _user.firstName,
+                            decoration: new InputDecoration(
+                              labelText: 'Förnamn',
+                            ),
+                            onSaved: (value) => value,
+                          ),
+                          const SizedBox(
+                            height: 8.0,
+                          ),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            initialValue: _user.lastName,
+                            decoration: new InputDecoration(
+                              labelText: 'Efternamn',
+                            ),
+                            onSaved: (value) => value,
+                          ),
+                          const SizedBox(
+                            height: 8.0,
+                          ),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            initialValue: _user.email,
+                            decoration: new InputDecoration(
+                              labelText: 'E-postadress',
+                            ),
+                            onSaved: (value) => value,
+                          ),
+                          SizedBox(
+                            height: 8.0,
+                          ),
+                          DoloresPasswordField(
+                            textInputAction: TextInputAction.done,
+                            onSubmitted: (_) {
+                              // doLogin();
+                            },
+                            hintText: 'Lösenord',
+                            onSaved: (value) => value,
+                            validator: (value) =>
+                                value.isEmpty ? 'Ange lösenord' : null,
+                          ),
+                          SizedBox(
+                            height: 8.0,
+                          ),
+                          DoloresPasswordField(
+                            textInputAction: TextInputAction.done,
+                            onSubmitted: (_) {
+                              //doLogin();
+                            },
+                            hintText: 'Skriv lösenord igen',
+                            onSaved: (value) => value,
+                            validator: (value) =>
+                                value.isEmpty ? 'Ange lösenord' : null,
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          DoloresButton(
+                            child: Text(
+                              'SPARA',
+                              style: TextStyle(letterSpacing: 2),
+                            ),
+                            onPressed: () {},
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(
-                height: 8.0,
-              ),
-              TextFormField(
-                textInputAction: TextInputAction.next,
-                decoration: new InputDecoration(
-                  hintText: 'Efternamn',
-                ),
-                onSaved: (value) => value,
-              ),
-              const SizedBox(
-                height: 8.0,
-              ),
-              TextFormField(
-                textInputAction: TextInputAction.next,
-                decoration: new InputDecoration(
-                  hintText: 'E-postadress',
-                ),
-                onSaved: (value) => value,
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              DoloresPasswordField(
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) {
-                  // doLogin();
-                },
-                hintText: 'Lösenord',
-                onSaved: (value) => value,
-                validator: (value) => value.isEmpty ? 'Ange lösenord' : null,
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              DoloresPasswordField(
-                textInputAction: TextInputAction.done,
-                onSubmitted: (_) {
-                  //doLogin();
-                },
-                hintText: 'Skriv lösenord igen',
-                onSaved: (value) => value,
-                validator: (value) => value.isEmpty ? 'Ange lösenord' : null,
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

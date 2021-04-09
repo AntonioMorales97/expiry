@@ -101,7 +101,7 @@ class _ProductDialogState extends State<ProductDialog> {
                           child: TextFormField(
                             initialValue: widget.initQrCode,
                             decoration: InputDecoration(
-                              hintText: widget.qrCodeHintText ?? '',
+                              labelText: widget.qrCodeHintText ?? '',
                             ),
                             onSaved: (value) => _newQrCode = value,
                           ),
@@ -113,7 +113,7 @@ class _ProductDialogState extends State<ProductDialog> {
                       initialValue: widget.initProductName,
                       onSaved: (value) => _newName = value,
                       decoration: new InputDecoration(
-                        hintText: widget.productNameHintText ?? '',
+                        labelText: widget.productNameHintText ?? '',
                         icon: Icon(
                           Icons.label,
                           color: Theme.of(context).iconTheme.color,
@@ -126,7 +126,7 @@ class _ProductDialogState extends State<ProductDialog> {
                         controller: _dateEditingController,
                         onTap: () => _showDatePicker(),
                         decoration: new InputDecoration(
-                          hintText: widget.dateHintText ?? '',
+                          labelText: widget.dateHintText ?? '',
                           icon: Icon(Icons.date_range,
                               color: Theme.of(context).iconTheme.color),
                         )),
@@ -154,7 +154,8 @@ class _ProductDialogState extends State<ProductDialog> {
                     child: Text(
                       widget.submitButtonText ?? '',
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary),
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          letterSpacing: 2),
                       textAlign: TextAlign.center,
                     ),
                   ),

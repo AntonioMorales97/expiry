@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void setEmail() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    _emailEditingController.text = await auth.getEmail();
+    _emailEditingController.text = (await auth.getUser()).email;
     if (_emailEditingController.text != null &&
         _emailEditingController.text.isNotEmpty) {
       setState(() {

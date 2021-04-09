@@ -1,4 +1,5 @@
 import 'package:dolores/helpers/api_exception.dart';
+import 'package:dolores/models/user.dart';
 import 'package:dolores/models/validation_item.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,7 @@ class AuthProvider with ChangeNotifier {
   ValidationItem get errorMessage => _errorMessage;
 
   String _token;
+  User _user;
 
   String get token => _token;
 
@@ -18,22 +20,19 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<bool> tryAutoLogin() async {
+    User user = await filtchRepository.getUser();
     String token = await filtchRepository.getToken();
     if (token == null) {
       return false;
     }
-
+    _user = user;
     _token = token;
     notifyListeners();
     return true;
   }
 
-  Future<String> getEmail() async {
-    return await filtchRepository.getEmail();
-  }
-
   Future<void> logout() async {
-    await filtchRepository.logout();
+    await filtchRepository.logout(_user.rememberMe);
     _token = null;
     notifyListeners();
   }
@@ -51,5 +50,12 @@ class AuthProvider with ChangeNotifier {
       _errorMessage = ValidationItem(null, error.toString());
       notifyListeners();
     }
+  }
+
+  Future<User> getUser() async {
+    if (_user != null) {
+      return _user;
+    }
+    return await filtchRepository.getUser();
   }
 }
