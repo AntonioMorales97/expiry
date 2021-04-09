@@ -104,6 +104,7 @@ class _ProductsScreen extends State<ProductsScreen>
                           submitButtonText: 'Lägg till',
                           onSubmit: (newQrCode, newName, newDate) {
                             //TODO: Add item
+                            prod.addProduct(newQrCode, newName, newDate);
                             print(newQrCode + " " + newName + " " + newDate);
                           });
                     },
@@ -158,7 +159,6 @@ class _ProductsScreen extends State<ProductsScreen>
                                 vertical: 4,
                               ),
                             ),
-                            //TODO styling :-) + wheel
                             child: ProductItem(product: product),
                           );
                         },

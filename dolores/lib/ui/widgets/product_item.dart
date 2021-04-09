@@ -21,44 +21,43 @@ class ProductItem extends StatelessWidget {
         Container(
           alignment: Alignment.centerLeft,
           margin: const EdgeInsets.all(10.0),
-          height: 60,
+          constraints: BoxConstraints(minHeight: 60),
           child: Row(
             children: [
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    product.name,
-                    style: Theme.of(context).textTheme.headline6,
-                  ),
-                  const SizedBox(
-                    height: 8.0,
-                  ),
-                  Text(
-                    Formatter.dateToString(product.date),
-                    style: Theme.of(context).textTheme.subtitle1,
-                  ),
-                ],
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 200, right: 10),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.camera,
-                  ),
-                  onPressed: () async {
-                    String barcodeScanRes =
-                        await FlutterBarcodeScanner.scanBarcode(
-                            "#FF0000", "Avbryt", true, ScanMode.DEFAULT);
-                    if (barcodeScanRes == '-1') {
-                      barcodeScanRes = product.qrCode;
-                    }
-                    prod.modifyProduct(product.productId, barcodeScanRes,
-                        product.name, Formatter.dateToString(product.date));
-                    print(barcodeScanRes);
-                  },
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      product.name,
+                      style: Theme.of(context).textTheme.headline6,
+                    ),
+                    const SizedBox(
+                      height: 8.0,
+                    ),
+                    Text(
+                      Formatter.dateToString(product.date),
+                      style: Theme.of(context).textTheme.subtitle1,
+                    ),
+                  ],
                 ),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.camera,
+                ),
+                onPressed: () async {
+                  String barcodeScanRes =
+                      await FlutterBarcodeScanner.scanBarcode(
+                          "#FF0000", "Avbryt", true, ScanMode.DEFAULT);
+                  if (barcodeScanRes == '-1') {
+                    barcodeScanRes = product.qrCode;
+                  }
+                  prod.modifyProduct(product.productId, barcodeScanRes,
+                      product.name, Formatter.dateToString(product.date));
+                  print(barcodeScanRes);
+                },
               ),
               IconButton(
                 icon: Icon(

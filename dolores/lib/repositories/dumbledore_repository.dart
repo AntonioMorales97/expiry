@@ -1,3 +1,4 @@
+import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
 import 'package:dolores/repositories/http_caller.dart';
 
@@ -68,21 +69,20 @@ class DumbledoreRepository {
         headers: httpHeaders);
   }
 
-  Future<dynamic> addProductToStore(
+  Future<Product> addProductToStore(
       String storeId, String name, String qrCode, String date) async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
-
-    dynamic response = await _httpCaller.doPost(
-        baseUrl + storeBaseUrl + storeId + productsUrl,
-        headers: httpHeaders,
-        body: {
-          'name': name,
-          'qrCode': qrCode,
-          'date': date,
-        });
-    return response;
+    String url = baseUrl + storeBaseUrl + "/" + storeId + productsUrl;
+    final Map<String, dynamic> resp =
+        await _httpCaller.doPost(url, headers: httpHeaders, body: {
+      'name': name,
+      'qrCode': qrCode,
+      'date': date,
+    });
+    Product product = Product.fromJson(resp);
+    return product;
   }
 
   Future<Store> updateProductInStore(String storeId, String productId,

@@ -45,4 +45,12 @@ class ProductProvider with ChangeNotifier {
     _stores[index] = _currentStore;
     notifyListeners();
   }
+
+  void addProduct(String newQrCode, String newName, String newDate) async {
+    Product newProd = await dumbledoreRepository.addProductToStore(
+        _currentStore.storeId, newName, newQrCode, newDate);
+
+    _currentStore.products.add(newProd);
+    notifyListeners();
+  }
 }
