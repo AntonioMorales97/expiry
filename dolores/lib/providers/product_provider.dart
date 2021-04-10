@@ -55,4 +55,7 @@ class ProductProvider with ChangeNotifier {
     _currentStore.products.add(newProd);
     notifyListeners();
   }
+
+  //TODO implement.
+  void setSorting(int buttonIndex) {}
 }

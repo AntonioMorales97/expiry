@@ -127,7 +127,9 @@ class _AccountScreen extends State<AccountScreen> {
                               'SPARA',
                               style: TextStyle(letterSpacing: 2),
                             ),
-                            onPressed: () {},
+                            onPressed: () {
+                              //TODO ändra endpoint i dumbledore så allt kan updateras.
+                            },
                           ),
                           SizedBox(
                             height: 15.0,
