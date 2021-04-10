@@ -26,7 +26,7 @@ class FiltchRepository {
 
     await _saveToken(token);
     user.rememberMe = rememberMe;
-    await _save("user", jsonEncode(user.toJSON()));
+    await _save("user", jsonEncode(user.toJson()));
     return user;
   }
 

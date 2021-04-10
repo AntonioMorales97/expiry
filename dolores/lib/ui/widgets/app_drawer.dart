@@ -1,6 +1,6 @@
 import 'package:dolores/models/preference.dart';
 import 'package:dolores/providers/auth_provider.dart';
-import 'package:dolores/providers/preference_provider.dart';
+import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/screens/account_screen.dart';
 import 'package:dolores/ui/screens/products_screen.dart';
 import 'package:flutter/material.dart';
@@ -133,7 +133,7 @@ class _DrawerListItemExpand extends StatefulWidget {
 }
 
 class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
-  PreferenceProvider pref;
+  ProductProvider prod;
 
   List<bool> isSelected = [true, false];
   ValueNotifier<int> _currentIcon = ValueNotifier<int>(0);
@@ -142,14 +142,14 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
   @override
   initState() {
     super.initState();
-    pref = Provider.of<PreferenceProvider>(context, listen: false);
+    prod = Provider.of<ProductProvider>(context, listen: false);
     getPreference();
   }
 
   getPreference() async {
-    final Preference preference = await pref.getPreference();
+    final Preference preference = await prod.getPreference();
     setState(() {
-      _currentIcon = ValueNotifier<int>(preference.sorting);
+      _currentIcon = ValueNotifier<int>(preference.sort.index);
       setHighlight(_currentIcon.value);
     });
   }
@@ -179,7 +179,7 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
         color: isExpanded
             ? Theme.of(context).colorScheme.secondary
             : Theme.of(context).colorScheme.primary,
-      )
+      ),
     ];
 
     return icons[index];
@@ -226,7 +226,7 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
           ),
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
@@ -239,10 +239,25 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
                       setState(() {
                         _currentIcon.value = index;
                       });
-                      await pref.updateSorting(index);
+
+                      ProductSort sort = ProductSort.NAME;
+                      if (index == 0) {
+                        sort = ProductSort.DATE;
+                      }
+
+                      await prod.updateSorting(sort);
                       setHighlight(index);
                     },
                     isSelected: isSelected,
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                  child: IconButton(
+                    icon: Icon(Icons.swap_vert),
+                    onPressed: () {
+                      prod.reverseProducts();
+                    },
                   ),
                 ),
               ],

@@ -13,7 +13,7 @@ class User {
       email: json['email'],
     );
   }
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'firstName': firstName,
       'lastName': lastName,

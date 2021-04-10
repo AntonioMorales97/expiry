@@ -1,17 +1,27 @@
+import 'package:dolores/models/preference.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
 import 'package:dolores/repositories/dumbledore_repository.dart';
+import 'package:dolores/repositories/preference_repository.dart';
 import 'package:flutter/cupertino.dart';
+
+enum ProductSort {
+  DATE,
+  NAME,
+}
 
 class ProductProvider with ChangeNotifier {
   DumbledoreRepository dumbledoreRepository = DumbledoreRepository();
   List<Product> _storeProducts;
   List<Store> _stores;
   Store _currentStore;
+  PreferenceRepository prefRepo = new PreferenceRepository();
+  Preference _preference;
 
-  List<Product> get storeProducts => _storeProducts;
+  List<Product> get storeProducts => _storeProducts; //TODO: Add filter
   List<Store> get store => _stores;
   Store get currentStore => _currentStore;
+  Preference get preference => _preference;
 
   setProduct(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
@@ -28,8 +38,6 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO sorting
-  void sortProducts() {}
   void removeProduct(String productId, String storeId) async {
     //TRY CATCH??
     await dumbledoreRepository.deleteProductInStore(storeId, productId);
@@ -56,6 +64,43 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //TODO implement.
-  void setSorting(int buttonIndex) {}
+  Future<Preference> getPreference() async {
+    Preference preference = await prefRepo.getPreference();
+    if (preference == null) {
+      preference = Preference(sort: ProductSort.DATE);
+      await prefRepo.savePreference(preference);
+    }
+    _preference = preference;
+    return preference;
+  }
+
+  Future<void> updateSorting(ProductSort sort) async {
+    ProductSort oldSort = _preference.sort;
+    Preference newPref = _preference.copyWith(sort: sort);
+    _preference = newPref;
+    await prefRepo.savePreference(newPref);
+
+    if (oldSort == _preference.sort) {
+      _storeProducts = _storeProducts.reversed.toList();
+    } else {
+      _sortProduct(sort);
+    }
+
+    notifyListeners();
+  }
+
+  void _sortProduct(ProductSort productSort) {
+    _storeProducts.sort((Product a, Product b) {
+      if (productSort == ProductSort.DATE) {
+        return a.date.compareTo(b.date);
+      } else {
+        return a.name.compareTo(b.name);
+      }
+    });
+  }
+
+  void reverseProducts() {
+    _storeProducts = _storeProducts.reversed.toList();
+    notifyListeners();
+  }
 }

@@ -8,7 +8,7 @@ class PreferenceRepository {
   //TODO save in dumbledore.
   Future<void> savePreference(Preference newPref) async {
     await _storage.ready;
-    await _storage.setItem('preferences', jsonEncode(newPref.toJSON()));
+    await _storage.setItem('preferences', jsonEncode(newPref.toJson()));
   }
 
   Future<Preference> getPreference() async {

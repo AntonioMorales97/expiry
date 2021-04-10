@@ -1,24 +1,27 @@
+import 'package:dolores/providers/product_provider.dart';
+
 class Preference {
-  final int sorting;
+  final ProductSort sort;
   final String storeId;
 
-  Preference({this.sorting, this.storeId});
+  Preference({this.sort, this.storeId});
+
   factory Preference.fromJson(Map<String, dynamic> json) {
     return Preference(
-      sorting: json['sorting'],
+      sort: ProductSort.values[json['sort']],
       storeId: json['storeId'],
     );
   }
-  Map<String, dynamic> toJSON() {
+  Map<String, dynamic> toJson() {
     return <String, dynamic>{
-      'sorting': sorting,
+      'sort': sort.index,
       'storeId': storeId,
     };
   }
 
-  Preference copyWith({int sorting, String storeId}) {
+  Preference copyWith({ProductSort sort, String storeId}) {
     return Preference(
-      sorting: sorting ?? this.sorting,
+      sort: sort ?? this.sort,
       storeId: storeId ?? this.storeId,
     );
   }
