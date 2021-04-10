@@ -7,7 +7,6 @@ import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/product_dialog.dart';
 import 'package:dolores/ui/widgets/product_item.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -111,7 +110,7 @@ class _ProductsScreen extends State<ProductsScreen>
                   );
                 },
               ),
-              drawer: AppDrawer(),
+              drawer: AppDrawer(active: 'products'),
               body: Consumer<ProductProvider>(
                 builder: (context, prod, _) => prod.storeProducts == null ||
                         prod.storeProducts.length <= 0

@@ -42,7 +42,7 @@ class _AccountScreen extends State<AccountScreen> {
         title: Text('Mitt konto'),
         actions: [],
       ),
-      drawer: AppDrawer(),
+      drawer: AppDrawer(active: 'accounts'),
       body: SingleChildScrollView(
         padding: EdgeInsets.only(top: 40, left: 5, right: 5),
         child: _user == null

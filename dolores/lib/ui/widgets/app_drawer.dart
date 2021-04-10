@@ -7,6 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
+  final active;
+
+  AppDrawer({this.active});
+
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
@@ -16,6 +20,7 @@ class AppDrawer extends StatelessWidget {
         children: <Widget>[
           const _DrawerHeader(),
           _DrawerListItem(
+            active: active == 'products',
             icon: Icons.home,
             title: 'Home',
             nav: () {
@@ -33,6 +38,7 @@ class AppDrawer extends StatelessWidget {
             nav: () => {},
           ),
           _DrawerListItem(
+            active: active == 'accounts',
             icon: Icons.account_circle_sharp,
             title: 'Account',
             nav: () {
@@ -101,8 +107,9 @@ class _DrawerListItem extends StatelessWidget {
   final IconData icon;
   final String title;
   final Function nav;
+  final bool active;
 
-  const _DrawerListItem({this.icon, this.title, this.nav});
+  const _DrawerListItem({this.icon, this.title, this.nav, this.active = false});
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +118,19 @@ class _DrawerListItem extends StatelessWidget {
         ListTile(
           title: Row(
             children: <Widget>[
-              Icon(icon),
+              Icon(
+                icon,
+                color: active ? Theme.of(context).colorScheme.primary : null,
+              ),
               const SizedBox(
                 width: 10,
               ),
-              Text(title),
+              Text(
+                title,
+                style: TextStyle(
+                    color:
+                        active ? Theme.of(context).colorScheme.primary : null),
+              ),
             ],
           ),
           onTap: nav,
@@ -138,19 +153,20 @@ class _DrawerListItemExpand extends StatefulWidget {
 }
 
 class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
-  var pref;
-
-  List<Icon> icons = [Icon(Icons.date_range_sharp), Icon(Icons.text_fields)];
+  PreferenceProvider pref;
 
   List<bool> isSelected = [true, false];
   ValueNotifier<int> _currentIcon = ValueNotifier<int>(0);
+  bool isExpanded = false;
+
   @override
   initState() {
+    super.initState();
     pref = Provider.of<PreferenceProvider>(context, listen: false);
-    getPreferensce();
+    getPreference();
   }
 
-  getPreferensce() async {
+  getPreference() async {
     final Preference preference = await pref.getPreference();
     setState(() {
       _currentIcon = ValueNotifier<int>(preference.sorting);
@@ -170,27 +186,60 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
     }
   }
 
+  getIcon(int index) {
+    List<Icon> icons = [
+      Icon(
+        Icons.date_range_sharp,
+        color: isExpanded
+            ? Theme.of(context).colorScheme.secondary
+            : Theme.of(context).colorScheme.primary,
+      ),
+      Icon(
+        Icons.text_fields,
+        color: isExpanded
+            ? Theme.of(context).colorScheme.secondary
+            : Theme.of(context).colorScheme.primary,
+      )
+    ];
+
+    return icons[index];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final prod = Provider.of<PreferenceProvider>(context);
-
     return Column(
       children: <Widget>[
         ExpansionTile(
+          onExpansionChanged: (expanded) {
+            setState(() {
+              isExpanded = expanded;
+            });
+          },
           title: Row(
             children: <Widget>[
-              Icon(widget.icon),
+              Icon(
+                widget.icon,
+                color:
+                    isExpanded ? Theme.of(context).colorScheme.secondary : null,
+              ),
               const SizedBox(
                 width: 10,
               ),
-              Text(widget.title + ": "),
+              Text(
+                widget.title + ": ",
+                style: TextStyle(
+                  color: isExpanded
+                      ? Theme.of(context).colorScheme.secondary
+                      : null,
+                ),
+              ),
               const SizedBox(
                 width: 10,
               ),
               ValueListenableBuilder(
                 valueListenable: _currentIcon,
                 builder: (BuildContext context, int value, Widget child) {
-                  return icons[value];
+                  return getIcon(value);
                 },
               ),
             ],
