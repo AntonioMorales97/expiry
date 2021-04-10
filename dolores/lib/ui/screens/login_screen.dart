@@ -123,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     DoloresButton(
-                      child: Text('Logga in'),
+                      child: Text('LOGGA IN'),
                       onPressed: doLogin,
                     ),
                   ],

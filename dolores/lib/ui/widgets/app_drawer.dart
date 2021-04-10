@@ -22,7 +22,7 @@ class AppDrawer extends StatelessWidget {
           _DrawerListItem(
             active: active == 'products',
             icon: Icons.home,
-            title: 'Home',
+            title: 'Hem',
             nav: () {
               Navigator.pushReplacement(
                 context,
@@ -34,13 +34,13 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerListItemExpand(
             icon: Icons.filter_list,
-            title: 'Filters',
+            title: 'Filter',
             nav: () => {},
           ),
           _DrawerListItem(
             active: active == 'accounts',
             icon: Icons.account_circle_sharp,
-            title: 'Account',
+            title: 'Konto',
             nav: () {
               Navigator.pushReplacement(
                 context,
@@ -50,7 +50,7 @@ class AppDrawer extends StatelessWidget {
           ),
           _DrawerListItem(
             icon: Icons.logout,
-            title: 'Logout',
+            title: 'Logga ut',
             nav: () async {
               await auth.logout();
               Navigator.pushNamedAndRemoveUntil(
@@ -71,34 +71,14 @@ class _DrawerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DrawerHeader(
-      // decoration: BoxDecoration(
-      //   image: DecorationImage(
-      //     fit: BoxFit.fill,
-      //     image: backgroundImage,
-      //   ),
-      // ),
-      padding: const EdgeInsets.all(0.0),
-      child: Stack(
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ],
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: AssetImage('assets/images/expiry.png'),
+        ),
       ),
+      margin: const EdgeInsets.only(top: 40.0),
+      //child: Container(),
     );
   }
 }
