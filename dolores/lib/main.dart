@@ -1,4 +1,5 @@
 import 'package:dolores/providers/auth_provider.dart';
+import 'package:dolores/providers/preference_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/theme.dart';
 import 'package:dolores/ui/screens/login_screen.dart';
@@ -28,6 +29,9 @@ class _MyAppState extends State<MyApp> {
         ),
         ChangeNotifierProvider(
           create: (_) => ProductProvider(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => PreferenceProvider(),
         )
       ],
       child: MaterialApp(

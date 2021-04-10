@@ -21,6 +21,7 @@ class FiltchRepository {
       'password': password,
     });
     User user = User.fromJson(resp);
+    //TODO preferences somwewhere?
     String token = resp['token'];
 
     await _saveToken(token);

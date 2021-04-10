@@ -1,5 +1,6 @@
+import 'package:dolores/models/preference.dart';
 import 'package:dolores/providers/auth_provider.dart';
-import 'package:dolores/providers/product_provider.dart';
+import 'package:dolores/providers/preference_provider.dart';
 import 'package:dolores/ui/screens/account_screen.dart';
 import 'package:dolores/ui/screens/products_screen.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +120,7 @@ class _DrawerListItem extends StatelessWidget {
           ),
           onTap: nav,
         ),
-        Divider(),
+        Divider(height: 0),
       ],
     );
   }
@@ -137,13 +138,42 @@ class _DrawerListItemExpand extends StatefulWidget {
 }
 
 class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
+  var pref;
+
   List<Icon> icons = [Icon(Icons.date_range_sharp), Icon(Icons.text_fields)];
 
   List<bool> isSelected = [true, false];
+  ValueNotifier<int> _currentIcon = ValueNotifier<int>(0);
+  @override
+  initState() {
+    pref = Provider.of<PreferenceProvider>(context, listen: false);
+    getPreferensce();
+  }
+
+  getPreferensce() async {
+    final Preference preference = await pref.getPreference();
+    setState(() {
+      _currentIcon = ValueNotifier<int>(preference.sorting);
+      setHighlight(_currentIcon.value);
+    });
+  }
+
+  setHighlight(index) {
+    for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
+      setState(() {
+        if (buttonIndex == index) {
+          isSelected[buttonIndex] = true;
+        } else {
+          isSelected[buttonIndex] = false;
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    ValueNotifier<int> _currentIcon = ValueNotifier<int>(0);
-    final prod = Provider.of<ProductProvider>(context, listen: false);
+    final prod = Provider.of<PreferenceProvider>(context);
+
     return Column(
       children: <Widget>[
         ExpansionTile(
@@ -160,39 +190,37 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
               ValueListenableBuilder(
                 valueListenable: _currentIcon,
                 builder: (BuildContext context, int value, Widget child) {
-                  print(value);
                   return icons[value];
                 },
               ),
             ],
           ),
           children: [
-            ToggleButtons(
-              children: <Widget>[
-                Icon(Icons.date_range_sharp),
-                Icon(Icons.text_fields),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                  child: ToggleButtons(
+                    children: <Widget>[
+                      Icon(Icons.date_range_sharp),
+                      Icon(Icons.text_fields),
+                    ],
+                    onPressed: (int index) async {
+                      setState(() {
+                        _currentIcon.value = index;
+                      });
+                      await pref.updateSorting(index);
+                      setHighlight(index);
+                    },
+                    isSelected: isSelected,
+                  ),
+                ),
               ],
-              onPressed: (int index) {
-                setState(() {
-                  for (int buttonIndex = 0;
-                      buttonIndex < isSelected.length;
-                      buttonIndex++) {
-                    _currentIcon.value = index;
-
-                    prod.setSorting(index);
-                    if (buttonIndex == index) {
-                      isSelected[buttonIndex] = true;
-                    } else {
-                      isSelected[buttonIndex] = false;
-                    }
-                  }
-                });
-              },
-              isSelected: isSelected,
             ),
           ],
         ),
-        Divider(),
+        Divider(height: 0),
       ],
     );
   }
