@@ -25,8 +25,10 @@ class _AccountScreen extends State<AccountScreen> {
   setUserData() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
 
-    setState(() async {
-      this._user = await auth.getUser();
+    final user = await auth.user;
+
+    setState(() {
+      this._user = user;
     });
   }
 
