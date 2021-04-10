@@ -15,9 +15,9 @@ class AuthProvider with ChangeNotifier {
 
   String get token => _token;
 
-  bool get isAuth {
-    return token != null;
-  }
+  bool get isAuth => token != null;
+
+  Future<User> get user async => _user ?? await filtchRepository.getUser();
 
   Future<bool> tryAutoLogin() async {
     User user = await filtchRepository.getUser();
@@ -32,16 +32,18 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> logout() async {
-    await filtchRepository.logout(_user.rememberMe);
+    await filtchRepository.logout(_user.rememberMe ?? false);
     _token = null;
     notifyListeners();
   }
 
   Future<void> login(String email, String password, {bool rememberMe}) async {
     try {
-      String token = await filtchRepository.authenticate(email, password,
+      User user = await filtchRepository.authenticate(email, password,
           rememberMe: rememberMe);
-      _token = token;
+
+      _user = user;
+      _token = await filtchRepository.getToken();
       notifyListeners();
     } on ApiException catch (apiException) {
       _errorMessage = ValidationItem(null, apiException.detail);
@@ -50,12 +52,5 @@ class AuthProvider with ChangeNotifier {
       _errorMessage = ValidationItem(null, error.toString());
       notifyListeners();
     }
-  }
-
-  Future<User> getUser() async {
-    if (_user != null) {
-      return _user;
-    }
-    return await filtchRepository.getUser();
   }
 }

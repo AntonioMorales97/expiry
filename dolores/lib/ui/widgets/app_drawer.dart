@@ -1,13 +1,10 @@
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/ui/screens/account_screen.dart';
+import 'package:dolores/ui/screens/products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
-  void _changeScreenTo(BuildContext context, String routeName) {
-    Navigator.of(context).pushReplacementNamed(routeName);
-  }
-
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
@@ -19,7 +16,14 @@ class AppDrawer extends StatelessWidget {
           _DrawerListItem(
             icon: Icons.home,
             title: 'Home',
-            nav: () => {},
+            nav: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProductsScreen(),
+                ),
+              );
+            },
           ),
           _DrawerListItem(
             icon: Icons.filter_list,
@@ -29,17 +33,21 @@ class AppDrawer extends StatelessWidget {
           _DrawerListItem(
             icon: Icons.account_circle_sharp,
             title: 'Account',
-            nav: () => {
-              Navigator.push(
+            nav: () {
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => AccountScreen()),
-              ),
+              );
             },
           ),
           _DrawerListItem(
             icon: Icons.logout,
             title: 'Logout',
-            nav: () => {auth.logout()},
+            nav: () async {
+              await auth.logout();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/', (Route<dynamic> route) => false);
+            },
           ),
         ],
       ),

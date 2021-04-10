@@ -13,7 +13,7 @@ class FiltchRepository {
 
   final HttpCaller _httpCaller = HttpCaller();
 
-  Future<String> authenticate(String email, String password,
+  Future<User> authenticate(String email, String password,
       {bool rememberMe = false}) async {
     final Map<String, dynamic> resp =
         await _httpCaller.doPost(baseUrl + '/authenticate', body: {
@@ -26,7 +26,7 @@ class FiltchRepository {
     await _saveToken(token);
     user.rememberMe = rememberMe;
     await _save("user", jsonEncode(user.toJSON()));
-    return token;
+    return user;
   }
 
   Future<void> logout(remember) async {
@@ -56,12 +56,11 @@ class FiltchRepository {
 
   Future<User> getUser() async {
     await _storage.ready;
-    String s = await _storage.getItem('user');
-    if (s == null) {
-      throw Exception('LOG THE FUCK OUT!');
-    }
-    User user = User.fromJson(jsonDecode(s));
-    return user;
+    String serializedUser = await _storage.getItem('user');
+
+    return serializedUser == null
+        ? serializedUser
+        : User.fromJson(jsonDecode(serializedUser));
   }
 
   Future<void> _saveEmail(String email) async {
