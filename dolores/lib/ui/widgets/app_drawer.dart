@@ -4,6 +4,7 @@ import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/screens/account_screen.dart';
 import 'package:dolores/ui/screens/products_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 
 class AppDrawer extends StatelessWidget {
@@ -71,13 +72,12 @@ class _DrawerHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DrawerHeader(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          fit: BoxFit.cover,
-          image: AssetImage('assets/images/expiry.png'),
+      child: Container(
+        child: SvgPicture.asset(
+          'assets/svg/expiry.svg',
+          color: Theme.of(context).colorScheme.onSurface,
         ),
       ),
-      margin: const EdgeInsets.only(top: 40.0),
       //child: Container(),
     );
   }
