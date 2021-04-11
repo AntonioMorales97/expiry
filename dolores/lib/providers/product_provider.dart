@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dolores/models/preference.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
@@ -12,46 +14,61 @@ enum ProductSort {
 
 class ProductProvider with ChangeNotifier {
   DumbledoreRepository dumbledoreRepository = DumbledoreRepository();
-  List<Product> _storeProducts;
+  PreferenceRepository prefRepo = new PreferenceRepository();
+
   List<Store> _stores;
   Store _currentStore;
-  PreferenceRepository prefRepo = new PreferenceRepository();
+
+  //TODO: Add reverse to preference? Should be stored otherwise it is reset
   Preference _preference;
 
-  List<Product> get storeProducts => _storeProducts; //TODO: Add filter
-  List<Store> get store => _stores;
-  Store get currentStore => _currentStore;
-  Preference get preference => _preference;
+  UnmodifiableListView<Product> get storeProducts {
+    //TODO: Add filter
+    return UnmodifiableListView(_currentStore.products);
+  }
 
-  setProduct(storeId) {
+  UnmodifiableListView<Store> get store => UnmodifiableListView(_stores);
+
+  Store get currentStore => _currentStore.copyWith();
+  Preference get preference => _preference.copyWith();
+
+  setStore(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
-    _storeProducts = store.products;
     _currentStore = store;
     notifyListeners();
   }
 
   Future<void> getStores() async {
+    //TODO: Get cache? So avoid calling dumble-repo everytime
     _stores = await dumbledoreRepository.getStore();
-    _storeProducts = _stores[0].products;
-
+    //TODO: Set previously selected store
     _currentStore = _stores[0];
+    //TODO: Make sure preference is not null. Maybe start this provider with a default instead of
+    //taking care of it in the view (fetchPreference is called from app_drawer)
+    if (_preference != null) //this should never be null, remove later
+      _sortProduct(_preference.sort);
     notifyListeners();
   }
 
+  //TODO: Is storeId needed? Since we know currentStore...
   void removeProduct(String productId, String storeId) async {
-    //TRY CATCH??
     await dumbledoreRepository.deleteProductInStore(storeId, productId);
-    _storeProducts.removeWhere((product) => product.productId == productId);
+    _currentStore.products
+        .removeWhere((product) => product.productId == productId);
   }
 
   void modifyProduct(String productId, String newQrCode, String newName,
       String newDate) async {
-    String prevStoreId = _currentStore.storeId;
+    //TODO: Maybe enough with HTTP 200 and update product accordingly
     _currentStore = await dumbledoreRepository.updateProductInStore(
-        prevStoreId, productId, newName, newQrCode, newDate);
-    _storeProducts = _currentStore.products;
-
-    int index = _stores.indexWhere((store) => store.storeId == prevStoreId);
+      _currentStore.storeId,
+      productId,
+      newName,
+      newQrCode,
+      newDate,
+    );
+    int index =
+        _stores.indexWhere((store) => store.storeId == _currentStore.storeId);
     _stores[index] = _currentStore;
     notifyListeners();
   }
@@ -64,14 +81,14 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Preference> getPreference() async {
+  Future<Preference> fetchPreference() async {
     Preference preference = await prefRepo.getPreference();
     if (preference == null) {
       preference = Preference(sort: ProductSort.DATE);
       await prefRepo.savePreference(preference);
     }
     _preference = preference;
-    return preference;
+    return preference.copyWith();
   }
 
   Future<void> updateSorting(ProductSort sort) async {
@@ -81,7 +98,8 @@ class ProductProvider with ChangeNotifier {
     await prefRepo.savePreference(newPref);
 
     if (oldSort == _preference.sort) {
-      _storeProducts = _storeProducts.reversed.toList();
+      final reversed = _currentStore.products.reversed.toList();
+      _currentStore = _currentStore.copyWith(products: reversed);
     } else {
       _sortProduct(sort);
     }
@@ -90,7 +108,7 @@ class ProductProvider with ChangeNotifier {
   }
 
   void _sortProduct(ProductSort productSort) {
-    _storeProducts.sort((Product a, Product b) {
+    _currentStore.products.sort((Product a, Product b) {
       if (productSort == ProductSort.DATE) {
         return a.date.compareTo(b.date);
       } else {
@@ -100,7 +118,8 @@ class ProductProvider with ChangeNotifier {
   }
 
   void reverseProducts() {
-    _storeProducts = _storeProducts.reversed.toList();
+    final reversed = _currentStore.products.reversed.toList();
+    _currentStore = _currentStore.copyWith(products: reversed);
     notifyListeners();
   }
 }

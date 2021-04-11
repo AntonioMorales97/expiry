@@ -35,6 +35,12 @@ class _ProductsScreen extends State<ProductsScreen>
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _controller.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final prod = Provider.of<ProductProvider>(context, listen: false);
 
@@ -62,7 +68,7 @@ class _ProductsScreen extends State<ProductsScreen>
                       ),
                     ),
                     onChanged: (value) {
-                      prod.setProduct(value);
+                      prod.setStore(value);
                     },
                     items: prod.store
                         .map(

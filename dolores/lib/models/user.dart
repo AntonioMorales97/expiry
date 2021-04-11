@@ -6,13 +6,21 @@ class User {
 
   User({this.firstName, this.lastName, this.email, this.rememberMe});
 
-  factory User.fromJson(Map<String, dynamic> json) {
+  User copyWith(
+      {String firstName, String lastName, String email, bool rememberMe}) {
     return User(
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      email: json['email'],
+      firstName: firstName ?? this.firstName,
+      lastName: lastName ?? this.lastName,
+      email: email ?? this.email,
+      rememberMe: rememberMe ?? this.rememberMe,
     );
   }
+
+  User.fromJson(Map<String, dynamic> json)
+      : firstName = json['firstName'],
+        lastName = json['lastName'],
+        email = json['email'];
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'firstName': firstName,

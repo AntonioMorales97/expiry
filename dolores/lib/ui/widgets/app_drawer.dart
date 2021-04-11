@@ -147,7 +147,7 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
   }
 
   getPreference() async {
-    final Preference preference = await prod.getPreference();
+    final Preference preference = await prod.fetchPreference();
     setState(() {
       _currentIcon = ValueNotifier<int>(preference.sort.index);
       setHighlight(_currentIcon.value);
@@ -157,11 +157,7 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
   setHighlight(index) {
     for (int buttonIndex = 0; buttonIndex < isSelected.length; buttonIndex++) {
       setState(() {
-        if (buttonIndex == index) {
-          isSelected[buttonIndex] = true;
-        } else {
-          isSelected[buttonIndex] = false;
-        }
+        isSelected[buttonIndex] = buttonIndex == index;
       });
     }
   }

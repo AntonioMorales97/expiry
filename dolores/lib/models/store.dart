@@ -7,12 +7,20 @@ class Store {
 
   const Store({this.storeId, this.name, this.products});
 
-  factory Store.fromJson(Map<String, dynamic> json) {
+  Store copyWith({String storeId, String name, List<Product> products}) {
     return Store(
-      storeId: json['id'],
-      name: json['name'],
-      products: List<Product>.from(
-          json['products'].map((product) => Product.fromJson(product))),
+      storeId: storeId ?? this.storeId,
+      name: name ?? this.name,
+      products: products ?? this.products,
     );
   }
+
+  Store.fromJson(Map<String, dynamic> json)
+      : storeId = json['id'],
+        name = json['name'],
+        products = List<Product>.from(
+          json['products'].map(
+            (product) => Product.fromJson(product),
+          ),
+        );
 }

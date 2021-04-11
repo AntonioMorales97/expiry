@@ -8,12 +8,19 @@ class Product {
 
   const Product({this.productId, this.name, this.qrCode, this.date});
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  Product copyWith(
+      {String productId, String name, String qrCode, DateTime date}) {
     return Product(
-      productId: json['productId'],
-      name: json['name'],
-      qrCode: json['qrCode'],
-      date: Formatter.stringToDate(json['date']),
+      productId: productId ?? this.productId,
+      name: name ?? this.name,
+      qrCode: qrCode ?? this.qrCode,
+      date: date ?? this.date,
     );
   }
+
+  Product.fromJson(Map<String, dynamic> json)
+      : productId = json['productId'],
+        name = json['name'],
+        qrCode = json['qrCode'],
+        date = Formatter.stringToDate(json['date']);
 }
