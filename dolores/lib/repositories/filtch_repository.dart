@@ -51,7 +51,6 @@ class FiltchRepository {
 
   Future<String> getToken() async {
     await _storage.ready;
-
     return await _storage.getItem('token');
   }
 

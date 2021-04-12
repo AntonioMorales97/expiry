@@ -19,11 +19,10 @@ class ProductProvider with ChangeNotifier {
   List<Store> _stores;
   Store _currentStore;
 
-  //TODO: Add reverse to preference? Should be stored otherwise it is reset
   Preference _preference;
+  DateTime _cachedTime;
 
   UnmodifiableListView<Product> get storeProducts {
-    //TODO: Add filter
     return UnmodifiableListView(_currentStore.products);
   }
 
@@ -31,28 +30,37 @@ class ProductProvider with ChangeNotifier {
 
   Store get currentStore => _currentStore.copyWith();
   Preference get preference => _preference.copyWith();
-
+  ProductProvider() {
+    fetchPreference();
+  }
   setStore(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
     _currentStore = store;
     notifyListeners();
   }
 
-  Future<void> getStores() async {
-    //TODO: Get cache? So avoid calling dumble-repo everytime
-    _stores = await dumbledoreRepository.getStore();
-    //TODO: Set previously selected store
+  Future<void> getStores({refresh: false}) async {
+    DateTime newDate = DateTime.now();
+    if (refresh ||
+        (_cachedTime == null ||
+            _cachedTime.difference(newDate).inMinutes > 20)) {
+      _stores = await dumbledoreRepository.getStore();
+      _cachedTime = newDate;
+    }
     _currentStore = _stores[0];
-    //TODO: Make sure preference is not null. Maybe start this provider with a default instead of
+
     //taking care of it in the view (fetchPreference is called from app_drawer)
-    if (_preference != null) //this should never be null, remove later
+    if (_preference != null) {
+      //this should never be null, remove later
       _sortProduct(_preference.sort);
+      if (_preference.reverse) await _reverseProducts();
+    }
     notifyListeners();
   }
 
-  //TODO: Is storeId needed? Since we know currentStore...
-  void removeProduct(String productId, String storeId) async {
-    await dumbledoreRepository.deleteProductInStore(storeId, productId);
+  void removeProduct(String productId) async {
+    await dumbledoreRepository.deleteProductInStore(
+        _currentStore.storeId, productId);
     _currentStore.products
         .removeWhere((product) => product.productId == productId);
   }
@@ -100,6 +108,7 @@ class ProductProvider with ChangeNotifier {
     if (oldSort == _preference.sort) {
       final reversed = _currentStore.products.reversed.toList();
       _currentStore = _currentStore.copyWith(products: reversed);
+      _preference = _preference.copyWith(reverse: !_preference.reverse);
     } else {
       _sortProduct(sort);
     }
@@ -117,9 +126,17 @@ class ProductProvider with ChangeNotifier {
     });
   }
 
-  void reverseProducts() {
+  Future<void> reverseProducts() async {
     final reversed = _currentStore.products.reversed.toList();
     _currentStore = _currentStore.copyWith(products: reversed);
+    _preference = _preference.copyWith(reverse: !_preference.reverse);
+    await prefRepo.savePreference(_preference);
     notifyListeners();
+  }
+
+  _reverseProducts() async {
+    final reversed = _currentStore.products.reversed.toList();
+    _currentStore = _currentStore.copyWith(products: reversed);
+    await prefRepo.savePreference(_preference);
   }
 }
