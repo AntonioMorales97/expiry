@@ -48,8 +48,8 @@ class ProductProvider with ChangeNotifier {
       _cachedTime = newDate;
     }
     _currentStore = _stores[0];
-
     //taking care of it in the view (fetchPreference is called from app_drawer)
+    _preference = await prefRepo.getPreference();
     if (_preference != null) {
       //this should never be null, remove later
       _sortProduct(_preference.sort);
@@ -138,5 +138,12 @@ class ProductProvider with ChangeNotifier {
     final reversed = _currentStore.products.reversed.toList();
     _currentStore = _currentStore.copyWith(products: reversed);
     await prefRepo.savePreference(_preference);
+  }
+
+  clearStates() {
+    _currentStore = null;
+    _preference = null;
+    _cachedTime = null;
+    _stores = null;
   }
 }

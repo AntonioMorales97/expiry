@@ -15,6 +15,7 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
+    final prod = Provider.of<ProductProvider>(context, listen: false);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -53,6 +54,7 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.logout,
             title: 'Logga ut',
             nav: () async {
+              prod.clearStates();
               await auth.logout();
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);

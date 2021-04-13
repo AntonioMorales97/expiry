@@ -32,6 +32,17 @@ public class User {
     @DBRef
     private List<Store> stores;
 
+    private Preference preference;
+
+    public User(String firstName, String lastName, String email, String password, List<Role> roles, List<Store> stores, Preference preference) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.roles = roles;
+        this.stores = stores;
+        this.preference=preference;
+    }
     public User(String firstName, String lastName, String email, String password, List<Role> roles, List<Store> stores) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -39,6 +50,7 @@ public class User {
         this.password = password;
         this.roles = roles;
         this.stores = stores;
+
     }
 
     public User(String firstName, String lastName, String email, String password, List<Role> roles) {
