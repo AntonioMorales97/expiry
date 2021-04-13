@@ -30,9 +30,11 @@ class ProductProvider with ChangeNotifier {
 
   Store get currentStore => _currentStore.copyWith();
   Preference get preference => _preference.copyWith();
+
   ProductProvider() {
     fetchPreference();
   }
+
   setStore(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
     _currentStore = store;
@@ -48,10 +50,9 @@ class ProductProvider with ChangeNotifier {
       _cachedTime = newDate;
     }
     _currentStore = _stores[0];
-    //taking care of it in the view (fetchPreference is called from app_drawer)
-    _preference = await prefRepo.getPreference();
+
     if (_preference != null) {
-      //this should never be null, remove later
+      //this should never be null
       _sortProduct(_preference.sort);
       if (_preference.reverse) await _reverseProducts();
     }

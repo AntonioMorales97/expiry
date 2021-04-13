@@ -39,6 +39,9 @@ class AuthProvider with ChangeNotifier {
     await filtchRepository.logout(_user.rememberMe ?? false);
 
     _token = null;
+    if (!_user.rememberMe) {
+      _user = null;
+    }
 
     notifyListeners();
   }

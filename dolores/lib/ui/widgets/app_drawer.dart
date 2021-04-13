@@ -54,7 +54,6 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.logout,
             title: 'Logga ut',
             nav: () async {
-              prod.clearStates();
               await auth.logout();
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);

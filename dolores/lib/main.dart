@@ -12,8 +12,6 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  // This widget is the root of your application.
-
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -26,12 +24,12 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
-        ChangeNotifierProvider(
-          create: (_) => ProductProvider(),
-        ),
+        // ChangeNotifierProvider(
+        //   create: (_) => ProductProvider(),
+        // ),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'Expiry',
         theme: DoloresTheme.lightThemeData,
         home: Consumer<AuthProvider>(
           builder: (
@@ -40,7 +38,7 @@ class _MyAppState extends State<MyApp> {
             child,
           ) {
             return authProv.isAuth
-                ? ProductsScreen()
+                ? AuthApp()
                 : FutureBuilder(
                     future: authProv.tryAutoLogin(),
                     builder: (context, authResultSnap) =>
@@ -54,8 +52,26 @@ class _MyAppState extends State<MyApp> {
                             : LoginScreen(),
                   );
           },
-        ), //MyHomePage(title: 'Flutter Demo Home Page'),
+        ),
       ),
     );
-  } //MyHomePage(title: 'Flutter Demo Home Page'),
+  }
+}
+
+class AuthApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => ProductProvider(),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Expiry',
+        theme: DoloresTheme.lightThemeData,
+        home: ProductsScreen(),
+      ),
+    );
+  }
 }
