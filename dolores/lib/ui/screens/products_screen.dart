@@ -15,25 +15,7 @@ class ProductsScreen extends StatefulWidget {
   _ProductsScreen createState() => _ProductsScreen();
 }
 
-class _ProductsScreen extends State<ProductsScreen>
-    with TickerProviderStateMixin {
-  AnimationController _controller;
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = new AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _controller.dispose();
-  }
-
+class _ProductsScreen extends State<ProductsScreen> {
   @override
   Widget build(BuildContext context) {
     final prod = Provider.of<ProductProvider>(context, listen: false);
@@ -42,8 +24,10 @@ class _ProductsScreen extends State<ProductsScreen>
       future: prod.getStores(),
       builder: (context, snap) => snap.connectionState ==
               ConnectionState.waiting
-          ? Center(
-              child: CircularProgressIndicator(),
+          ? Scaffold(
+              body: Center(
+                child: CircularProgressIndicator(),
+              ),
             )
           : Scaffold(
               appBar: AppBar(
@@ -75,23 +59,13 @@ class _ProductsScreen extends State<ProductsScreen>
               ),
               floatingActionButton: FloatingActionButton(
                 heroTag: null,
-                child: new AnimatedBuilder(
-                  animation: _controller,
-                  builder: (BuildContext context, Widget child) {
-                    return new Transform(
-                      transform:
-                          new Matrix4.rotationZ(_controller.value * 0.5 * pi),
-                      alignment: FractionalOffset.center,
-                      child: new Icon(Icons.add),
-                    );
-                  },
-                ),
+                child: Icon(Icons.add),
                 onPressed: () {
-                  if (_controller.isDismissed) {
-                    _controller.forward();
-                  } else {
-                    _controller.reverse();
-                  }
+                  // if (_controller.isDismissed) {
+                  //   _controller.forward();
+                  // } else {
+                  //   _controller.reverse();
+                  // }
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {

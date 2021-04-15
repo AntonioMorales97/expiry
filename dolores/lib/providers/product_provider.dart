@@ -31,6 +31,10 @@ class ProductProvider with ChangeNotifier {
   Store get currentStore => _currentStore.copyWith();
   Preference get preference => _preference.copyWith();
 
+  // ProductProvider() {
+  //   print("CREATED PRODUCTPROVIDER");
+  // }
+
   setStore(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
     _currentStore = store;
@@ -53,8 +57,6 @@ class ProductProvider with ChangeNotifier {
 
     _sortProduct(_preference.sort);
     if (_preference.reverse) await _reverseProducts();
-
-    notifyListeners();
   }
 
   void removeProduct(String productId) async {

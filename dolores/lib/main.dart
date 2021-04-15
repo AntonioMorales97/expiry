@@ -24,9 +24,11 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(
           create: (_) => AuthProvider(),
         ),
-        // ChangeNotifierProvider(
-        //   create: (_) => ProductProvider(),
-        // ),
+        ChangeNotifierProxyProvider<AuthProvider, ProductProvider>(
+          create: (_) => ProductProvider(),
+          update: (context, authProv, _) =>
+              ProductProvider(), //TODO: dont do this
+        ),
       ],
       child: MaterialApp(
         title: 'Expiry',
@@ -38,7 +40,7 @@ class _MyAppState extends State<MyApp> {
             child,
           ) {
             return authProv.isAuth
-                ? AuthApp()
+                ? ProductsScreen()
                 : FutureBuilder(
                     future: authProv.tryAutoLogin(),
                     builder: (context, authResultSnap) =>

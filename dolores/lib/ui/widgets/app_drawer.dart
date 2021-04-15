@@ -15,7 +15,6 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    final prod = Provider.of<ProductProvider>(context, listen: false);
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -140,6 +139,8 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
   ValueNotifier<int> _currentIcon = ValueNotifier<int>(0);
   bool isExpanded = false;
 
+  bool _isLoading = true;
+
   @override
   initState() {
     super.initState();
@@ -148,10 +149,19 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
   }
 
   getPreference() async {
+    await Future.delayed(Duration(seconds: 3));
     final Preference preference = await prod.fetchPreference();
+
+    if (!mounted) return;
+
     setState(() {
       _currentIcon = ValueNotifier<int>(preference.sort.index);
-      setHighlight(_currentIcon.value);
+      for (int buttonIndex = 0;
+          buttonIndex < isSelected.length;
+          buttonIndex++) {
+        isSelected[buttonIndex] = buttonIndex == _currentIcon.value;
+      }
+      _isLoading = false;
     });
   }
 
@@ -184,85 +194,105 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        ExpansionTile(
-          onExpansionChanged: (expanded) {
-            setState(() {
-              isExpanded = expanded;
-            });
-          },
-          title: Row(
-            children: <Widget>[
-              Icon(
-                widget.icon,
-                color:
-                    isExpanded ? Theme.of(context).colorScheme.secondary : null,
+    return _isLoading
+        ? Column(
+            children: [
+              Divider(
+                height: 0,
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              Text(
-                widget.title + ": ",
-                style: TextStyle(
-                  color: isExpanded
-                      ? Theme.of(context).colorScheme.secondary
-                      : null,
+              SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:
+                      Center(child: Container() //CircularProgressIndicator(),
+                          ),
                 ),
               ),
-              const SizedBox(
-                width: 10,
-              ),
-              ValueListenableBuilder(
-                valueListenable: _currentIcon,
-                builder: (BuildContext context, int value, Widget child) {
-                  return getIcon(value);
-                },
+              Divider(
+                height: 0,
               ),
             ],
-          ),
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
-                  child: ToggleButtons(
-                    children: <Widget>[
-                      Icon(Icons.date_range_sharp),
-                      Icon(Icons.text_fields),
+          )
+        : Column(
+            children: <Widget>[
+              ExpansionTile(
+                onExpansionChanged: (expanded) {
+                  setState(() {
+                    isExpanded = expanded;
+                  });
+                },
+                title: Row(
+                  children: <Widget>[
+                    Icon(
+                      widget.icon,
+                      color: isExpanded
+                          ? Theme.of(context).colorScheme.secondary
+                          : null,
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    Text(
+                      widget.title + ": ",
+                      style: TextStyle(
+                        color: isExpanded
+                            ? Theme.of(context).colorScheme.secondary
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    ValueListenableBuilder(
+                      valueListenable: _currentIcon,
+                      builder: (BuildContext context, int value, Widget child) {
+                        return getIcon(value);
+                      },
+                    ),
+                  ],
+                ),
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                        child: ToggleButtons(
+                          children: <Widget>[
+                            Icon(Icons.date_range_sharp),
+                            Icon(Icons.text_fields),
+                          ],
+                          onPressed: (int index) async {
+                            setState(() {
+                              _currentIcon.value = index;
+                            });
+
+                            ProductSort sort = ProductSort.NAME;
+                            if (index == 0) {
+                              sort = ProductSort.DATE;
+                            }
+
+                            await prod.updateSorting(sort);
+                            setHighlight(index);
+                          },
+                          isSelected: isSelected,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
+                        child: IconButton(
+                          icon: Icon(Icons.swap_vert),
+                          onPressed: () {
+                            prod.reverseProducts();
+                          },
+                        ),
+                      ),
                     ],
-                    onPressed: (int index) async {
-                      setState(() {
-                        _currentIcon.value = index;
-                      });
-
-                      ProductSort sort = ProductSort.NAME;
-                      if (index == 0) {
-                        sort = ProductSort.DATE;
-                      }
-
-                      await prod.updateSorting(sort);
-                      setHighlight(index);
-                    },
-                    isSelected: isSelected,
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0, bottom: 8.0),
-                  child: IconButton(
-                    icon: Icon(Icons.swap_vert),
-                    onPressed: () {
-                      prod.reverseProducts();
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        Divider(height: 0),
-      ],
-    );
+                ],
+              ),
+              Divider(height: 0),
+            ],
+          );
   }
 }
