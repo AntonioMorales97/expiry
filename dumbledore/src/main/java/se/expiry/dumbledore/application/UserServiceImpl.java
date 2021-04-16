@@ -19,9 +19,23 @@ public class UserServiceImpl implements UserService{
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User changePassword(String id, String email, String password) {
+    public void changePassword(String id, String oldPassword,String password) {
+        Optional<User> user = userRepo.findById(id);
+        if(user.isEmpty()){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "No user found by id");
+            throw new ExpiryException(exceptionDetail);
+        }
+
+        boolean match = passwordEncoder.matches(oldPassword,user.get().getPassword());
+        if(!match){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(403, "Old password was incorrect");
+            throw new ExpiryException(exceptionDetail);
+        }
         String hashedPassword = passwordEncoder.encode(password);
-       return userRepo.changePassword( id ,email ,hashedPassword);
+       if( userRepo.changePassword( id  ,hashedPassword) == null){
+           ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Could not find resource to update.");
+           throw new ExpiryException(exceptionDetail);
+       }
     }
 
     @Override

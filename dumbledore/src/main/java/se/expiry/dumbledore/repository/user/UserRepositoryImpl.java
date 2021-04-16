@@ -18,14 +18,8 @@ public class UserRepositoryImpl implements  UserRepositoryCustom{
     private final MongoTemplate mongoTemplate;
 
     @Override
-    public User changePassword(String id, String email, String hashedPassword) {
-        Query query;
-        if(id != null) {
-            query = new Query(Criteria.where("_id").is(id));
-        }
-        else{
-            query = new Query(Criteria.where("email").is(email));
-        }
+    public User changePassword(String id, String hashedPassword) {
+        Query query = new Query(Criteria.where("_id").is(id));
         Update update = new Update();
         update.set("password",hashedPassword);
         return mongoTemplate.findAndModify(query, update, User.class);
