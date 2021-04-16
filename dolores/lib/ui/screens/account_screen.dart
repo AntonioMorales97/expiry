@@ -1,11 +1,10 @@
-import 'package:dolores/helpers/api_exception.dart';
+import 'package:dolores/helpers/expiry_helper.dart';
 import 'package:dolores/models/user.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/dolores_password_field.dart';
-import 'package:dolores/ui/widgets/error_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,27 +38,17 @@ class _AccountScreen extends State<AccountScreen> {
   }
 
   void doChangePassword() async {
+    //TODO: MAYBE ANOTHER PROVIDER? :>
     final auth = Provider.of<AuthProvider>(context, listen: false);
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-      //TODO: MAYBE ANOTHER PROVIDER? :>
-      try {
-        await auth.changePassword(
-            _user.email, _oldPassword, _password, _rePassword);
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return ErrorDialog(error: 'Lösenordet är uppdaterat!');
-            });
-        form.reset();
-      } on ApiException catch (apiException) {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return ErrorDialog(error: apiException.detail);
-            });
-      }
+      await ExpiryHelper.callFunctionErrorHandler(
+          auth.changePassword(
+              _user.email, _oldPassword, _password, _rePassword),
+          success: 'Lösenordet är uppdaterat!',
+          context: context,
+          form: form);
     }
   }
 

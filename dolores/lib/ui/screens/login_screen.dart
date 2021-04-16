@@ -1,3 +1,4 @@
+import 'package:dolores/helpers/expiry_helper.dart';
 import 'package:dolores/helpers/validation.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
@@ -43,7 +44,12 @@ class _LoginScreenState extends State<LoginScreen> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-      auth.login(_email, _password, rememberMe: _rememberMe);
+      //TODO kastar vi error i filtch?
+      ExpiryHelper.callFunctionErrorHandler(
+          auth.login(_email, _password, rememberMe: _rememberMe),
+          context: context,
+          form: form);
+      //auth.login(_email, _password, rememberMe: _rememberMe);
     }
   }
 

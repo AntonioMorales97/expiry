@@ -53,17 +53,12 @@ class AuthProvider with ChangeNotifier {
     try {
       User user = await filtchRepository.authenticate(email, password,
           rememberMe: rememberMe);
-
       _user = user;
       _token = await filtchRepository.getToken();
-
+      isRequesting = false;
       notifyListeners();
     } on ApiException catch (apiException) {
-      _errorMessage = ValidationItem(null, apiException.detail);
-      notifyListeners();
-    } catch (error) {
-      _errorMessage = ValidationItem(null, error.toString());
-      notifyListeners();
+      throw apiException;
     }
   }
 

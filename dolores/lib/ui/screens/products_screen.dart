@@ -26,6 +26,8 @@ class _ProductsScreen extends State<ProductsScreen> {
   }
 
   Future<void> _fetch() async {
+    //TODO FUNKAR EJ att göra såhär blir nå fel, för trött orkar inte kolla idag.
+    //ExpiryHelper.callFunctionErrorHandler(_productProvider.getStores());
     await _productProvider.getStores();
 
     if (!mounted) return;
@@ -83,6 +85,7 @@ class _ProductsScreen extends State<ProductsScreen> {
                         dateHintText: 'Välj utgångsdatum',
                         submitButtonText: 'LÄGG TILL',
                         onSubmit: (newQrCode, newName, newDate) {
+                          //TODO error handling
                           _productProvider.addProduct(
                               newQrCode, newName, newDate);
                         });
