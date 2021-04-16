@@ -149,7 +149,6 @@ class __DrawerListItemExpandState extends State<_DrawerListItemExpand> {
   }
 
   getPreference() async {
-    await Future.delayed(Duration(seconds: 3));
     final Preference preference = await prod.fetchPreference();
 
     if (!mounted) return;

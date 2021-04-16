@@ -1,12 +1,14 @@
 import 'package:dolores/helpers/api_exception.dart';
 import 'package:dolores/models/user.dart';
 import 'package:dolores/models/validation_item.dart';
+import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:dolores/repositories/preference_repository.dart';
 import 'package:flutter/material.dart';
 
 class AuthProvider with ChangeNotifier {
   FiltchRepository filtchRepository = FiltchRepository();
+  DumbledoreRepository dumbledoreRepository = DumbledoreRepository();
   PreferenceRepository prefRepo = PreferenceRepository();
 
   ValidationItem _errorMessage = ValidationItem(null, null);
@@ -55,6 +57,20 @@ class AuthProvider with ChangeNotifier {
       _token = await filtchRepository.getToken();
 
       notifyListeners();
+    } on ApiException catch (apiException) {
+      _errorMessage = ValidationItem(null, apiException.detail);
+      notifyListeners();
+    } catch (error) {
+      _errorMessage = ValidationItem(null, error.toString());
+      notifyListeners();
+    }
+  }
+
+  void changePassword(
+      String email, String oldPassword, String password, String rePassword) {
+    try {
+      dumbledoreRepository.changePassword(
+          email, oldPassword, password, rePassword);
     } on ApiException catch (apiException) {
       _errorMessage = ValidationItem(null, apiException.detail);
       notifyListeners();

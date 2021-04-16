@@ -28,20 +28,19 @@ class DumbledoreRepository {
   /**
    * Måste kanske byta return från dumbledore här.
    */
-  Future<dynamic> changePassword(
-      String email, String password, String rePassword) async {
+  Future<dynamic> changePassword(String email, String oldPassword,
+      String password, String rePassword) async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
-    dynamic resp = await _httpCaller
+    await _httpCaller
         .doPut(baseUrl + changePasswordUrl, headers: httpHeaders, body: {
       'email': email,
+      'oldPassword': oldPassword,
       'password': password,
       'rePassword': rePassword,
     });
-
-    return resp;
   }
 
   /**
