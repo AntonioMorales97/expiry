@@ -31,10 +31,6 @@ class ProductProvider with ChangeNotifier {
   Store get currentStore => _currentStore.copyWith();
   Preference get preference => _preference.copyWith();
 
-  // ProductProvider() {
-  //   print("CREATED PRODUCTPROVIDER");
-  // }
-
   setStore(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
     _currentStore = store;
