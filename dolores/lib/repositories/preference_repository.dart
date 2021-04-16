@@ -31,7 +31,7 @@ class PreferenceRepository {
     } else {
       try {
         preference = await fetchPreferenceFromBackend();
-        savePreference(preference);
+        await savePreference(preference);
       } catch (error) {
         //todo log?
         return null;
@@ -59,7 +59,7 @@ class PreferenceRepository {
   Future<void> removePreferenceFromLocalStorage() async {
     await _storage.ready;
     await _storage.deleteItem('preferences');
-    String s = await _storage.getItem('preferences');
+    await _storage.getItem('preferences');
   }
 
   Future<Preference> fetchPreferenceFromBackend() async {

@@ -25,10 +25,13 @@ class _MyAppState extends State<MyApp> {
           create: (_) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ProductProvider>(
-          create: (_) => ProductProvider(),
-          update: (context, authProv, _) =>
-              ProductProvider(), //TODO: dont do this
-        ),
+            create: (_) => ProductProvider(),
+            update: (context, authProv, productProvider) {
+              if (!authProv.isAuth) {
+                productProvider.clearStates();
+              }
+              return productProvider;
+            }),
       ],
       child: MaterialApp(
         title: 'Expiry',
