@@ -9,7 +9,8 @@ class ApiException implements Exception {
         errors = json['errors'] == null
             ? null
             : (json['errors'] as List)
-                .map((error) => ErrorDetail.fromJson(error));
+                .map((error) => ErrorDetail.fromJson(error))
+                .toList();
 
   @override
   String toString() {

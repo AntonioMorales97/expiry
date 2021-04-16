@@ -1,9 +1,11 @@
+import 'package:dolores/helpers/api_exception.dart';
 import 'package:dolores/models/user.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/dolores_password_field.dart';
+import 'package:dolores/ui/widgets/error_dialog.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -42,7 +44,22 @@ class _AccountScreen extends State<AccountScreen> {
     if (form.validate()) {
       form.save();
       //TODO: MAYBE ANOTHER PROVIDER? :>
-      auth.changePassword(_user.email, _oldPassword, _password, _rePassword);
+      try {
+        await auth.changePassword(
+            _user.email, _oldPassword, _password, _rePassword);
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ErrorDialog(error: 'Lösenordet är uppdaterat!');
+            });
+        form.reset();
+      } on ApiException catch (apiException) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return ErrorDialog(error: apiException.detail);
+            });
+      }
     }
   }
 
@@ -155,16 +172,17 @@ class _AccountScreen extends State<AccountScreen> {
                             height: 15.0,
                           ),
                           DoloresButton(
-                            child: Text(
-                              'SPARA',
-                              style: TextStyle(letterSpacing: 2),
+                            child: Consumer<AuthProvider>(
+                              builder: (context, auth, _) => auth.isRequesting
+                                  ? CircularProgressIndicator()
+                                  : Text(
+                                      'SPARA',
+                                      style: TextStyle(letterSpacing: 2),
+                                    ),
                             ),
                             onPressed: () {
                               doChangePassword();
                             },
-                          ),
-                          SizedBox(
-                            height: 15.0,
                           ),
                         ],
                       ),
@@ -173,28 +191,6 @@ class _AccountScreen extends State<AccountScreen> {
                 ],
               ),
       ),
-    );
-  }
-
-  Future<bool> promptConfirm() async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          actionsPadding: EdgeInsets.only(bottom: 20),
-          title: const Text("Confirm"),
-          content: const Text("Are you sure you wish to delete this item?"),
-          actions: <Widget>[
-            DoloresButton(
-                onPressed: () => Navigator.of(context).pop(true),
-                child: const Text("TA BORT")),
-            DoloresButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("AVBRYT"),
-            ),
-          ],
-        );
-      },
     );
   }
 }
