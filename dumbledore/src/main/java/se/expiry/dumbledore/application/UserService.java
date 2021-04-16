@@ -7,7 +7,7 @@ import javax.validation.constraints.NotNull;
 
 public interface UserService {
 
-    User changePassword(@NotNull String id, String email, String password);
+    void changePassword(String id,String oldPassword,String password);
 
     Preference getPreferences(String id);
 

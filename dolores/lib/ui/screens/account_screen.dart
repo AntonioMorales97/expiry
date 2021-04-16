@@ -14,7 +14,11 @@ class AccountScreen extends StatefulWidget {
 }
 
 class _AccountScreen extends State<AccountScreen> {
+  final formKey = GlobalKey<FormState>();
   User _user;
+  String _rePassword;
+  String _password;
+  String _oldPassword;
 
   @override
   void initState() {
@@ -30,6 +34,16 @@ class _AccountScreen extends State<AccountScreen> {
     setState(() {
       this._user = user;
     });
+  }
+
+  void doChangePassword() async {
+    final auth = Provider.of<AuthProvider>(context, listen: false);
+    final form = formKey.currentState;
+    if (form.validate()) {
+      form.save();
+      //TODO: MAYBE ANOTHER PROVIDER? :>
+      auth.changePassword(_user.email, _oldPassword, _password, _rePassword);
+    }
   }
 
   @override
@@ -61,39 +75,40 @@ class _AccountScreen extends State<AccountScreen> {
                       size: 150,
                       color: Theme.of(context).colorScheme.secondary),
                   Form(
+                    key: formKey,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Column(
                         children: [
                           TextFormField(
+                            enabled: false,
                             textInputAction: TextInputAction.next,
                             initialValue: _user.firstName,
                             decoration: new InputDecoration(
                               labelText: 'Förnamn',
                             ),
-                            onSaved: (value) => value,
                           ),
                           const SizedBox(
                             height: 8.0,
                           ),
                           TextFormField(
+                            enabled: false,
                             textInputAction: TextInputAction.next,
                             initialValue: _user.lastName,
                             decoration: new InputDecoration(
                               labelText: 'Efternamn',
                             ),
-                            onSaved: (value) => value,
                           ),
                           const SizedBox(
                             height: 8.0,
                           ),
                           TextFormField(
+                            enabled: false,
                             textInputAction: TextInputAction.next,
                             initialValue: _user.email,
                             decoration: new InputDecoration(
                               labelText: 'E-postadress',
                             ),
-                            onSaved: (value) => value,
                           ),
                           SizedBox(
                             height: 8.0,
@@ -101,12 +116,27 @@ class _AccountScreen extends State<AccountScreen> {
                           DoloresPasswordField(
                             textInputAction: TextInputAction.done,
                             onSubmitted: (_) {
+                              //doLogin();
+                            },
+                            hintText: 'Skriv in gamla lösenordet',
+                            onSaved: (oldPassword) =>
+                                _oldPassword = oldPassword,
+                            validator: (oldPassword) => oldPassword.isEmpty
+                                ? 'Ange Gamla lösenordet'
+                                : null,
+                          ),
+                          SizedBox(
+                            height: 15.0,
+                          ),
+                          DoloresPasswordField(
+                            textInputAction: TextInputAction.done,
+                            onSubmitted: (_) {
                               // doLogin();
                             },
                             hintText: 'Lösenord',
-                            onSaved: (value) => value,
-                            validator: (value) =>
-                                value.isEmpty ? 'Ange lösenord' : null,
+                            onSaved: (password) => _password = password,
+                            validator: (password) =>
+                                password.isEmpty ? 'Ange lösenord' : null,
                           ),
                           SizedBox(
                             height: 8.0,
@@ -117,9 +147,9 @@ class _AccountScreen extends State<AccountScreen> {
                               //doLogin();
                             },
                             hintText: 'Skriv lösenord igen',
-                            onSaved: (value) => value,
-                            validator: (value) =>
-                                value.isEmpty ? 'Ange lösenord' : null,
+                            onSaved: (rePassword) => _rePassword = rePassword,
+                            validator: (rePassword) =>
+                                rePassword.isEmpty ? 'Ange lösenord' : null,
                           ),
                           SizedBox(
                             height: 15.0,
@@ -130,7 +160,7 @@ class _AccountScreen extends State<AccountScreen> {
                               style: TextStyle(letterSpacing: 2),
                             ),
                             onPressed: () {
-                              //TODO ändra endpoint i dumbledore så allt kan updateras.
+                              doChangePassword();
                             },
                           ),
                           SizedBox(

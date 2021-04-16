@@ -22,9 +22,9 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping(CHANGE_PASSWORD)
-    public User createTestData(@RequestBody @Valid PasswordResetRequestModel passwordResetRequestModel) {
-        return userService.changePassword(passwordResetRequestModel.getId(),
-                passwordResetRequestModel.getEmail(), passwordResetRequestModel.getPassword());
+    public void createTestData(@RequestBody @Valid PasswordResetRequestModel passwordResetRequestModel) {
+        UserDTO user = (UserDTO) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        userService.changePassword(user.getId(),passwordResetRequestModel.getOldPassword(), passwordResetRequestModel.getPassword());
     }
     @GetMapping(PREFERENCE)
     public Preference getUserPreferences(){
