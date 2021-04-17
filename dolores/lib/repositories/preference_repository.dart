@@ -15,7 +15,7 @@ class PreferenceRepository {
   final FiltchRepository filtchRepository = FiltchRepository();
 
   String _token;
-  //TODO save in dumbledore.
+
   Future<void> savePreference(Preference newPref) async {
     await _storage.ready;
     await _storage.setItem('preferences', jsonEncode(newPref.toJson()));

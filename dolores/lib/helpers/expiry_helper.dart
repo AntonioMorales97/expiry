@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'api_exception.dart';
 
 class ExpiryHelper {
-  //TODO Better name :-)?
   static Future<void> callFunctionErrorHandler(function,
       {String success, context, form}) async {
     try {
@@ -13,7 +12,7 @@ class ExpiryHelper {
         showDialog(
             context: context,
             builder: (BuildContext context) {
-              return SuccessDialog(success: success);
+              return ErrorSuccessDialog(success: true, message: success);
             });
       }
       if (form != null) {
@@ -23,7 +22,8 @@ class ExpiryHelper {
       showDialog(
           context: context,
           builder: (BuildContext context) {
-            return ErrorDialog(error: apiException.detail);
+            return ErrorSuccessDialog(
+                success: false, message: apiException.detail);
           });
     }
   }
