@@ -2,6 +2,7 @@ package se.expiry.dumbledore.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -9,6 +10,7 @@ import se.expiry.dumbledore.config.security.AccessDeniedHandlerJson;
 import se.expiry.dumbledore.config.security.FiltchAuthEntryPoint;
 import se.expiry.dumbledore.config.security.FiltchAuthFilter;
 import se.expiry.dumbledore.config.security.FiltchAuthProvider;
+import se.expiry.dumbledore.presentation.controller.LogController;
 
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -18,6 +20,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     public WebSecurityConfig(FiltchAuthProvider filtchAuthProvider) {
         this.filtchAuthProvider = filtchAuthProvider;
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().mvcMatchers("/log" + LogController.ANONYMOUS_ERROR);
     }
 
     /**
