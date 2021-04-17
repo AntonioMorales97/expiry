@@ -45,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (form.validate()) {
       form.save();
       //TODO kastar vi error i filtch?
-      ExpiryHelper.callFunctionErrorHandler(
+      await ExpiryHelper.callFunctionErrorHandler(
           auth.login(_email, _password, rememberMe: _rememberMe),
           context: context,
           form: form);

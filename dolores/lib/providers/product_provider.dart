@@ -55,7 +55,7 @@ class ProductProvider with ChangeNotifier {
     if (_preference.reverse) await _reverseProducts();
   }
 
-  void removeProduct(String productId) async {
+  Future<void> removeProduct(String productId) async {
     await dumbledoreRepository.deleteProductInStore(
         _currentStore.storeId, productId);
     _currentStore.products
@@ -78,7 +78,8 @@ class ProductProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void addProduct(String newQrCode, String newName, String newDate) async {
+  Future<void> addProduct(
+      String newQrCode, String newName, String newDate) async {
     Product newProd = await dumbledoreRepository.addProductToStore(
         _currentStore.storeId, newName, newQrCode, newDate);
 

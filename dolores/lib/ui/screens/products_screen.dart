@@ -1,3 +1,4 @@
+import 'package:dolores/helpers/expiry_helper.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
@@ -26,9 +27,7 @@ class _ProductsScreen extends State<ProductsScreen> {
   }
 
   Future<void> _fetch() async {
-    //TODO FUNKAR EJ att göra såhär blir nå fel, för trött orkar inte kolla idag.
-    //ExpiryHelper.callFunctionErrorHandler(_productProvider.getStores());
-    await _productProvider.getStores();
+    await ExpiryHelper.callFunctionErrorHandler(_productProvider.getStores());
 
     if (!mounted) return;
     setState(() {
@@ -85,9 +84,9 @@ class _ProductsScreen extends State<ProductsScreen> {
                         dateHintText: 'Välj utgångsdatum',
                         submitButtonText: 'LÄGG TILL',
                         onSubmit: (newQrCode, newName, newDate) {
-                          //TODO error handling
-                          _productProvider.addProduct(
-                              newQrCode, newName, newDate);
+                          ExpiryHelper.callFunctionErrorHandler(_productProvider
+                              .addProduct(newQrCode, newName, newDate));
+                          Navigator.of(context).pop();
                         });
                   },
                 );
@@ -114,7 +113,9 @@ class _ProductsScreen extends State<ProductsScreen> {
                               direction: DismissDirection.endToStart,
                               onDismissed: (direction) {
                                 //TODO: Dont remove if error from api.
-                                prod.removeProduct(product.productId);
+                                ExpiryHelper.callFunctionErrorHandler(
+                                    prod.removeProduct(product.productId));
+
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                         content: Text(product.name +

@@ -5,7 +5,7 @@ import 'api_exception.dart';
 
 class ExpiryHelper {
   //TODO Better name :-)?
-  static void callFunctionErrorHandler(function,
+  static Future<void> callFunctionErrorHandler(function,
       {String success, context, form}) async {
     try {
       await function;
