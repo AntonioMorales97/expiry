@@ -1,3 +1,4 @@
+import 'package:dolores/environment.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
 import 'package:dolores/repositories/http_caller.dart';
@@ -5,7 +6,7 @@ import 'package:dolores/repositories/http_caller.dart';
 import 'filtch_repository.dart';
 
 class DumbledoreRepository {
-  static const String baseUrl = 'http://10.0.2.2:9091';
+  final String baseUrl = env.dumbledoreBaseUrl;
   static const String changePasswordUrl = '/user/change-password';
   static const String storeBaseUrl = '/store';
   static const String productsUrl = "/products";

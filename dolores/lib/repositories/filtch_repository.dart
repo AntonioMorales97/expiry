@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dolores/environment.dart';
 import 'package:dolores/models/user.dart';
 import 'package:dolores/repositories/http_caller.dart';
 import 'package:localstorage/localstorage.dart';
@@ -7,7 +8,7 @@ import 'package:localstorage/localstorage.dart';
 import 'http_caller.dart';
 
 class FiltchRepository {
-  static const String baseUrl = 'http://10.0.2.2:9092';
+  final String baseUrl = env.filtchBaseUrl;
 
   final LocalStorage _storage = LocalStorage('filtch');
 

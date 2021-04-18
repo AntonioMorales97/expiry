@@ -6,17 +6,7 @@ import 'package:dolores/ui/screens/products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized();
-  runApp(MyApp());
-}
-
-class MyApp extends StatefulWidget {
-  @override
-  _MyAppState createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
+class Dolores extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -25,13 +15,14 @@ class _MyAppState extends State<MyApp> {
           create: (_) => AuthProvider(),
         ),
         ChangeNotifierProxyProvider<AuthProvider, ProductProvider>(
-            create: (_) => ProductProvider(),
-            update: (context, authProv, productProvider) {
-              if (!authProv.isAuth) {
-                productProvider.clearStates();
-              }
-              return productProvider;
-            }),
+          create: (_) => ProductProvider(),
+          update: (context, authProv, productProvider) {
+            if (!authProv.isAuth) {
+              productProvider.clearStates();
+            }
+            return productProvider;
+          },
+        ),
       ],
       child: MaterialApp(
         title: 'Expiry',
@@ -58,24 +49,6 @@ class _MyAppState extends State<MyApp> {
                   );
           },
         ),
-      ),
-    );
-  }
-}
-
-class AuthApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-          create: (_) => ProductProvider(),
-        ),
-      ],
-      child: MaterialApp(
-        title: 'Expiry',
-        theme: DoloresTheme.lightThemeData,
-        home: ProductsScreen(),
       ),
     );
   }

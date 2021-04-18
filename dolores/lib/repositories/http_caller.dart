@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:dolores/helpers/api_exception.dart';
 
@@ -8,6 +6,8 @@ class HttpCaller {
   static const String BEARER_PREFIX = 'Bearer ';
 
   Dio _dio;
+  Dio get dio => _dio;
+
   static final HttpCaller _httpCaller = HttpCaller._internal();
 
   factory HttpCaller() {
