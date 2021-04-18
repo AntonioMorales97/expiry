@@ -1,8 +1,8 @@
+import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/providers/product_provider.dart';
+import 'package:dolores/routes.dart';
 import 'package:dolores/theme.dart';
-import 'package:dolores/ui/screens/login_screen.dart';
-import 'package:dolores/ui/screens/products_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,30 +25,10 @@ class Dolores extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        navigatorKey: ErrorHandler.navigatorKey,
         title: 'Expiry',
         theme: DoloresTheme.lightThemeData,
-        home: Consumer<AuthProvider>(
-          builder: (
-            context,
-            authProv,
-            child,
-          ) {
-            return authProv.isAuth
-                ? ProductsScreen()
-                : FutureBuilder(
-                    future: authProv.tryAutoLogin(),
-                    builder: (context, authResultSnap) =>
-                        authResultSnap.connectionState ==
-                                ConnectionState.waiting
-                            ? Scaffold(
-                                body: Center(
-                                  child: CircularProgressIndicator(),
-                                ),
-                              )
-                            : LoginScreen(),
-                  );
-          },
-        ),
+        onGenerateRoute: routes,
       ),
     );
   }

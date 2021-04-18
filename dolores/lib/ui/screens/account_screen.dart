@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class AccountScreen extends StatefulWidget {
+  static const routeName = '/account';
+
   @override
   _AccountScreen createState() => _AccountScreen();
 }

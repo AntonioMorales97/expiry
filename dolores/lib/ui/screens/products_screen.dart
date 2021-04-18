@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductsScreen extends StatefulWidget {
+  static const routeName = '/';
+
   @override
   _ProductsScreen createState() => _ProductsScreen();
 }
@@ -74,6 +76,7 @@ class _ProductsScreen extends State<ProductsScreen> {
               heroTag: null,
               child: Icon(Icons.add),
               onPressed: () {
+                //throw Exception("TETST");
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -156,7 +159,8 @@ class _ProductsScreen extends State<ProductsScreen> {
           content: const Text("Are you sure you wish to delete this item?"),
           actions: <Widget>[
             DoloresButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () =>
+                    throw Exception("Test"), //Navigator.of(context).pop(true),
                 child: const Text("TA BORT")),
             DoloresButton(
               onPressed: () => Navigator.of(context).pop(false),
