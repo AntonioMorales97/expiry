@@ -42,7 +42,7 @@ class LocalizationOptions {
 
   static LocalizationOptions buildDefaultSwedishOptions() {
     return LocalizationOptions(
-      "se",
+      "sv",
       notificationReportModeTitle: "Ett fel inträffade",
       notificationReportModeContent:
           "Ett oväntat fel inträffade och en rapport har skickats till våra utvecklare.",

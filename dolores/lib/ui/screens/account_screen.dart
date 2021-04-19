@@ -66,7 +66,7 @@ class _AccountScreen extends State<AccountScreen> {
       ),
       drawer: AppDrawer(active: 'accounts'),
       body: SingleChildScrollView(
-        padding: EdgeInsets.only(top: 40, left: 5, right: 5),
+        padding: EdgeInsets.only(top: 0, left: 5, right: 5),
         child: _user == null
             ? Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -80,7 +80,7 @@ class _AccountScreen extends State<AccountScreen> {
             : Column(
                 children: [
                   Icon(Icons.account_circle_rounded,
-                      size: 150,
+                      size: 120,
                       color: Theme.of(context).colorScheme.secondary),
                   Form(
                     key: formKey,

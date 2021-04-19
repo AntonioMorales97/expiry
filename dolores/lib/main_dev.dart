@@ -2,11 +2,9 @@ import 'package:dolores/dolores.dart';
 import 'package:dolores/environment.dart';
 import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 import 'package:dolores/helpers/error_handler/handlers/http_handler.dart';
-import 'package:dolores/helpers/error_handler/mode/dialog_report_mode_exit.dart';
 import 'package:dolores/helpers/error_handler/model/localization_options.dart';
 import 'package:flutter/material.dart';
 
-import 'helpers/error_handler/handlers/console_handler.dart';
 import 'helpers/error_handler/mode/dialog_report_mode.dart';
 import 'helpers/error_handler/model/error_handler_options.dart';
 import 'helpers/error_handler/model/http_request_type.dart';

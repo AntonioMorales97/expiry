@@ -8,7 +8,6 @@
 /// Modifications Copyright (C) 2021 Expiry
 ///
 ///
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
@@ -290,7 +289,8 @@ class ErrorHandler with ReportModeAction {
     if (_isContextValid()) {
       BuildContext context = _getContext();
       if (context != null) {
-        locale = Localizations.localeOf(context);
+        ///Tar från system ( mobilens options) första alternativet).
+        locale = WidgetsBinding.instance.window.locales.first;
       }
       if (_currentConfig.localizationOptions != null) {
         for (var options in _currentConfig.localizationOptions) {
