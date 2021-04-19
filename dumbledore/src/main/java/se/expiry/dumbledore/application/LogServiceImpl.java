@@ -14,14 +14,13 @@ public class LogServiceImpl implements LogService {
     }
 
     @Override
-    public void addAnonymousLog(String email, String logTrace, String timestamp) {
+    public void addErrorLog(String email, String error, String stackTrace, String dateTime, String platformType) {
         Log log = new Log();
-        log.setLog(logTrace);
-        log.setTimestamp(timestamp);
-        if(email != null){
-            log.setEmail(email);
-        }
-        log.setType("Anonymous");
+        log.setEmail(email);
+        log.setError(error);
+        log.setStackTrace(stackTrace);
+        log.setDateTime(dateTime);
+        log.setPlatformType(platformType);
         logRepo.save(log);
     }
 }

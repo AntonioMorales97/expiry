@@ -40,6 +40,8 @@ class ConsoleHandler extends ReportHandler {
         "============================== ERROR LOG ==============================");
     _logger.info("Crash occurred on ${report.dateTime}");
     _logger.info("");
+    _logger.info("Email ${report.email}");
+    _logger.info("");
     if (enableDeviceParameters) {
       _printDeviceParametersFormatted(report.deviceParameters);
       _logger.info("");

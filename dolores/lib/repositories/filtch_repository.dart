@@ -64,8 +64,12 @@ class FiltchRepository {
         : User.fromJson(jsonDecode(serializedUser));
   }
 
-  Future<void> _saveEmail(String email) async {
-    await _storage.ready;
-    await _storage.setItem('email', email);
+  Future<String> getEmail() async {
+    User user = await getUser();
+    if (user == null) {
+      return 'anonymous';
+    } else {
+      return user.email;
+    }
   }
 }

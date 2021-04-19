@@ -24,6 +24,7 @@ import 'package:dolores/helpers/error_handler/model/report.dart';
 import 'package:dolores/helpers/error_handler/model/report_handler.dart';
 import 'package:dolores/helpers/error_handler/model/report_mode.dart';
 import 'package:dolores/helpers/error_handler/utils/error_handler_widget.dart';
+import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -313,6 +314,8 @@ class ErrorHandler with ReportModeAction {
     switch (language.toLowerCase()) {
       case "en":
         return LocalizationOptions.buildDefaultEnglishOptions();
+      case "se":
+        return LocalizationOptions.buildDefaultSwedishOptions();
       default:
         return LocalizationOptions.buildDefaultEnglishOptions();
     }
@@ -337,7 +340,11 @@ class ErrorHandler with ReportModeAction {
       _setupLocalization();
     }
 
+    final filtchRepo = FiltchRepository();
+    String email = await filtchRepo.getEmail();
+
     Report report = Report(
+        email,
         error,
         stackTrace,
         DateTime.now(),

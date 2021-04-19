@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import se.expiry.dumbledore.application.LogService;
-import se.expiry.dumbledore.presentation.request.log.AnonymousLogRequestModel;
+import se.expiry.dumbledore.presentation.request.log.ErrorLogRequestModel;
 
 import javax.validation.Valid;
 import java.util.HashMap;
@@ -15,8 +15,7 @@ import java.util.HashMap;
 @RestController
 @RequestMapping("/log")
 public class LogController {
-    public static final String USER_ERROR = "/user-error";
-    public static final String ANONYMOUS_ERROR = "/anonymous-error";
+    public static final String ERROR_LOG = "/error-log";
 
     private LogService logService;
 
@@ -24,16 +23,11 @@ public class LogController {
         this.logService = logService;
     }
 
-    @PostMapping(USER_ERROR)
-    public ResponseEntity<HashMap<String, String>> userError(){
-        return getResponse("LOGGED");
-    }
-
-
-    @PostMapping(ANONYMOUS_ERROR)
-    public ResponseEntity<HashMap<String, String>> anonymousError(@Valid @RequestBody AnonymousLogRequestModel request){
+    //TODO: Impl rate limit
+    @PostMapping(ERROR_LOG)
+    public ResponseEntity<HashMap<String, String>> errorLog(@Valid @RequestBody ErrorLogRequestModel request){
         System.out.println(System.currentTimeMillis());
-        logService.addAnonymousLog(request.getEmail(), request.getLog(), request.getTimestamp());
+        logService.addErrorLog(request.getEmail(), request.getError(), request.getStackTrace(), request.getDateTime(), request.getPlatformType());
         return getResponse("LOGGED");
     }
 

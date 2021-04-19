@@ -15,6 +15,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Report {
+  ///Email
+  final String email;
+
   /// Error that has been caught
   final dynamic error;
 
@@ -41,6 +44,7 @@ class Report {
 
   /// Creates report instance
   Report(
+      this.email,
       this.error,
       this.stackTrace,
       this.dateTime,
@@ -58,6 +62,7 @@ class Report {
     bool enableCustomParameters = false,
   }) {
     Map<String, dynamic> json = <String, dynamic>{
+      "email": email,
       "error": error.toString(),
       "customParameters": customParameters,
       "dateTime": dateTime.toIso8601String(),

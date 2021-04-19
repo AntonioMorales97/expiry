@@ -15,17 +15,16 @@ public class Log {
 
     private String email;
 
-    private String firstName;
-    private String lastName;
+    @NotNull
+    private String stackTrace;
 
     @NotNull
-    private String log;
+    private String error;
+
+    private String platformType;
 
     @NotNull
-    private String type;
-
-    @NotNull
-    private String timestamp;
+    private String dateTime;
 
     public Log(){}
 }
