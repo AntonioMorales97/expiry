@@ -65,7 +65,7 @@ class DialogReportModeExit extends ReportMode {
 
   @override
   List<PlatformType> getSupportedPlatforms() =>
-      [PlatformType.Web, PlatformType.Android, PlatformType.iOS];
+      [PlatformType.Android, PlatformType.iOS];
 }
 
 class _ExitDialog extends StatefulWidget {
