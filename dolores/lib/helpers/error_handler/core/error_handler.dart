@@ -199,6 +199,7 @@ class ErrorHandler with ReportModeAction {
       }
       callback();
     }, (dynamic error, StackTrace stackTrace) {
+      _logger.info("Error!");
       _reportError(error, stackTrace);
     });
   }

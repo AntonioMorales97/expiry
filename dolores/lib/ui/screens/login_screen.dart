@@ -92,6 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     TextFormField(
                       textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.emailAddress,
                       controller: _emailEditingController,
                       decoration: new InputDecoration(
                         hintText: 'E-postadress',

@@ -17,9 +17,9 @@ dependencies:
   cupertino_icons: ^1.0.2
   provider: ^5.0.0
   dio: ^4.0.0
-  localstorage: ^3.0.6
+  localstorage: 4.0.0+1
   intl: ^0.17.0
-  flutter_barcode_scanner: ^1.0.2
+  flutter_barcode_scanner: 2.0.0
   flutter_svg: ^0.21.0+1
   device_info: ^2.0.0
   package_info: ^2.0.0

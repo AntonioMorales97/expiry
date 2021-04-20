@@ -9,7 +9,6 @@ import 'helpers/error_handler/mode/dialog_report_mode.dart';
 import 'helpers/error_handler/model/error_handler_options.dart';
 
 void main() {
-  WidgetsFlutterBinding.ensureInitialized();
   _initEnv();
 
   ErrorHandlerOptions developmentOptions = ErrorHandlerOptions(
@@ -21,9 +20,15 @@ void main() {
   );
 
   ErrorHandler(
-    rootWidget: Dolores(),
+    runAppFunction: _runApp,
     developmentConfig: developmentOptions,
   );
+}
+
+void _runApp() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(Dolores());
 }
 
 void _initEnv() {
