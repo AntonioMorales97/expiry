@@ -29,9 +29,9 @@ class LocalizationOptions {
         "Unexpected error occurred in application. A report has been sent to our developers.",
     this.dialogReportModeTitle = "Error occurred",
     this.dialogReportModeDescription:
-        'Unexpected error occurred in application. A report is ready to be sent to our developers. Please click Accept to send the error report.',
-    this.dialogReportModeAccept: 'Accept',
-    this.dialogReportModeCancel: 'Reject',
+        'Unexpected error occurred in application. A report is ready to be sent to our developers. Please click Send to send the error report.',
+    this.dialogReportModeAccept: 'Send',
+    this.dialogReportModeCancel: 'Cancel',
     this.retry = "Retry",
     this.close = "Close",
   });

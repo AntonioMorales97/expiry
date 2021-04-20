@@ -1,4 +1,5 @@
 import 'package:dolores/helpers/error_handler/handlers/console_handler.dart';
+import 'package:dolores/helpers/error_handler/handlers/http_handler.dart';
 import 'package:dolores/helpers/error_handler/mode/dialog_report_mode.dart';
 import 'package:dolores/helpers/error_handler/mode/silent_report_mode.dart';
 import 'package:dolores/helpers/error_handler/model/report_handler.dart';
@@ -61,9 +62,9 @@ class ErrorHandlerOptions {
 
   /// Builds default catcher options production instance
   ErrorHandlerOptions.getProductionOptions()
-      : this.handlers = [ConsoleHandler()],
+      : this.handlers = [HttpHandler()],
         this.reportMode = SilentReportMode(),
-        handlerTimeout = 10000,
+        handlerTimeout = 6000,
         customParameters = <String, dynamic>{},
         localizationOptions = [],
         this.explicitExceptionReportModesMap = {},

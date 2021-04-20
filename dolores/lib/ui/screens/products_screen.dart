@@ -159,8 +159,7 @@ class _ProductsScreen extends State<ProductsScreen> {
           content: const Text("Are you sure you wish to delete this item?"),
           actions: <Widget>[
             DoloresButton(
-                onPressed: () =>
-                    throw Exception("Test"), //Navigator.of(context).pop(true),
+                onPressed: () => Navigator.of(context).pop(true),
                 child: const Text("TA BORT")),
             DoloresButton(
               onPressed: () => Navigator.of(context).pop(false),

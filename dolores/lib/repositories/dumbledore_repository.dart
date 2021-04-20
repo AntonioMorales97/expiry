@@ -9,10 +9,19 @@ class DumbledoreRepository {
   final String baseUrl = env.dumbledoreBaseUrl;
   static const String changePasswordUrl = '/user/change-password';
   static const String storeBaseUrl = '/store';
-  static const String productsUrl = "/products";
+  static const String productsUrl = '/products';
 
   final HttpCaller _httpCaller = HttpCaller();
   final FiltchRepository filtchRepository = FiltchRepository();
+
+  static final DumbledoreRepository _dumbledoreRepository =
+      DumbledoreRepository._internal();
+
+  factory DumbledoreRepository() {
+    return _dumbledoreRepository;
+  }
+
+  DumbledoreRepository._internal();
 
   String _token;
 
@@ -26,9 +35,7 @@ class DumbledoreRepository {
     }
   }
 
-  /**
-   * Måste kanske byta return från dumbledore här.
-   */
+  //TODO: Måste kanske byta return från dumbledore här.
   Future<dynamic> changePassword(String email, String oldPassword,
       String password, String rePassword) async {
     await _checkToken();
@@ -44,9 +51,12 @@ class DumbledoreRepository {
     });
   }
 
-  /**
-   * STORE REQUESTS BELOW
-   */
+  Future<dynamic> sendErrorLog(Map<String, dynamic> json) async {
+    final resp =
+        await _httpCaller.doPost(baseUrl + '/log/error-log', body: json);
+    return resp;
+  }
+
   Future<List<Store>> getStore() async {
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();

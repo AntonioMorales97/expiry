@@ -1,5 +1,7 @@
 package se.expiry.dumbledore.application;
 
+import se.expiry.dumbledore.presentation.request.log.ErrorLogRequestModel;
+
 public interface LogService {
-    void addErrorLog(String email, String error, String stackTrace, String dateTime, String platformType);
+    void addErrorLog(ErrorLogRequestModel errorLogRequest);
 }

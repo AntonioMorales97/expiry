@@ -1,19 +1,12 @@
+import 'dart:io';
+
+import 'package:dolores/helpers/error_handler/model/exceptions.dart';
+import 'package:dolores/helpers/error_handler/model/localization_options.dart';
 import 'package:dolores/helpers/error_handler/model/platform_type.dart';
 import 'package:dolores/helpers/error_handler/model/report.dart';
 import 'package:dolores/helpers/error_handler/model/report_mode.dart';
+import 'package:dolores/helpers/error_handler/model/status.dart';
 import 'package:dolores/helpers/error_handler/utils/error_handler_utils.dart';
-
-///
-/// Copyright (C) 2020 Catcher
-/// Licensed under the Apache License, Version 2.0 (http://www.apache.org/licenses/LICENSE-2.0)
-/// see: https://github.com/jhomlala/catcher
-///
-/// No NOTICE file.
-///
-/// Modifications Copyright (C) 2021 Expiry
-///
-///
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -38,46 +31,30 @@ class DialogReportMode extends ReportMode {
   }
 
   Widget _buildCupertinoDialog(Report report, BuildContext context) {
-    return CupertinoAlertDialog(
-      title: Text(localizationOptions.dialogReportModeTitle),
-      content: Text(localizationOptions.dialogReportModeDescription),
-      actions: <Widget>[
-        CupertinoDialogAction(
-          child: Text(localizationOptions.dialogReportModeAccept),
-          onPressed: () => _onAcceptReportClicked(context, report),
-        ),
-        CupertinoDialogAction(
-          child: Text(localizationOptions.dialogReportModeCancel),
-          onPressed: () => _onCancelReportClicked(context, report),
-        ),
-      ],
-    );
+    return _Dialog(
+        localizationOptions,
+        true,
+        () => _onAcceptReportClicked(context, report),
+        () => _onRejectReportClicked(context, report));
   }
 
   Widget _buildMaterialDialog(Report report, BuildContext context) {
-    return AlertDialog(
-      title: Text(localizationOptions.dialogReportModeTitle),
-      content: Text(localizationOptions.dialogReportModeDescription),
-      actions: <Widget>[
-        FlatButton(
-          child: Text(localizationOptions.dialogReportModeAccept),
-          onPressed: () => _onAcceptReportClicked(context, report),
-        ),
-        FlatButton(
-          child: Text(localizationOptions.dialogReportModeCancel),
-          onPressed: () => _onCancelReportClicked(context, report),
-        ),
-      ],
-    );
+    return _Dialog(
+        localizationOptions,
+        false,
+        () => _onAcceptReportClicked(context, report),
+        () => _onRejectReportClicked(context, report));
   }
 
-  void _onAcceptReportClicked(BuildContext context, Report report) {
-    super.onActionConfirmed(report);
+  Future<void> _onAcceptReportClicked(
+      BuildContext context, Report report) async {
+    await super.onActionConfirmed(report);
     Navigator.pop(context);
   }
 
-  void _onCancelReportClicked(BuildContext context, Report report) {
-    super.onActionRejected(report);
+  Future<void> _onRejectReportClicked(
+      BuildContext context, Report report) async {
+    await super.onActionRejected(report);
     Navigator.pop(context);
   }
 
@@ -89,4 +66,134 @@ class DialogReportMode extends ReportMode {
   @override
   List<PlatformType> getSupportedPlatforms() =>
       [PlatformType.Android, PlatformType.iOS];
+}
+
+class _Dialog extends StatefulWidget {
+  final LocalizationOptions _localizationOptions;
+  final bool _isCupertino;
+
+  const _Dialog(localizationOptions, isCupertino, onAccept, onReject)
+      : _localizationOptions = localizationOptions,
+        _isCupertino = isCupertino,
+        _onAccept = onAccept,
+        _onReject = onReject;
+
+  final Future<void> Function() _onAccept;
+  final Future<void> Function() _onReject;
+
+  @override
+  _DialogState createState() => _DialogState();
+}
+
+class _DialogState extends State<_Dialog> {
+  Status _status = Status.INIT;
+  String errorText = '';
+
+  _accept() async {
+    try {
+      setState(() {
+        _status = Status.LOADING;
+      });
+      await widget._onAccept();
+    } catch (error) {
+      _handleError(error);
+    }
+  }
+
+  _reject() async {
+    try {
+      await widget._onReject();
+    } catch (error) {
+      _handleError(error);
+    }
+  }
+
+  _handleError(ErrorHandlerException error) {
+    var displayErrorMsg = 'Sorry, something went wrong';
+    String errorMsg = error.getMessage();
+    if (errorMsg != null && errorMsg.isNotEmpty) displayErrorMsg = errorMsg;
+    setState(() {
+      _status = Status.ERROR;
+      errorText = displayErrorMsg;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget._isCupertino) {
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: CupertinoAlertDialog(
+          title: _status == Status.LOADING
+              ? Text('')
+              : Text(widget._localizationOptions.dialogReportModeTitle),
+          content: _status == Status.LOADING
+              ? Center(
+                  heightFactor: 2,
+                  child: CircularProgressIndicator(),
+                )
+              : Text(
+                  _status == Status.INIT
+                      ? widget._localizationOptions.dialogReportModeDescription
+                      : errorText,
+                ),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: Text(
+                _status == Status.INIT || _status == Status.LOADING
+                    ? widget._localizationOptions.dialogReportModeAccept
+                    : widget._localizationOptions.retry,
+              ),
+              onPressed: () => _accept(),
+            ),
+            CupertinoDialogAction(
+              child: Text(
+                _status == Status.INIT || _status == Status.LOADING
+                    ? widget._localizationOptions.dialogReportModeCancel
+                    : widget._localizationOptions.close,
+              ),
+              onPressed: () => _reject(),
+            ),
+          ],
+        ),
+      );
+    } else {
+      return WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          title: _status == Status.LOADING
+              ? Text('')
+              : Text(widget._localizationOptions.dialogReportModeTitle),
+          content: _status == Status.LOADING
+              ? Center(
+                  heightFactor: 2,
+                  child: CircularProgressIndicator(),
+                )
+              : Text(
+                  _status == Status.INIT
+                      ? widget._localizationOptions.dialogReportModeDescription
+                      : errorText,
+                ),
+          actions: <Widget>[
+            ElevatedButton(
+              child: Text(
+                _status == Status.INIT || _status == Status.LOADING
+                    ? widget._localizationOptions.dialogReportModeAccept
+                    : widget._localizationOptions.retry,
+              ),
+              onPressed: _status == Status.LOADING ? null : () => _accept(),
+            ),
+            ElevatedButton(
+              child: Text(
+                _status == Status.INIT || _status == Status.LOADING
+                    ? widget._localizationOptions.dialogReportModeCancel
+                    : widget._localizationOptions.close,
+              ),
+              onPressed: _status == Status.LOADING ? null : () => _reject(),
+            ),
+          ],
+        ),
+      );
+    }
+  }
 }

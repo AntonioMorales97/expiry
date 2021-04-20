@@ -27,7 +27,7 @@ public class LogController {
     @PostMapping(ERROR_LOG)
     public ResponseEntity<HashMap<String, String>> errorLog(@Valid @RequestBody ErrorLogRequestModel request){
         System.out.println(System.currentTimeMillis());
-        logService.addErrorLog(request.getEmail(), request.getError(), request.getStackTrace(), request.getDateTime(), request.getPlatformType());
+        logService.addErrorLog(request);
         return getResponse("LOGGED");
     }
 

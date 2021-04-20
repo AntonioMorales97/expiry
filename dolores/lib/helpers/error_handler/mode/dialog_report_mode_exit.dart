@@ -175,7 +175,7 @@ class _ExitDialogState extends State<_ExitDialog> {
                       : errorText,
                 ),
           actions: <Widget>[
-            FlatButton(
+            ElevatedButton(
               child: Text(
                 _status == Status.INIT || _status == Status.LOADING
                     ? widget._localizationOptions.dialogReportModeAccept
@@ -183,7 +183,7 @@ class _ExitDialogState extends State<_ExitDialog> {
               ),
               onPressed: _status == Status.LOADING ? null : () => _accept(),
             ),
-            FlatButton(
+            ElevatedButton(
               child: Text(
                 _status == Status.INIT || _status == Status.LOADING
                     ? widget._localizationOptions.dialogReportModeCancel

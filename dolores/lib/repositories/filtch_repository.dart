@@ -14,6 +14,15 @@ class FiltchRepository {
 
   final HttpCaller _httpCaller = HttpCaller();
 
+  static final FiltchRepository _filtchRepository =
+      FiltchRepository._internal();
+
+  factory FiltchRepository() {
+    return _filtchRepository;
+  }
+
+  FiltchRepository._internal();
+
   Future<User> authenticate(String email, String password,
       {bool rememberMe = false}) async {
     final Map<String, dynamic> resp =

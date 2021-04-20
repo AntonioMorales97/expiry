@@ -5,6 +5,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.util.Map;
 
 @Data
 @Document
@@ -16,15 +17,19 @@ public class Log {
     private String email;
 
     @NotNull
-    private String stackTrace;
-
-    @NotNull
     private String error;
-
-    private String platformType;
 
     @NotNull
     private String dateTime;
+
+    private String platformType;
+
+    private Map<String, Object> deviceParameters;
+
+    private Map<String, Object> applicationParameters;
+
+    @NotNull
+    private String stackTrace;
 
     public Log(){}
 }

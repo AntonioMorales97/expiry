@@ -314,7 +314,7 @@ class ErrorHandler with ReportModeAction {
     switch (language.toLowerCase()) {
       case "en":
         return LocalizationOptions.buildDefaultEnglishOptions();
-      case "se":
+      case "sv":
         return LocalizationOptions.buildDefaultSwedishOptions();
       default:
         return LocalizationOptions.buildDefaultEnglishOptions();
@@ -344,15 +344,15 @@ class ErrorHandler with ReportModeAction {
     String email = await filtchRepo.getEmail();
 
     Report report = Report(
-        email,
-        error,
-        stackTrace,
-        DateTime.now(),
-        _deviceParameters,
-        _applicationParameters,
-        _currentConfig.customParameters,
-        errorDetails,
-        _getPlatformType());
+      email,
+      error,
+      stackTrace,
+      DateTime.now(),
+      _deviceParameters,
+      _applicationParameters,
+      errorDetails,
+      _getPlatformType(),
+    );
     _cachedReports.add(report);
     ReportMode reportMode =
         _getReportModeFromExplicitExceptionReportModeMap(error);

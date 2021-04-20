@@ -9,57 +9,26 @@
 ///
 ///
 
-import 'dart:collection';
-
-import 'package:dio/dio.dart';
 import 'package:dolores/helpers/error_handler/model/exceptions.dart';
-import 'package:dolores/helpers/error_handler/model/http_request_type.dart';
 import 'package:dolores/helpers/error_handler/model/platform_type.dart';
 import 'package:dolores/helpers/error_handler/model/report.dart';
 import 'package:dolores/helpers/error_handler/model/report_handler.dart';
 import 'package:dolores/helpers/error_handler/utils/error_handler_utils.dart';
+import 'package:dolores/repositories/dumbledore_repository.dart';
 
 import 'package:logging/logging.dart';
 
 class HttpHandler extends ReportHandler {
-  final Dio _dio = Dio();
   final Logger _logger = Logger("HttpHandler");
 
-  final HttpRequestType requestType;
-  final Uri endpointUri;
-  final Map<String, dynamic> headers;
   final int requestTimeout;
   final int responseTimeout;
-  final bool printLogs;
-  final bool enableDeviceParameters;
-  final bool enableApplicationParameters;
-  final bool enableStackTrace;
-  final bool enableCustomParameters;
 
-  HttpHandler(
-    this.requestType,
-    this.endpointUri, {
-    Map<String, dynamic> headers,
+  HttpHandler({
     this.requestTimeout = 5000,
     this.responseTimeout = 5000,
-    this.printLogs = false,
-    this.enableDeviceParameters = true,
-    this.enableApplicationParameters = true,
-    this.enableStackTrace = true,
-    this.enableCustomParameters = false,
-  })  : assert(requestType != null, "requestType can't be null"),
-        assert(endpointUri != null, "endpointUri can't be null"),
-        assert(requestTimeout != null, "requestTimeout can't be null"),
-        assert(responseTimeout != null, "responseTimeout can't be null"),
-        assert(printLogs != null, "printLogs can't be null"),
-        assert(enableDeviceParameters != null,
-            "enableDeviceParameters can't be null"),
-        assert(enableApplicationParameters != null,
-            "enableApplicationParameters can't be null"),
-        assert(enableStackTrace != null, "enableStackTrace can't be null"),
-        assert(enableCustomParameters != null,
-            "enableCustomParameters can't be null"),
-        this.headers = headers != null ? headers : <String, dynamic>{};
+  })  : assert(requestTimeout != null, "requestTimeout can't be null"),
+        assert(responseTimeout != null, "responseTimeout can't be null");
 
   @override
   Future<void> handle(Report error) async {
@@ -70,31 +39,21 @@ class HttpHandler extends ReportHandler {
       }
     }
 
-    if (requestType == HttpRequestType.POST) {
-      await _sendPost(error);
-    }
+    await _sendPost(error);
   }
 
   Future<void> _sendPost(Report error) async {
     try {
-      var json = error.toJson(
-          enableDeviceParameters: enableDeviceParameters,
-          enableApplicationParameters: enableApplicationParameters,
-          enableStackTrace: enableStackTrace,
-          enableCustomParameters: enableCustomParameters);
-      HashMap<String, dynamic> mutableHeaders = HashMap<String, dynamic>();
-      if (headers != null) {
-        mutableHeaders.addAll(headers);
-      }
-      Options options = Options(
-          sendTimeout: requestTimeout,
-          receiveTimeout: responseTimeout,
-          headers: mutableHeaders);
-      _printLog("Calling: ${endpointUri.toString()}");
-      Response response = await _dio.post<dynamic>(endpointUri.toString(),
-          data: json, options: options);
-      _printLog(
-          "HttpHandler response status: ${response.statusCode} body: ${response.data}");
+      var json = error.toJson();
+
+      _printLog("Sending error to Dumbledore...");
+
+      final dumbledoreRepo = DumbledoreRepository();
+      final response = await dumbledoreRepo.sendErrorLog(json);
+
+      _printLog("Error sent!");
+
+      _printLog("HttpHandler response: $response");
     } catch (error, stackTrace) {
       _printLog("HttpHandler error: $error, stackTrace: $stackTrace");
       throw FailException(
@@ -103,9 +62,7 @@ class HttpHandler extends ReportHandler {
   }
 
   void _printLog(String log) {
-    if (printLogs) {
-      _logger.info(log);
-    }
+    _logger.info(log);
   }
 
   @override

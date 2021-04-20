@@ -15,24 +15,7 @@ import 'package:logging/logging.dart';
 ///
 
 class ConsoleHandler extends ReportHandler {
-  final bool enableDeviceParameters;
-  final bool enableApplicationParameters;
-  final bool enableStackTrace;
-  final bool enableCustomParameters;
   Logger _logger = Logger("ConsoleHandler");
-
-  ConsoleHandler(
-      {this.enableDeviceParameters = true,
-      this.enableApplicationParameters = true,
-      this.enableStackTrace = true,
-      this.enableCustomParameters = false})
-      : assert(enableDeviceParameters != null,
-            "enableDeviceParameters can't be null"),
-        assert(enableApplicationParameters != null,
-            "enableApplicationParameters can't be null"),
-        assert(enableStackTrace != null, "enableStackTrace can't be null"),
-        assert(enableCustomParameters != null,
-            "enableCustomParameters can't be null");
 
   @override
   Future<void> handle(Report report) {
@@ -42,23 +25,19 @@ class ConsoleHandler extends ReportHandler {
     _logger.info("");
     _logger.info("Email ${report.email}");
     _logger.info("");
-    if (enableDeviceParameters) {
-      _printDeviceParametersFormatted(report.deviceParameters);
-      _logger.info("");
-    }
-    if (enableApplicationParameters) {
-      _printApplicationParametersFormatted(report.applicationParameters);
-      _logger.info("");
-    }
+
+    _printDeviceParametersFormatted(report.deviceParameters);
+    _logger.info("");
+
+    _printApplicationParametersFormatted(report.applicationParameters);
+    _logger.info("");
+
     _logger.info("---------- ERROR ----------");
     _logger.info("${report.error}");
     _logger.info("");
-    if (enableStackTrace) {
-      _printStackTraceFormatted(report.stackTrace);
-    }
-    if (enableCustomParameters) {
-      _printCustomParametersFormatted(report.customParameters);
-    }
+
+    _printStackTraceFormatted(report.stackTrace);
+
     _logger.info(
         "======================================================================");
 
@@ -76,13 +55,6 @@ class ConsoleHandler extends ReportHandler {
       Map<String, dynamic> applicationParameters) {
     _logger.info("------- APP INFO -------");
     for (var entry in applicationParameters.entries) {
-      _logger.info("${entry.key}: ${entry.value}");
-    }
-  }
-
-  void _printCustomParametersFormatted(Map<String, dynamic> customParameters) {
-    _logger.info("------- CUSTOM INFO -------");
-    for (var entry in customParameters.entries) {
       _logger.info("${entry.key}: ${entry.value}");
     }
   }

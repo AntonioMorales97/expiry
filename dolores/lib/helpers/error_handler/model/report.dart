@@ -33,9 +33,6 @@ class Report {
   /// Application info
   final Map<String, dynamic> applicationParameters;
 
-  /// Custom parameters passed to report
-  final Map<String, dynamic> customParameters;
-
   /// FlutterErrorDetails data if present
   final FlutterErrorDetails errorDetails;
 
@@ -50,36 +47,22 @@ class Report {
       this.dateTime,
       this.deviceParameters,
       this.applicationParameters,
-      this.customParameters,
       this.errorDetails,
       this.platformType);
 
   /// Creates json from current instance
-  Map<String, dynamic> toJson({
-    bool enableDeviceParameters = true,
-    bool enableApplicationParameters = true,
-    bool enableStackTrace = true,
-    bool enableCustomParameters = false,
-  }) {
+  Map<String, dynamic> toJson() {
     Map<String, dynamic> json = <String, dynamic>{
       "email": email,
       "error": error.toString(),
-      "customParameters": customParameters,
       "dateTime": dateTime.toIso8601String(),
       "platformType": describeEnum(platformType),
     };
-    if (enableDeviceParameters) {
-      json["deviceParameters"] = deviceParameters;
-    }
-    if (enableApplicationParameters) {
-      json["applicationParameters"] = applicationParameters;
-    }
-    if (enableStackTrace) {
-      json["stackTrace"] = stackTrace.toString();
-    }
-    if (enableCustomParameters) {
-      json["customParameters"] = customParameters;
-    }
+
+    json["deviceParameters"] = deviceParameters;
+    json["applicationParameters"] = applicationParameters;
+    json["stackTrace"] = stackTrace.toString();
+
     return json;
   }
 }
