@@ -54,6 +54,7 @@ class AppDrawer extends StatelessWidget {
             title: 'Logga ut',
             nav: () async {
               await auth.logout();
+              //TODO: Is this necessary? Looks like a double pop when logging out
               Navigator.pushNamedAndRemoveUntil(
                   context, '/', (Route<dynamic> route) => false);
             },
