@@ -128,10 +128,10 @@ class _ProductsScreen extends State<ProductsScreen> {
                               },
                               confirmDismiss: (_) => promptConfirm(),
                               background: Container(
-                                color: Colors.red,
-                                child: const Icon(
+                                color: Theme.of(context).colorScheme.error,
+                                child: Icon(
                                   Icons.delete,
-                                  color: Colors.white,
+                                  color: Theme.of(context).colorScheme.onError,
                                   size: 20.0,
                                 ),
                                 alignment: Alignment.centerRight,
