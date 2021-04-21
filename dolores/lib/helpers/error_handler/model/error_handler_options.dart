@@ -28,6 +28,9 @@ class ErrorHandlerOptions {
   /// Report mode that should be called if new report appears
   final ReportMode reportMode;
 
+  /// Report mode for silent reporting - mostly used for handled errors
+  final ReportMode silenceReportMode = SilentReportMode();
+
   /// Localization options (translations)
   final List<LocalizationOptions> localizationOptions;
 

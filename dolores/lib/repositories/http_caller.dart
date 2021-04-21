@@ -86,9 +86,7 @@ class HttpCaller {
     DioErrorType errorType = error.type;
 
     if (errorType != DioErrorType.response) {
-      //TODO: Log
-      print(error);
-      throw Exception("Something went wrong with the communication.");
+      throw error;
     }
 
     throw ApiException.fromJson(error.response.data);

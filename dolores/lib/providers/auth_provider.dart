@@ -11,9 +11,6 @@ class AuthProvider with ChangeNotifier {
   DumbledoreRepository dumbledoreRepository = DumbledoreRepository();
   PreferenceRepository prefRepo = PreferenceRepository();
 
-  ValidationItem _errorMessage = ValidationItem(null, null);
-  ValidationItem get errorMessage => _errorMessage;
-
   String _token;
   User _user;
   bool isRequesting = false;
@@ -50,16 +47,11 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> login(String email, String password, {bool rememberMe}) async {
-    try {
-      User user = await filtchRepository.authenticate(email, password,
-          rememberMe: rememberMe);
-      _user = user;
-      _token = await filtchRepository.getToken();
-      isRequesting = false;
-      notifyListeners();
-    } on ApiException catch (apiException) {
-      throw apiException;
-    }
+    User user = await filtchRepository.authenticate(email, password,
+        rememberMe: rememberMe);
+    _user = user;
+    _token = await filtchRepository.getToken();
+    notifyListeners();
   }
 
   Future<void> changePassword(String email, String oldPassword, String password,

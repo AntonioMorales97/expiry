@@ -14,8 +14,8 @@ void main() {
   ErrorHandlerOptions developmentOptions = ErrorHandlerOptions(
     DialogReportMode(),
     [
-      //ConsoleHandler(),
-      HttpHandler()
+      ConsoleHandler(),
+      //HttpHandler()
     ],
   );
 

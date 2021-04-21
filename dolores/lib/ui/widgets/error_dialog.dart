@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ErrorSuccessDialog extends StatelessWidget {
+  final String title;
   final String message;
   final bool success;
 
   const ErrorSuccessDialog({
+    @required this.title,
     @required this.message,
     @required this.success,
   });
@@ -29,7 +31,7 @@ class ErrorSuccessDialog extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(32))),
       scrollable: true,
       title: Text(
-        'Felmedelande',
+        title,
         textAlign: TextAlign.center,
       ),
       content: Container(
@@ -47,7 +49,7 @@ class ErrorSuccessDialog extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(message),
+                      Flexible(child: Text(message)),
                     ],
                   ),
                 ],

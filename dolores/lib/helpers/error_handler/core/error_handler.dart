@@ -15,6 +15,7 @@ import 'dart:isolate';
 import 'package:device_info/device_info.dart';
 import 'package:dolores/environment.dart';
 import 'package:dolores/helpers/error_handler/mode/report_mode_action.dart';
+import 'package:dolores/helpers/error_handler/mode/silent_report_mode.dart';
 import 'package:dolores/helpers/error_handler/model/error_handler_options.dart';
 import 'package:dolores/helpers/error_handler/model/exceptions.dart';
 import 'package:dolores/helpers/error_handler/model/localization_options.dart';
@@ -152,6 +153,7 @@ class ErrorHandler with ReportModeAction {
 
   void _setupReportModeActionInReportMode() {
     this._currentConfig.reportMode.setReportModeAction(this);
+    this._currentConfig.silenceReportMode.setReportModeAction(this);
     this._currentConfig.explicitExceptionReportModesMap.forEach(
       (error, reportMode) {
         reportMode.setReportModeAction(this);
@@ -324,18 +326,19 @@ class ErrorHandler with ReportModeAction {
 
   /// Report checked error (error caught in try-catch block). Error Handler will treat
   /// this as normal exception and pass it to handlers.
-  static void reportCheckedError(dynamic error, dynamic stackTrace) {
+  static void reportCheckedError(dynamic error, dynamic stackTrace,
+      {bool silence = true}) {
     if (error == null) {
       error = "undefined error";
     }
     if (stackTrace == null) {
       stackTrace = StackTrace.current;
     }
-    _instance._reportError(error, stackTrace);
+    _instance._reportError(error, stackTrace, silence: silence);
   }
 
   void _reportError(dynamic error, dynamic stackTrace,
-      {FlutterErrorDetails errorDetails}) async {
+      {FlutterErrorDetails errorDetails, bool silence = false}) async {
     if (_localizationOptions == null) {
       _logger.info("Setup localization lazily!");
       _setupLocalization();
@@ -355,8 +358,15 @@ class ErrorHandler with ReportModeAction {
       _getPlatformType(),
     );
     _cachedReports.add(report);
-    ReportMode reportMode =
-        _getReportModeFromExplicitExceptionReportModeMap(error);
+
+    ReportMode reportMode;
+
+    if (silence) {
+      reportMode = _currentConfig.silenceReportMode;
+    } else {
+      reportMode = _getReportModeFromExplicitExceptionReportModeMap(error);
+    }
+
     if (reportMode != null) {
       _logger.info("Using explicit report mode for error");
     } else {

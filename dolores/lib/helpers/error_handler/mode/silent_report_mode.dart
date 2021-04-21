@@ -21,7 +21,8 @@ class SilentReportMode extends ReportMode {
     // no action needed, request is automatically accepted
     try {
       await super.onActionConfirmed(report);
-    } catch (_) {
+    } catch (error) {
+      print(error);
       //If fail, fail silently (?)
     }
   }
