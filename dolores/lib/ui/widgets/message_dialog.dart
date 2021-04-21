@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 
-class ErrorSuccessDialog extends StatelessWidget {
+class MessageDialog extends StatelessWidget {
   final String title;
   final String message;
   final bool success;
 
-  const ErrorSuccessDialog({
+  const MessageDialog({
     @required this.title,
     @required this.message,
     @required this.success,
   });
+
   getButtonColor(context) {
     if (success) return Theme.of(context).buttonColor;
-
     return Theme.of(context).errorColor;
   }
 
@@ -28,7 +28,10 @@ class ErrorSuccessDialog extends StatelessWidget {
       contentPadding: EdgeInsets.only(top: 20.0),
       titlePadding: EdgeInsets.only(top: 10.0),
       shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32))),
+        borderRadius: BorderRadius.all(
+          Radius.circular(32),
+        ),
+      ),
       scrollable: true,
       title: Text(
         title,
@@ -49,7 +52,9 @@ class ErrorSuccessDialog extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Flexible(child: Text(message)),
+                      Flexible(
+                        child: Text(message),
+                      ),
                     ],
                   ),
                 ],

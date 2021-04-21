@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:dolores/ui/widgets/error_dialog.dart';
+import 'package:dolores/ui/widgets/message_dialog.dart';
 import 'package:flutter/material.dart';
 
 import 'api_exception.dart';
@@ -9,13 +9,10 @@ class ExpiryHelper {
   static Future<void> callFunctionErrorHandler(function,
       {String success, context, form}) async {
     try {
-      //_showSpinner(context);
       await function;
-      //Navigator.of(context).pop();
 
       if (success != null) {
-        // Navigator.of(context).pop();
-        _showErrorSuccessDialog(
+        await showMessageDialog(
           context,
           title: 'Meddelande',
           success: true,
@@ -26,26 +23,23 @@ class ExpiryHelper {
         form.reset();
       }
     } on ApiException catch (apiException) {
-      // Navigator.of(context).pop();
-      _showErrorSuccessDialog(
+      await showMessageDialog(
         context,
         title: 'Felmeddelande',
         success: false,
         message: apiException.detail,
       );
     } on DioError catch (dioError, stackTrace) {
-      // Navigator.of(context).pop();
       if (dioError.type == DioErrorType.connectTimeout) {
         ErrorHandler.reportCheckedError(dioError, stackTrace);
-        _showErrorSuccessDialog(context,
+        await showMessageDialog(context,
             title: 'Felmeddelande',
             success: false,
             message:
                 'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
       } else if (dioError.type == DioErrorType.receiveTimeout) {
-        Navigator.of(context).pop();
         ErrorHandler.reportCheckedError(dioError, stackTrace);
-        _showErrorSuccessDialog(context,
+        await showMessageDialog(context,
             title: 'Felmeddelande',
             success: false,
             message:
@@ -56,14 +50,14 @@ class ExpiryHelper {
     }
   }
 
-  static void _showErrorSuccessDialog(BuildContext context,
+  static Future<dynamic> showMessageDialog(BuildContext context,
       {@required String title,
       @required bool success,
-      @required String message}) {
-    showDialog(
+      @required String message}) async {
+    return await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ErrorSuccessDialog(
+        return MessageDialog(
           title: title,
           success: success,
           message: message,
@@ -71,15 +65,55 @@ class ExpiryHelper {
       },
     );
   }
-//TODO NOT WOKRING
-  /*static void _showSpinner(BuildContext context) {
-    showDialog(
-    context: context,
-      builder: (BuildContext context) {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-  }*/
+
+  //TODO: What about this? Replace callFunctionErrorHandler???
+  static Future<dynamic> apiCallerWrapper(
+    BuildContext context,
+    Future<dynamic> function, {
+    final onSuccess,
+    final onError,
+  }) async {
+    try {
+      await function;
+
+      if (onSuccess != null) {
+        return await onSuccess;
+      }
+    } on ApiException catch (apiException) {
+      if (onError != null) {
+        await onError();
+      }
+      return await showMessageDialog(
+        context,
+        title: 'Felmeddelande',
+        success: false,
+        message: apiException.detail,
+      );
+    } on DioError catch (dioError, stackTrace) {
+      if (dioError.type == DioErrorType.connectTimeout) {
+        ErrorHandler.reportCheckedError(dioError, stackTrace);
+        if (onError != null) {
+          await onError();
+        }
+
+        return await showMessageDialog(context,
+            title: 'Felmeddelande',
+            success: false,
+            message:
+                'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
+      } else if (dioError.type == DioErrorType.receiveTimeout) {
+        ErrorHandler.reportCheckedError(dioError, stackTrace);
+        if (onError != null) {
+          await onError();
+        }
+        return await showMessageDialog(context,
+            title: 'Felmeddelande',
+            success: false,
+            message:
+                'Anropet tog för lång tid på sig. Vänligen försök igen eller vid ett senare tillfälle.');
+      } else {
+        throw dioError;
+      }
+    }
+  }
 }
