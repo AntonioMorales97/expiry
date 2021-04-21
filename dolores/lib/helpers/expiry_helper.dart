@@ -9,8 +9,12 @@ class ExpiryHelper {
   static Future<void> callFunctionErrorHandler(function,
       {String success, context, form}) async {
     try {
+      //_showSpinner(context);
       await function;
+      //Navigator.of(context).pop();
+
       if (success != null) {
+        // Navigator.of(context).pop();
         _showErrorSuccessDialog(
           context,
           title: 'Meddelande',
@@ -22,6 +26,7 @@ class ExpiryHelper {
         form.reset();
       }
     } on ApiException catch (apiException) {
+      // Navigator.of(context).pop();
       _showErrorSuccessDialog(
         context,
         title: 'Felmeddelande',
@@ -29,6 +34,7 @@ class ExpiryHelper {
         message: apiException.detail,
       );
     } on DioError catch (dioError, stackTrace) {
+      // Navigator.of(context).pop();
       if (dioError.type == DioErrorType.connectTimeout) {
         ErrorHandler.reportCheckedError(dioError, stackTrace);
         _showErrorSuccessDialog(context,
@@ -37,6 +43,7 @@ class ExpiryHelper {
             message:
                 'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
       } else if (dioError.type == DioErrorType.receiveTimeout) {
+        Navigator.of(context).pop();
         ErrorHandler.reportCheckedError(dioError, stackTrace);
         _showErrorSuccessDialog(context,
             title: 'Felmeddelande',
@@ -64,4 +71,15 @@ class ExpiryHelper {
       },
     );
   }
+//TODO NOT WOKRING
+  /*static void _showSpinner(BuildContext context) {
+    showDialog(
+    context: context,
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }*/
 }
