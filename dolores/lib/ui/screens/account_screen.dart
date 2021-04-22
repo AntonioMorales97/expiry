@@ -1,7 +1,6 @@
 import 'package:dolores/helpers/expiry_helper.dart';
 import 'package:dolores/models/user.dart';
 import 'package:dolores/providers/auth_provider.dart';
-import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/dolores_password_field.dart';
@@ -45,20 +44,18 @@ class _AccountScreen extends State<AccountScreen> {
     final form = formKey.currentState;
     if (form.validate()) {
       form.save();
-      await ExpiryHelper.callFunctionErrorHandler(
+      await ExpiryHelper.apiCallerWrapper(
+          context,
+          () => mounted,
           auth.changePassword(
               _user.email, _oldPassword, _password, _rePassword),
-          success: 'Lösenordet är uppdaterat!',
-          context: context,
-          form: form);
+          successMessage: 'Lösenordet är uppdaterat!',
+          onSuccess: () => form.reset());
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = Provider.of<AuthProvider>(context, listen: false);
-    final prod = Provider.of<ProductProvider>(context, listen: false);
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Mitt konto'),
@@ -162,18 +159,19 @@ class _AccountScreen extends State<AccountScreen> {
                           SizedBox(
                             height: 15.0,
                           ),
-                          DoloresButton(
-                            child: Consumer<AuthProvider>(
-                              builder: (context, auth, _) => auth.isRequesting
-                                  ? CircularProgressIndicator()
-                                  : Text(
-                                      'SPARA',
-                                      style: TextStyle(letterSpacing: 2),
-                                    ),
+                          Consumer<AuthProvider>(
+                            builder: (context, auth, _) => DoloresButton(
+                              isLoading: auth.isRequesting,
+                              child: Text(
+                                'SPARA',
+                                style: TextStyle(letterSpacing: 2),
+                              ),
+                              onPressed: auth.isRequesting
+                                  ? () {}
+                                  : () {
+                                      doChangePassword();
+                                    },
                             ),
-                            onPressed: () {
-                              doChangePassword();
-                            },
                           ),
                         ],
                       ),

@@ -13,7 +13,9 @@ class AuthProvider with ChangeNotifier {
 
   String _token;
   User _user;
-  bool isRequesting = false;
+
+  bool _isRequesting = false;
+  bool get isRequesting => _isRequesting;
 
   String get token => _token;
 
@@ -56,18 +58,18 @@ class AuthProvider with ChangeNotifier {
 
   Future<void> changePassword(String email, String oldPassword, String password,
       String rePassword) async {
-    isRequesting = true;
+    _isRequesting = true;
     notifyListeners();
 
     try {
       await dumbledoreRepository.changePassword(
           email, oldPassword, password, rePassword);
-      isRequesting = false;
+      _isRequesting = false;
       notifyListeners();
-    } on ApiException catch (apiException) {
-      isRequesting = false;
+    } catch (error) {
+      _isRequesting = false;
       notifyListeners();
-      throw apiException;
+      throw error;
     }
   }
 }

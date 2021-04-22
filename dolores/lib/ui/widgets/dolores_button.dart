@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 
-class DoloresButton extends StatefulWidget {
+class DoloresButton extends StatelessWidget {
   final Widget child;
   final Function onPressed;
+  final bool isLoading;
 
-  DoloresButton({@required this.child, this.onPressed});
-  @override
-  _DoloresButton createState() => _DoloresButton();
-}
+  const DoloresButton(
+      {@required this.child, this.onPressed, this.isLoading = false});
 
-class _DoloresButton extends State<DoloresButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,8 +29,16 @@ class _DoloresButton extends State<DoloresButton> {
             borderRadius: BorderRadius.circular(20),
           ),
         ),
-        onPressed: widget.onPressed,
-        child: widget.child,
+        onPressed: onPressed,
+        child: isLoading
+            ? Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).colorScheme.onPrimary),
+                ),
+              )
+            : child,
       ),
     );
   }

@@ -15,7 +15,6 @@ import 'dart:isolate';
 import 'package:device_info/device_info.dart';
 import 'package:dolores/environment.dart';
 import 'package:dolores/helpers/error_handler/mode/report_mode_action.dart';
-import 'package:dolores/helpers/error_handler/mode/silent_report_mode.dart';
 import 'package:dolores/helpers/error_handler/model/error_handler_options.dart';
 import 'package:dolores/helpers/error_handler/model/exceptions.dart';
 import 'package:dolores/helpers/error_handler/model/localization_options.dart';
@@ -201,7 +200,7 @@ class ErrorHandler with ReportModeAction {
       }
       callback();
     }, (dynamic error, StackTrace stackTrace) {
-      _logger.info("Error!");
+      _logger.info("Error in zone");
       _reportError(error, stackTrace);
     });
   }

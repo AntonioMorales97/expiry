@@ -29,12 +29,19 @@ class _ProductsScreen extends State<ProductsScreen> {
   }
 
   Future<void> _fetch() async {
-    await ExpiryHelper.callFunctionErrorHandler(_productProvider.getStores());
+    while (_isLoading) {
+      await ExpiryHelper.apiCallerWrapper(
+          context, isMounted, _productProvider.getStores(), onSuccess: () {
+        setState(() {
+          _isLoading = false;
+        });
+      });
+      if (!mounted) return;
+    }
+  }
 
-    if (!mounted) return;
-    setState(() {
-      _isLoading = false;
-    });
+  bool isMounted() {
+    return mounted;
   }
 
   @override
@@ -87,8 +94,11 @@ class _ProductsScreen extends State<ProductsScreen> {
                         dateHintText: 'Välj utgångsdatum',
                         submitButtonText: 'LÄGG TILL',
                         onSubmit: (newQrCode, newName, newDate) {
-                          ExpiryHelper.callFunctionErrorHandler(_productProvider
-                              .addProduct(newQrCode, newName, newDate));
+                          ExpiryHelper.apiCallerWrapper(
+                              context,
+                              () => mounted,
+                              _productProvider.addProduct(
+                                  newQrCode, newName, newDate));
                           Navigator.of(context).pop();
                         });
                   },
@@ -116,7 +126,9 @@ class _ProductsScreen extends State<ProductsScreen> {
                               direction: DismissDirection.endToStart,
                               onDismissed: (direction) {
                                 //TODO: Dont remove if error from api.
-                                ExpiryHelper.callFunctionErrorHandler(
+                                ExpiryHelper.apiCallerWrapper(
+                                    context,
+                                    () => mounted,
                                     prod.removeProduct(product.productId));
 
                                 ScaffoldMessenger.of(context).showSnackBar(
