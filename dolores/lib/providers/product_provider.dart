@@ -56,10 +56,23 @@ class ProductProvider with ChangeNotifier {
   }
 
   Future<void> removeProduct(String productId) async {
-    await dumbledoreRepository.deleteProductInStore(
-        _currentStore.storeId, productId);
-    _currentStore.products
-        .removeWhere((product) => product.productId == productId);
+    int idx = _currentStore.products
+        .lastIndexWhere((product) => product.productId == productId);
+    if (idx == -1) {
+      notifyListeners();
+    }
+    Product product = _currentStore.products[idx];
+    try {
+      _currentStore.products.removeAt(idx);
+      notifyListeners();
+      await dumbledoreRepository.deleteProductInStore(
+          _currentStore.storeId, productId);
+    } catch (error) {
+      _currentStore.products.insert(idx, product);
+      throw error;
+    } finally {
+      notifyListeners();
+    }
   }
 
   void modifyProduct(String productId, String newQrCode, String newName,
