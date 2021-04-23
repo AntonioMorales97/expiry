@@ -1,9 +1,9 @@
-class ApiException implements Exception {
+class DoloresError implements Exception {
   final String detail;
   final int status;
   List<ErrorDetail> errors;
 
-  ApiException.fromJson(Map<String, dynamic> json)
+  DoloresError.fromJson(Map<String, dynamic> json)
       : status = json['status'],
         detail = json['detail'],
         errors = json['errors'] == null

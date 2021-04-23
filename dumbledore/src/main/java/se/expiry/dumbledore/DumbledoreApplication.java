@@ -59,20 +59,7 @@ public class DumbledoreApplication {
                 roleRepository.save(userRole);
                 roleRepository.save(managerRole);
             }
-            /**
-             * Adds Admimn if he dont exist they dont exist.
-             * REMOVE BEFORE PROD
-             */
-            Optional<User> user = userRepository.findByEmail("admin@admin.se");
-            if(user.isEmpty()){
-                List<Role> rolesList = new ArrayList<>();
-                List<Store> storeList = new ArrayList<>();
-                rolesList.add(roleRepository.findByName("ADMIN").get());
 
-                User admin = new User("admin","admin", "admin@admin.se",passwordEncoder.encode("admin"), rolesList,storeList);
-
-                userRepository.save(admin);
-            }
             /**
              * Adds stores Nacka and Gallerian if they dont exist they dont exist.
              * REMOVE BEFORE PROD
@@ -86,6 +73,23 @@ public class DumbledoreApplication {
                 stores.add(gallerian);
                 stores.add(nacka);
             }
+
+            /**
+             * Adds Admimn if he dont exist they dont exist.
+             * REMOVE BEFORE PROD
+             */
+            Optional<User> user = userRepository.findByEmail("admin@admin.se");
+            if(user.isEmpty()){
+                List<Role> rolesList = new ArrayList<>();
+                List<Store> storeList = new ArrayList<>();
+                storeList.add(stores.get(0));
+                rolesList.add(roleRepository.findByName("ADMIN").get());
+
+                User admin = new User("admin","admin", "admin@admin.se",passwordEncoder.encode("admin"), rolesList,storeList);
+
+                userRepository.save(admin);
+            }
+
             /**
              * Adds products Nacka and Gallerian if they dont have products.
              * REMOVE BEFORE PROD
