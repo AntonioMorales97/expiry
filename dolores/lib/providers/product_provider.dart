@@ -1,5 +1,8 @@
 import 'dart:collection';
 
+import 'package:dio/dio.dart';
+import 'package:dolores/helpers/api_exception.dart';
+import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 import 'package:dolores/models/preference.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
@@ -18,6 +21,19 @@ class ProductProvider with ChangeNotifier {
 
   List<Store> _stores;
   Store _currentStore;
+
+  bool _isLoading = true;
+  bool get isLoading => _isLoading;
+
+  ApiException _apiException;
+  ApiException get getApiException => _apiException;
+
+  DioError _serverConnectionException;
+  DioError get getServerException => _serverConnectionException;
+  resetErrors() {
+    _serverConnectionException = null;
+    _apiException = null;
+  }
 
   Preference _preference;
   DateTime _cachedTime;
@@ -42,17 +58,33 @@ class ProductProvider with ChangeNotifier {
     if (refresh ||
         (_cachedTime == null ||
             _cachedTime.difference(newDate).inMinutes > 20)) {
-      _stores = await dumbledoreRepository.getStore();
-      _cachedTime = newDate;
-    }
-    _currentStore = _stores[0];
+      //TODO KANSKE WRAPER FÖR API CALL SOM HANTERAR ERRORS ?
+      try {
+        _stores = await dumbledoreRepository.getStore();
+        _currentStore = _stores[0];
 
-    if (_preference == null) {
-      await fetchPreference();
-    }
+        if (_preference == null) {
+          await fetchPreference();
+        }
 
-    _sortProduct(_preference.sort);
-    if (_preference.reverse) await _reverseProducts();
+        _sortProduct(_preference.sort);
+        if (_preference.reverse) await _reverseProducts();
+        _isLoading = false;
+        _cachedTime = newDate;
+        notifyListeners();
+      } on ApiException catch (exception) {
+        _apiException = exception;
+        //TODO OM INGEN LYSSNAR LOGGA??
+        notifyListeners();
+      } on DioError catch (dioError, stackTrace) {
+        _serverConnectionException = dioError;
+        ErrorHandler.reportCheckedError(dioError, stackTrace);
+        notifyListeners();
+      } catch (error) {
+        // Maybe handle errors?
+        throw error;
+      }
+    }
   }
 
   Future<void> removeProduct(String productId) async {

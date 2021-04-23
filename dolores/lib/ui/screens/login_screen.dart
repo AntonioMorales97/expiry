@@ -55,8 +55,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
       await ExpiryHelper.apiCallerWrapper(
         context,
-        () => true,
         auth.login(_email, _password, rememberMe: _rememberMe),
+        isMounted: () => true,
         onError: () {
           setState(() {
             _isLoading = false;

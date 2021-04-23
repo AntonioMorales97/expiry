@@ -24,8 +24,8 @@ class ExpiryHelper {
 
   static Future<dynamic> apiCallerWrapper(
     BuildContext context,
-    Function isMounted,
     Future<dynamic> function, {
+    Function isMounted,
     final onSuccess,
     final onError,
     String successMessage,
@@ -94,6 +94,71 @@ class ExpiryHelper {
                 'Anropet tog för lång tid på sig. Vänligen försök igen eller vid ett senare tillfälle.');
       } else {
         if (onError != null && isMounted()) {
+          await onError();
+        }
+        throw dioError;
+      }
+    }
+  }
+
+  static Future<dynamic> showErrorOrSuccessDialogs(
+    BuildContext context,
+    ApiException apiException,
+    DioError dioError, {
+    final onSuccess,
+    final onError,
+    String successMessage,
+  }) async {
+    if (onSuccess != null) {
+      await onSuccess();
+    }
+
+    if (successMessage != null) {
+      return await showMessageDialog(
+        context,
+        title: 'Meddelande',
+        success: true,
+        message: successMessage,
+      );
+    }
+    if (apiException != null) {
+      if (onError != null) {
+        await onError();
+      }
+      return await showMessageDialog(
+        context,
+        title: 'Felmeddelande',
+        success: false,
+        message: apiException.detail,
+      );
+    }
+    if (dioError != null) {
+      if (dioError.type == DioErrorType.connectTimeout) {
+        ErrorHandler.reportCheckedError(dioError, dioError.stackTrace);
+
+        if (onError != null) {
+          await onError();
+        }
+
+        return await showMessageDialog(context,
+            title: 'Felmeddelande',
+            success: false,
+            message:
+                'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
+      } else if (dioError.type == DioErrorType.receiveTimeout) {
+        ErrorHandler.reportCheckedError(dioError, dioError.stackTrace);
+
+        if (onError != null) {
+          await onError();
+        }
+
+        return await showMessageDialog(context,
+            title: 'Felmeddelande',
+            success: false,
+            message:
+                'Anropet tog för lång tid på sig. Vänligen försök igen eller vid ett senare tillfälle.');
+      } else {
+        if (onError != null) {
           await onError();
         }
         throw dioError;

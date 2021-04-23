@@ -46,10 +46,10 @@ class _AccountScreen extends State<AccountScreen> {
       form.save();
       await ExpiryHelper.apiCallerWrapper(
           context,
-          () => mounted,
           auth.changePassword(
               _user.email, _oldPassword, _password, _rePassword),
           successMessage: 'Lösenordet är uppdaterat!',
+          isMounted: () => mounted,
           onSuccess: () => form.reset());
     }
   }
