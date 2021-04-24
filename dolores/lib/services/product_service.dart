@@ -5,9 +5,9 @@ import 'package:dolores/locator.dart';
 import 'package:dolores/models/preference.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
-import 'package:dolores/services/auth_service.dart';
 import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/preference_repository.dart';
+import 'package:dolores/services/auth_service.dart';
 
 enum ProductSort {
   DATE,
@@ -160,6 +160,10 @@ class ProductService {
     final reversed = _currentStore.products.reversed.toList();
     _currentStore = _currentStore.copyWith(products: reversed);
     await prefRepo.savePreference(_preference);
+  }
+
+  Future<void> forceLogout() async {
+    await _authService.forceLogout();
   }
 
   clearStates() {

@@ -45,7 +45,7 @@ class PreferenceRepository {
     String s = await _storage.getItem('preferences');
     if (s == null) return;
     Preference preference = Preference.fromJson(jsonDecode(s));
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
     String sort = preference.sort.index.toString();
@@ -65,7 +65,7 @@ class PreferenceRepository {
   }
 
   Future<Preference> fetchPreferenceFromBackend() async {
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
@@ -77,11 +77,5 @@ class PreferenceRepository {
 
   Future _getToken() async {
     _token = await filtchRepository.getToken();
-  }
-
-  Future _checkToken() async {
-    if (_token == null) {
-      await _getToken();
-    }
   }
 }

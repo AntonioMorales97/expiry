@@ -76,6 +76,7 @@ class ProductsModel extends BaseModel {
 
     if (error.status == 403) {
       //TODO: Force logout
+      await _productService.forceLogout();
     }
   }
 }

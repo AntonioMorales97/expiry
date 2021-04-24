@@ -46,18 +46,21 @@ class AuthService {
 
   Future<void> forceLogout() async {
     await prefRepo.removePreferenceFromLocalStorage();
-    await filtchRepository.logout(_user.rememberMe ?? false);
 
-    _token = null;
-    if (_user.rememberMe == null || !_user.rememberMe) {
-      _user = null;
+    if (_user != null) {
+      await prefRepo.removePreferenceFromLocalStorage();
+      await filtchRepository.logout(_user.rememberMe ?? false);
+
+      _token = null;
+      if (_user.rememberMe == null || !_user.rememberMe) {
+        _user = null;
+      }
     }
-
     final appKey = ErrorHandler.navigatorKey;
     final context = appKey.currentContext;
 
     Navigator.pushNamedAndRemoveUntil(
-        context, '/', (Route<dynamic> route) => false);
+        context, 'login', (Route<dynamic> route) => false);
   }
 
   Future<void> login(String email, String password, {bool rememberMe}) async {

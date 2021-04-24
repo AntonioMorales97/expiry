@@ -29,17 +29,10 @@ class DumbledoreRepository {
     _token = await filtchRepository.getToken();
   }
 
-  _checkToken() async {
-    //TODO: This should NOT be cached
-    if (_token == null) {
-      await _getToken();
-    }
-  }
-
   //TODO: Måste kanske byta return från dumbledore här.
   Future<dynamic> changePassword(String email, String oldPassword,
       String password, String rePassword) async {
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
@@ -59,7 +52,7 @@ class DumbledoreRepository {
   }
 
   Future<List<Store>> getStore() async {
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
@@ -71,7 +64,7 @@ class DumbledoreRepository {
   }
 
   Future<void> deleteProductInStore(String storeId, String productsId) async {
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
@@ -82,7 +75,7 @@ class DumbledoreRepository {
 
   Future<Product> addProductToStore(
       String storeId, String name, String qrCode, String date) async {
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
     String url = baseUrl + storeBaseUrl + "/" + storeId + productsUrl;
@@ -98,7 +91,7 @@ class DumbledoreRepository {
 
   Future<Store> updateProductInStore(String storeId, String productId,
       String name, String qrCode, String date) async {
-    await _checkToken();
+    await _getToken();
     HttpHeaders httpHeaders = new HttpHeaders();
     httpHeaders.authorizationToken = _token;
 
