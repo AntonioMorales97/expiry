@@ -2,6 +2,7 @@ import 'package:dolores/dolores.dart';
 import 'package:dolores/environment.dart';
 import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 import 'package:dolores/helpers/error_handler/handlers/http_handler.dart';
+import 'package:dolores/locator.dart';
 import 'package:flutter/material.dart';
 
 import 'helpers/error_handler/handlers/console_handler.dart';
@@ -10,6 +11,8 @@ import 'helpers/error_handler/model/error_handler_options.dart';
 
 void main() {
   _initEnv();
+
+  setupLocator();
 
   ErrorHandlerOptions developmentOptions = ErrorHandlerOptions(
     DialogReportMode(),

@@ -41,7 +41,9 @@ class PreferenceRepository {
   }
 
   Future<void> savePreferenceToBackend() async {
+    await _storage.ready;
     String s = await _storage.getItem('preferences');
+    if (s == null) return;
     Preference preference = Preference.fromJson(jsonDecode(s));
     await _checkToken();
     HttpHeaders httpHeaders = new HttpHeaders();

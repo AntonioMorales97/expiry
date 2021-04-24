@@ -1,4 +1,4 @@
-import 'package:dolores/providers/product_provider.dart';
+import 'package:dolores/services/product_service.dart';
 
 class Preference {
   final ProductSort sort;

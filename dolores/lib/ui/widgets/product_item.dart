@@ -1,21 +1,20 @@
 import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/models/product.dart';
-import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/product_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
-import 'package:provider/provider.dart';
 
 class ProductItem extends StatelessWidget {
   final Product product;
+  final Function(Product) onSubmit;
 
   const ProductItem({
     @required this.product,
+    this.onSubmit,
   });
 
   @override
   Widget build(BuildContext context) {
-    final prod = Provider.of<ProductProvider>(context, listen: false);
     return Column(
       children: [
         Container(
@@ -55,8 +54,8 @@ class ProductItem extends StatelessWidget {
                   if (barcodeScanRes == '-1') {
                     barcodeScanRes = product.qrCode;
                   }
-                  prod.modifyProduct(product.productId, barcodeScanRes,
-                      product.name, Formatter.dateToString(product.date));
+                  // prod.modifyProduct(product.productId, barcodeScanRes,
+                  //     product.name, Formatter.dateToString(product.date));
                   print(barcodeScanRes);
                 },
               ),
@@ -75,8 +74,12 @@ class ProductItem extends StatelessWidget {
                         title: 'Ändra produkt',
                         submitButtonText: 'ÄNDRA',
                         onSubmit: (newQrCode, newName, newDate) {
-                          prod.modifyProduct(
-                              product.productId, newQrCode, newName, newDate);
+                          final updatedProduct = product.copyWith(
+                              qrCode: newQrCode,
+                              name: newName,
+                              date: Formatter.stringToDate(newDate));
+
+                          onSubmit(updatedProduct);
                         },
                       );
                     },

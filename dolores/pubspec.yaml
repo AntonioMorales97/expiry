@@ -24,6 +24,7 @@ dependencies:
   device_info: ^2.0.0
   package_info: ^2.0.0
   logging: ^1.0.1
+  get_it: ^6.1.1
 
 dev_dependencies:
   flutter_test:

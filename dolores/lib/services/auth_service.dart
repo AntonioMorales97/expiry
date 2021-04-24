@@ -5,7 +5,7 @@ import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:dolores/repositories/preference_repository.dart';
 import 'package:flutter/material.dart';
 
-class AuthProvider with ChangeNotifier {
+class AuthService {
   FiltchRepository filtchRepository = FiltchRepository();
   DumbledoreRepository dumbledoreRepository = DumbledoreRepository();
   PreferenceRepository prefRepo = PreferenceRepository();
@@ -30,7 +30,6 @@ class AuthProvider with ChangeNotifier {
     }
     _user = user;
     _token = token;
-    notifyListeners();
     return true;
   }
 
@@ -43,8 +42,6 @@ class AuthProvider with ChangeNotifier {
     if (_user.rememberMe == null || !_user.rememberMe) {
       _user = null;
     }
-
-    notifyListeners();
   }
 
   Future<void> forceLogout() async {
@@ -61,8 +58,6 @@ class AuthProvider with ChangeNotifier {
 
     Navigator.pushNamedAndRemoveUntil(
         context, '/', (Route<dynamic> route) => false);
-
-    notifyListeners();
   }
 
   Future<void> login(String email, String password, {bool rememberMe}) async {
@@ -70,22 +65,18 @@ class AuthProvider with ChangeNotifier {
         rememberMe: rememberMe);
     _user = user;
     _token = await filtchRepository.getToken();
-    notifyListeners();
   }
 
   Future<void> changePassword(String email, String oldPassword, String password,
       String rePassword) async {
     _isRequesting = true;
-    notifyListeners();
 
     try {
       await dumbledoreRepository.changePassword(
           email, oldPassword, password, rePassword);
       _isRequesting = false;
-      notifyListeners();
     } catch (error) {
       _isRequesting = false;
-      notifyListeners();
       throw error;
     }
   }
