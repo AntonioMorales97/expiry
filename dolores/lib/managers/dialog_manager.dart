@@ -1,0 +1,69 @@
+import 'package:dolores/models/alert_models.dart';
+import 'package:dolores/services/dialog_service.dart';
+import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
+
+import '../locator.dart';
+
+class DialogManager extends StatefulWidget {
+  final Widget child;
+  DialogManager({Key key, this.child}) : super(key: key);
+
+  _DialogManagerState createState() => _DialogManagerState();
+}
+
+class _DialogManagerState extends State<DialogManager> {
+  DialogService _dialogService = locator<DialogService>();
+
+  @override
+  void initState() {
+    super.initState();
+    _dialogService.registerDialogListener(_showDialog);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.child;
+  }
+
+  void _showDialog(AlertRequest request) {
+    //TODO get the right theme colors + make button a wee bit bigger?
+    Alert(
+        context: context,
+        title: request.title,
+        desc: request.description,
+        closeFunction: () =>
+            _dialogService.dialogComplete(AlertResponse(confirmed: false)),
+        buttons: [
+          DialogButton(
+            color: _getButtonColor(request.success),
+            child: Text(
+              request.buttonTitle,
+              style: TextStyle(
+                  color: _getTextColor(request.success), letterSpacing: 2),
+              textAlign: TextAlign.center,
+            ),
+            onPressed: () {
+              _dialogService.dialogComplete(AlertResponse(confirmed: true));
+              Navigator.of(context).pop();
+            },
+          )
+        ],
+        style: AlertStyle(
+          titleStyle: TextStyle(color: _getTextColor(request.success)),
+          descStyle: TextStyle(color: _getTextColor(request.success)),
+          titleTextAlign: TextAlign.center,
+          descTextAlign: TextAlign.center,
+        )).show();
+  }
+
+  _getButtonColor(success) {
+    if (success) return Theme.of(context).buttonColor;
+    return Theme.of(context).errorColor;
+  }
+
+  _getTextColor(success) {
+    if (success) return Theme.of(context).colorScheme.onPrimary;
+    return Theme.of(context).colorScheme.onError;
+  }
+}

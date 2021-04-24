@@ -46,8 +46,6 @@ class ProductService {
     if (refresh ||
         (_cachedTime == null ||
             _cachedTime.difference(newDate).inMinutes > 20)) {
-      //TODO KANSKE WRAPER FÖR API CALL SOM HANTERAR ERRORS ?
-
       _stores = await dumbledoreRepository.getStore();
       _currentStore = _stores[0];
 
@@ -101,14 +99,24 @@ class ProductService {
     return currentStore;
   }
 
-  //TODO: Insert right
   Future<Store> addProduct(
       String newQrCode, String newName, String newDate) async {
     Product newProd = await dumbledoreRepository.addProductToStore(
         _currentStore.storeId, newName, newQrCode, newDate);
-
-    _currentStore.products.add(newProd);
+    int index = _findIndexToInsert(_preference.sort, newProd);
+    _currentStore.products.insert(index, newProd);
     return currentStore;
+  }
+
+  //TODO kanske snabbare att sortera efter insert, med tanke på att vi bara inseratar 1 ?
+  int _findIndexToInsert(ProductSort productSort, newProd) {
+    if (productSort == ProductSort.DATE) {
+      return _currentStore.products.indexWhere(
+          (product) => ((product.date.compareTo(newProd.date)) > 0));
+    } else {
+      return _currentStore.products.indexWhere(
+          (product) => ((product.name.compareTo(newProd.name)) > 0));
+    }
   }
 
   Future<Preference> fetchPreference() async {

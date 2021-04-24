@@ -3,11 +3,13 @@ import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
+import 'package:dolores/services/dialog_service.dart';
 import 'package:dolores/services/product_service.dart';
 import 'package:dolores/ui/screens/base_model.dart';
 
 class ProductsModel extends BaseModel {
   final ProductService _productService = locator<ProductService>();
+  DialogService _dialogService = locator<DialogService>();
 
   List<Store> _stores;
   List<Store> get stores {
@@ -43,7 +45,7 @@ class ProductsModel extends BaseModel {
   Future addProduct(String newQrCode, String newName, String newDate) async {
     //setState(ViewState.Busy); //TODO: We have more control now, maybe add adding state
     final updatedStore =
-        await _productService.addProduct(newName, newQrCode, newDate);
+        await _productService.addProduct(newQrCode, newName, newDate);
     _currentStore = updatedStore;
     setState(ViewState.Idle); //TODO: Needed for now so we get updated store
   }
@@ -70,12 +72,15 @@ class ProductsModel extends BaseModel {
     _error = error;
 
     if (error.status == null || error.status != 403) {
-      setState(ViewState.Idle);
+      var res = await _dialogService.showDialog(
+          title: "Felmedelande", description: error.detail);
+      if (res.confirmed) {
+        setState(ViewState.Busy);
+      }
       return;
     }
 
     if (error.status == 403) {
-      //TODO: Force logout
       await _productService.forceLogout();
     }
   }

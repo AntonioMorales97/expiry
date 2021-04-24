@@ -60,7 +60,7 @@ class ExpiryHelper {
     }
   }
 
-  static Future<dynamic> showErrorOrSuccessDialogs(
+  static showErrorOrSuccessDialogs(
     BuildContext context,
     DoloresError error, {
     final onSuccess,

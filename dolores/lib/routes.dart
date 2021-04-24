@@ -3,6 +3,8 @@ import 'package:dolores/ui/screens/login/login_screen.dart';
 import 'package:dolores/ui/screens/products/products_view.dart';
 import 'package:flutter/material.dart';
 
+import 'managers/dialog_manager.dart';
+
 Route routes(RouteSettings settings) {
   switch (settings.name) {
     case '/':
@@ -26,7 +28,7 @@ Route routes(RouteSettings settings) {
 
 MaterialPageRoute buildRoute(RouteSettings settings, Widget builder) {
   return MaterialPageRoute(
-    builder: (BuildContext context) => builder,
+    builder: (BuildContext context) => DialogManager(child: builder),
     settings: settings,
   );
 }
