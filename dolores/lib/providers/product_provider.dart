@@ -1,11 +1,10 @@
 import 'dart:collection';
 
-import 'package:dio/dio.dart';
-import 'package:dolores/helpers/api_exception.dart';
-import 'package:dolores/helpers/error_handler/core/error_handler.dart';
+import 'package:dolores/helpers/dolores_error.dart';
 import 'package:dolores/models/preference.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/models/store.dart';
+import 'package:dolores/providers/auth_provider.dart';
 import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/preference_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,20 +18,19 @@ class ProductProvider with ChangeNotifier {
   DumbledoreRepository dumbledoreRepository = DumbledoreRepository();
   PreferenceRepository prefRepo = new PreferenceRepository();
 
+  AuthProvider _authProvider;
+
   List<Store> _stores;
   Store _currentStore;
 
   bool _isLoading = true;
   bool get isLoading => _isLoading;
 
-  ApiException _apiException;
-  ApiException get getApiException => _apiException;
+  DoloresError _error;
+  DoloresError get error => _error;
 
-  DioError _serverConnectionException;
-  DioError get getServerException => _serverConnectionException;
   resetErrors() {
-    _serverConnectionException = null;
-    _apiException = null;
+    _error = null;
   }
 
   Preference _preference;
@@ -46,6 +44,8 @@ class ProductProvider with ChangeNotifier {
 
   Store get currentStore => _currentStore.copyWith();
   Preference get preference => _preference.copyWith();
+
+  ProductProvider(this._authProvider);
 
   setStore(storeId) {
     Store store = _stores.firstWhere((store) => store.storeId == storeId);
@@ -72,17 +72,8 @@ class ProductProvider with ChangeNotifier {
         _isLoading = false;
         _cachedTime = newDate;
         notifyListeners();
-      } on ApiException catch (exception) {
-        _apiException = exception;
-        //TODO OM INGEN LYSSNAR LOGGA??
-        notifyListeners();
-      } on DioError catch (dioError, stackTrace) {
-        _serverConnectionException = dioError;
-        ErrorHandler.reportCheckedError(dioError, stackTrace);
-        notifyListeners();
-      } catch (error) {
-        // Maybe handle errors?
-        throw error;
+      } on DoloresError catch (error) {
+        _handleDoloresError(error);
       }
     }
   }
@@ -101,7 +92,11 @@ class ProductProvider with ChangeNotifier {
           _currentStore.storeId, productId);
     } catch (error) {
       _currentStore.products.insert(idx, product);
-      throw error;
+      if (error is DoloresError) {
+        _error = error;
+      } else {
+        throw error;
+      }
     } finally {
       notifyListeners();
     }
@@ -109,27 +104,36 @@ class ProductProvider with ChangeNotifier {
 
   void modifyProduct(String productId, String newQrCode, String newName,
       String newDate) async {
-    //TODO: Maybe enough with HTTP 200 and update product accordingly
-    _currentStore = await dumbledoreRepository.updateProductInStore(
-      _currentStore.storeId,
-      productId,
-      newName,
-      newQrCode,
-      newDate,
-    );
-    int index =
-        _stores.indexWhere((store) => store.storeId == _currentStore.storeId);
-    _stores[index] = _currentStore;
-    notifyListeners();
+    try {
+      _currentStore = await dumbledoreRepository.updateProductInStore(
+        _currentStore.storeId,
+        productId,
+        newName,
+        newQrCode,
+        newDate,
+      );
+      int index =
+          _stores.indexWhere((store) => store.storeId == _currentStore.storeId);
+      _stores[index] = _currentStore;
+    } on DoloresError catch (error) {
+      _error = error;
+    } finally {
+      notifyListeners();
+    }
   }
 
   Future<void> addProduct(
       String newQrCode, String newName, String newDate) async {
-    Product newProd = await dumbledoreRepository.addProductToStore(
-        _currentStore.storeId, newName, newQrCode, newDate);
+    try {
+      Product newProd = await dumbledoreRepository.addProductToStore(
+          _currentStore.storeId, newName, newQrCode, newDate);
 
-    _currentStore.products.add(newProd);
-    notifyListeners();
+      _currentStore.products.add(newProd);
+    } on DoloresError catch (error) {
+      _error = error;
+    } finally {
+      notifyListeners();
+    }
   }
 
   Future<Preference> fetchPreference() async {
@@ -186,10 +190,24 @@ class ProductProvider with ChangeNotifier {
     await prefRepo.savePreference(_preference);
   }
 
+  _handleDoloresError(DoloresError error) async {
+    _error = error;
+
+    if (error.status == null || error.status != 403) {
+      notifyListeners();
+      return;
+    }
+
+    if (error.status == 403) {
+      _authProvider.forceLogout();
+    }
+  }
+
   clearStates() {
     _currentStore = null;
     _preference = null;
     _cachedTime = null;
     _stores = null;
+    _isLoading = true;
   }
 }

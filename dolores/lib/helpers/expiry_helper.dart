@@ -1,9 +1,7 @@
-import 'package:dio/dio.dart';
 import 'package:dolores/ui/widgets/message_dialog.dart';
 import 'package:flutter/material.dart';
 
-import 'api_exception.dart';
-import 'error_handler/core/error_handler.dart';
+import 'dolores_error.dart';
 
 class ExpiryHelper {
   static Future<dynamic> showMessageDialog(BuildContext context,
@@ -45,7 +43,7 @@ class ExpiryHelper {
           message: successMessage,
         );
       }
-    } on ApiException catch (apiException) {
+    } on DoloresError catch (apiException) {
       if (!isMounted()) {
         return;
       }
@@ -59,52 +57,12 @@ class ExpiryHelper {
         success: false,
         message: apiException.detail,
       );
-    } on DioError catch (dioError, stackTrace) {
-      if (dioError.type == DioErrorType.connectTimeout) {
-        ErrorHandler.reportCheckedError(dioError, stackTrace);
-
-        if (!isMounted()) {
-          return;
-        }
-
-        if (onError != null) {
-          await onError();
-        }
-
-        return await showMessageDialog(context,
-            title: 'Felmeddelande',
-            success: false,
-            message:
-                'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
-      } else if (dioError.type == DioErrorType.receiveTimeout) {
-        ErrorHandler.reportCheckedError(dioError, stackTrace);
-
-        if (!isMounted()) {
-          return;
-        }
-
-        if (onError != null) {
-          await onError();
-        }
-
-        return await showMessageDialog(context,
-            title: 'Felmeddelande',
-            success: false,
-            message:
-                'Anropet tog för lång tid på sig. Vänligen försök igen eller vid ett senare tillfälle.');
-      } else {
-        if (onError != null && isMounted()) {
-          await onError();
-        }
-        throw dioError;
-      }
     }
   }
 
   static Future<dynamic> showErrorOrSuccessDialogs(
     BuildContext context,
-    ApiException apiException,
-    DioError dioError, {
+    DoloresError error, {
     final onSuccess,
     final onError,
     String successMessage,
@@ -121,7 +79,7 @@ class ExpiryHelper {
         message: successMessage,
       );
     }
-    if (apiException != null) {
+    if (error != null) {
       if (onError != null) {
         await onError();
       }
@@ -129,40 +87,8 @@ class ExpiryHelper {
         context,
         title: 'Felmeddelande',
         success: false,
-        message: apiException.detail,
+        message: error.detail,
       );
-    }
-    if (dioError != null) {
-      if (dioError.type == DioErrorType.connectTimeout) {
-        ErrorHandler.reportCheckedError(dioError, dioError.stackTrace);
-
-        if (onError != null) {
-          await onError();
-        }
-
-        return await showMessageDialog(context,
-            title: 'Felmeddelande',
-            success: false,
-            message:
-                'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
-      } else if (dioError.type == DioErrorType.receiveTimeout) {
-        ErrorHandler.reportCheckedError(dioError, dioError.stackTrace);
-
-        if (onError != null) {
-          await onError();
-        }
-
-        return await showMessageDialog(context,
-            title: 'Felmeddelande',
-            success: false,
-            message:
-                'Anropet tog för lång tid på sig. Vänligen försök igen eller vid ett senare tillfälle.');
-      } else {
-        if (onError != null) {
-          await onError();
-        }
-        throw dioError;
-      }
     }
   }
 }

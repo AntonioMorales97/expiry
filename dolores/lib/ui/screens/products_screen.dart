@@ -3,7 +3,6 @@ import 'package:dolores/models/product.dart';
 import 'package:dolores/providers/product_provider.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
-import 'package:dolores/ui/widgets/message_dialog.dart';
 import 'package:dolores/ui/widgets/product_dialog.dart';
 import 'package:dolores/ui/widgets/product_item.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
@@ -32,23 +31,17 @@ class _ProductsScreen extends State<ProductsScreen> {
     _productProvider.getStores();
   }
 
-  bool isMounted() {
-    return mounted;
-  }
-
   @override
   Widget build(BuildContext context) {
     _productProvider = Provider.of<ProductProvider>(context, listen: true);
     WidgetsBinding.instance.addPostFrameCallback(
-      (_) async => {
-        if (_productProvider.getServerException != null)
-          {
-            await ExpiryHelper.showErrorOrSuccessDialogs(
-                context,
-                _productProvider.getApiException,
-                _productProvider.getServerException),
-            await _productProvider.getStores()
-          }
+      (_) async {
+        if (_productProvider.error != null) {
+          await ExpiryHelper.showErrorOrSuccessDialogs(
+              context, _productProvider.error);
+          _productProvider.resetErrors();
+          await _productProvider.getStores();
+        }
       },
     );
     return Scaffold(
@@ -98,11 +91,8 @@ class _ProductsScreen extends State<ProductsScreen> {
                         dateHintText: 'Välj utgångsdatum',
                         submitButtonText: 'LÄGG TILL',
                         onSubmit: (newQrCode, newName, newDate) {
-                          ExpiryHelper.apiCallerWrapper(
-                              context,
-                              _productProvider.addProduct(
-                                  newQrCode, newName, newDate),
-                              isMounted: isMounted);
+                          _productProvider.addProduct(
+                              newQrCode, newName, newDate);
                           Navigator.of(context).pop();
                         });
                   },
@@ -130,11 +120,8 @@ class _ProductsScreen extends State<ProductsScreen> {
                           direction: DismissDirection.endToStart,
                           onDismissed: (direction) {
                             //TODO: Dont remove if error from api.
-                            ExpiryHelper.apiCallerWrapper(
-                                context,
-                                _productProvider
-                                    .removeProduct(product.productId),
-                                isMounted: isMounted);
+
+                            _productProvider.removeProduct(product.productId);
 
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text(product.name +
@@ -182,22 +169,6 @@ class _ProductsScreen extends State<ProductsScreen> {
               child: const Text("AVBRYT"),
             ),
           ],
-        );
-      },
-    );
-  }
-
-  static Future showMessageDialog(BuildContext context,
-      {@required String title,
-      @required bool success,
-      @required String message}) async {
-    return await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return MessageDialog(
-          title: title,
-          success: success,
-          message: message,
         );
       },
     );

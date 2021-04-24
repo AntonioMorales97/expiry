@@ -1,6 +1,5 @@
-import 'package:dolores/helpers/api_exception.dart';
+import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 import 'package:dolores/models/user.dart';
-import 'package:dolores/models/validation_item.dart';
 import 'package:dolores/repositories/dumbledore_repository.dart';
 import 'package:dolores/repositories/filtch_repository.dart';
 import 'package:dolores/repositories/preference_repository.dart';
@@ -44,6 +43,24 @@ class AuthProvider with ChangeNotifier {
     if (_user.rememberMe == null || !_user.rememberMe) {
       _user = null;
     }
+
+    notifyListeners();
+  }
+
+  Future<void> forceLogout() async {
+    await prefRepo.removePreferenceFromLocalStorage();
+    await filtchRepository.logout(_user.rememberMe ?? false);
+
+    _token = null;
+    if (_user.rememberMe == null || !_user.rememberMe) {
+      _user = null;
+    }
+
+    final appKey = ErrorHandler.navigatorKey;
+    final context = appKey.currentContext;
+
+    Navigator.pushNamedAndRemoveUntil(
+        context, '/', (Route<dynamic> route) => false);
 
     notifyListeners();
   }

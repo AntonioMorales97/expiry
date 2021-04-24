@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:dolores/helpers/api_exception.dart';
+import 'package:dolores/helpers/dolores_error.dart';
+import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 
 class HttpCaller {
   static const String APPLICATION_JSON = 'application/json';
@@ -86,10 +87,26 @@ class HttpCaller {
     DioErrorType errorType = error.type;
 
     if (errorType != DioErrorType.response) {
-      throw error;
+      if (error != null) {
+        if (error.type == DioErrorType.connectTimeout) {
+          ErrorHandler.reportCheckedError(error, error.stackTrace);
+
+          throw DoloresError(
+              detail:
+                  'Det gick inte att kontakta våra servrar. Vänligen försök igen eller vid ett senare tillfälle.');
+        } else if (error.type == DioErrorType.receiveTimeout) {
+          ErrorHandler.reportCheckedError(error, error.stackTrace);
+
+          throw DoloresError(
+              detail:
+                  'Anropet tog för lång tid på sig. Vänligen försök igen eller vid ett senare tillfälle.');
+        } else {
+          throw error;
+        }
+      }
     }
 
-    throw ApiException.fromJson(error.response.data);
+    throw DoloresError.fromJson(error.response.data);
   }
 }
 

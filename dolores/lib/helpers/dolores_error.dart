@@ -1,7 +1,15 @@
+import 'package:meta/meta.dart';
+
 class DoloresError implements Exception {
   final String detail;
-  final int status;
+  int status;
   List<ErrorDetail> errors;
+
+  DoloresError({
+    @required this.detail,
+    this.status,
+    this.errors,
+  });
 
   DoloresError.fromJson(Map<String, dynamic> json)
       : status = json['status'],

@@ -30,6 +30,7 @@ class DumbledoreRepository {
   }
 
   _checkToken() async {
+    //TODO: This should NOT be cached
     if (_token == null) {
       await _getToken();
     }
