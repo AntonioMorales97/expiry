@@ -32,9 +32,6 @@ class _LoginScreenState extends State<LoginScreen> {
     if (success) {
       Navigator.of(context).pushReplacementNamed('/');
       return;
-    } else {
-      //TODO: Fail login
-      print("Fail login");
     }
 
     setEmail(model);

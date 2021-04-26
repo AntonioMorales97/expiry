@@ -43,29 +43,44 @@ class ProductsModel extends BaseModel {
   }
 
   Future addProduct(String newQrCode, String newName, String newDate) async {
-    //setState(ViewState.Busy); //TODO: We have more control now, maybe add adding state
-    final updatedStore =
-        await _productService.addProduct(newQrCode, newName, newDate);
-    _currentStore = updatedStore;
-    setState(ViewState.Idle); //TODO: Needed for now so we get updated store
+    ///setState(ViewState.Busy); ///TODO: We have more control now, maybe add adding state
+    try {
+      final updatedStore =
+          await _productService.addProduct(newQrCode, newName, newDate);
+      _currentStore = updatedStore;
+      setState(ViewState.Idle);
+    } on DoloresError catch (error) {
+      _handleDoloresError(error);
+    }
+
+    ///TODO: Needed for now so we get updated store
   }
 
   Future removeProduct(String productId) async {
+    ///TODO more viewstates to show these or make model views of the views?
     //setState(ViewState.Busy);
-    final updatedStore = await _productService.removeProduct(productId);
-    _currentStore = updatedStore;
-    //setState(ViewState.Idle);
+    try {
+      final updatedStore = await _productService.removeProduct(productId);
+      _currentStore = updatedStore;
+      //setState(ViewState.Idle);
+    } on DoloresError catch (error) {
+      _handleDoloresError(error);
+    }
   }
 
   Future updateProduct(Product updatedProduct) async {
-    final updatedStore = await _productService.modifyProduct(
-      updatedProduct.productId,
-      updatedProduct.qrCode,
-      updatedProduct.name,
-      Formatter.dateToString(updatedProduct.date),
-    );
-    _currentStore = updatedStore;
-    setState(ViewState.Idle);
+    try {
+      final updatedStore = await _productService.modifyProduct(
+        updatedProduct.productId,
+        updatedProduct.qrCode,
+        updatedProduct.name,
+        Formatter.dateToString(updatedProduct.date),
+      );
+      _currentStore = updatedStore;
+      setState(ViewState.Idle);
+    } on DoloresError catch (error) {
+      _handleDoloresError(error);
+    }
   }
 
   _handleDoloresError(DoloresError error) async {
@@ -73,7 +88,9 @@ class ProductsModel extends BaseModel {
 
     if (error.status == null || error.status != 403) {
       var res = await _dialogService.showDialog(
-          title: "Felmedelande", description: error.detail);
+          title: "Felmedelande",
+          description: error.detail,
+          buttonTitle: "Tillbaka");
       if (res.confirmed) {
         setState(ViewState.Busy);
       }

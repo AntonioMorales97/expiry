@@ -2,10 +2,12 @@ import 'package:dolores/helpers/dolores_error.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/user.dart';
 import 'package:dolores/services/auth_service.dart';
+import 'package:dolores/services/dialog_service.dart';
 import 'package:dolores/ui/screens/base_model.dart';
 
 class LoginModel extends BaseModel {
   AuthService _authService = locator<AuthService>();
+  DialogService _dialogService = locator<DialogService>();
 
   DoloresError _error;
   DoloresError get error => _error;
@@ -23,7 +25,7 @@ class LoginModel extends BaseModel {
       await _authService.login(email, password, rememberMe: rememberMe);
       success = true;
     } on DoloresError catch (error) {
-      _handleDoloresError(error);
+      await _handleDoloresError(error);
       success = false;
     } finally {
       setState(ViewState.Idle);
@@ -37,8 +39,12 @@ class LoginModel extends BaseModel {
 
   _handleDoloresError(DoloresError error) async {
     _error = error;
-
-    if (error.status == null || error.status != 403) {
+    if (error.status != null) {
+      var res = await _dialogService.showDialog(
+          title: "Felmedelande", description: error.detail);
+      if (res.confirmed) {
+        setState(ViewState.Idle);
+      }
       return;
     }
   }

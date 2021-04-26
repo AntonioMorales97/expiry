@@ -27,20 +27,24 @@ class _DialogManagerState extends State<DialogManager> {
   }
 
   void _showDialog(AlertRequest request) {
-    //TODO get the right theme colors + make button a wee bit bigger?
+    ///TODO get the right theme colors + make button a wee bit bigger?
+    print(Theme.of(context).colorScheme.onPrimary);
     Alert(
         context: context,
         title: request.title,
         desc: request.description,
         closeFunction: () =>
             _dialogService.dialogComplete(AlertResponse(confirmed: false)),
+        type: _getType(request.success),
         buttons: [
           DialogButton(
             color: _getButtonColor(request.success),
             child: Text(
               request.buttonTitle,
               style: TextStyle(
-                  color: _getTextColor(request.success), letterSpacing: 2),
+                  color: _getTextColor(request.success),
+                  letterSpacing: 2,
+                  fontSize: 20),
               textAlign: TextAlign.center,
             ),
             onPressed: () {
@@ -50,20 +54,36 @@ class _DialogManagerState extends State<DialogManager> {
           )
         ],
         style: AlertStyle(
-          titleStyle: TextStyle(color: _getTextColor(request.success)),
-          descStyle: TextStyle(color: _getTextColor(request.success)),
+          titleStyle:
+              TextStyle(color: _getTextColor(request.success), fontSize: 26),
+          descStyle:
+              TextStyle(color: _getTextColor(request.success), fontSize: 16),
           titleTextAlign: TextAlign.center,
           descTextAlign: TextAlign.center,
         )).show();
   }
 
+  _getType(success) {
+    if (success) return AlertType.success;
+    return AlertType.error;
+  }
+
+  ///TODO theme colors not workign??
   _getButtonColor(success) {
-    if (success) return Theme.of(context).buttonColor;
-    return Theme.of(context).errorColor;
+    if (success) return Color.fromRGBO(50, 77, 229, 1);
+
+    ///Theme.of(context).buttonColor;
+    return Colors.red.shade400;
+
+    ///Theme.of(context).errorColor;
   }
 
   _getTextColor(success) {
-    if (success) return Theme.of(context).colorScheme.onPrimary;
-    return Theme.of(context).colorScheme.onError;
+    if (success) return Colors.black;
+
+    ///Theme.of(context).colorScheme.onPrimary;
+    return Colors.black;
+
+    ///Theme.of(context).colorScheme.onError;
   }
 }
