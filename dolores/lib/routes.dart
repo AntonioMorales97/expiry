@@ -28,6 +28,7 @@ Route routes(RouteSettings settings) {
 
 MaterialPageRoute buildRoute(RouteSettings settings, Widget builder) {
   return MaterialPageRoute(
+    /// TODO Kanske lägga ned dialogmanager längre ned så att den försvinner om man byter route? med kontroll för att den fortf finns kvar vid show.
     builder: (BuildContext context) => DialogManager(child: builder),
     settings: settings,
   );

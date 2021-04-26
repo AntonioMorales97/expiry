@@ -30,12 +30,9 @@ class _AccountScreen extends State<AccountView> {
       if (!mounted) return;
 
       if (success) {
-        //TODO: Snackbar or something
         setState(() {
           form.reset();
         });
-      } else {
-        //TODO: Snackbar or something
       }
     }
   }

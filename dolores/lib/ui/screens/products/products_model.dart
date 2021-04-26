@@ -92,6 +92,7 @@ class ProductsModel extends BaseModel {
           description: error.detail,
           buttonTitle: "Tillbaka");
       if (res.confirmed) {
+        ///MÅSTE KOLLA MOUNTED / restricta navigation om man väntar på svar?
         setState(ViewState.Busy);
       }
       return;

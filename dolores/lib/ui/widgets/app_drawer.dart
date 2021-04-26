@@ -1,7 +1,5 @@
 import 'package:dolores/locator.dart';
 import 'package:dolores/services/auth_service.dart';
-import 'package:dolores/ui/screens/account/account_view.dart';
-import 'package:dolores/ui/screens/products/products_view.dart';
 import 'package:dolores/ui/widgets/filter/filter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,12 +22,7 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.home,
             title: 'Hem',
             nav: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => ProductsView(),
-                ),
-              );
+              Navigator.of(context).pushReplacementNamed('/');
             },
           ),
           Filter(
@@ -43,10 +36,7 @@ class AppDrawer extends StatelessWidget {
             icon: Icons.account_circle_sharp,
             title: 'Konto',
             nav: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => AccountView()),
-              );
+              Navigator.of(context).pushReplacementNamed('account');
             },
           ),
           _DrawerLinkItem(

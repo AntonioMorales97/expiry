@@ -7,6 +7,7 @@ import '../locator.dart';
 
 class DialogManager extends StatefulWidget {
   final Widget child;
+
   DialogManager({Key key, this.child}) : super(key: key);
 
   _DialogManagerState createState() => _DialogManagerState();
@@ -28,7 +29,6 @@ class _DialogManagerState extends State<DialogManager> {
 
   void _showDialog(AlertRequest request) {
     ///TODO get the right theme colors + make button a wee bit bigger?
-    print(Theme.of(context).colorScheme.onPrimary);
     Alert(
         context: context,
         title: request.title,
