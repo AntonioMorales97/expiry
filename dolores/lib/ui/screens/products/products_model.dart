@@ -64,6 +64,7 @@ class ProductsModel extends BaseModel {
       return true;
       //setState(ViewState.Idle);
     } on DoloresError catch (error) {
+      _error = error;
       return false;
       //_handleDoloresError(error);
     }
@@ -81,6 +82,24 @@ class ProductsModel extends BaseModel {
       setState(ViewState.Idle);
     } on DoloresError catch (error) {
       _handleDoloresError(error);
+    }
+  }
+
+  Future showError() async {
+    if (_error.status == null || _error.status != 403) {
+      var res = await _dialogService.showDialog(
+          title: "Felmedelande",
+          description: _error.detail,
+          buttonTitle: "Tillbaka");
+      if (res.confirmed) {
+        ///MÅSTE KOLLA MOUNTED / restricta navigation om man väntar på svar?
+
+      }
+      return;
+    }
+
+    if (_error.status == 403) {
+      await _productService.forceLogout();
     }
   }
 

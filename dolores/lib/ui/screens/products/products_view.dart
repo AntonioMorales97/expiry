@@ -138,12 +138,13 @@ class ProductsView extends StatelessWidget {
           actions: <Widget>[
             DoloresButton(
                 onPressed: () async {
-                  await Future.delayed(Duration(seconds: 10));
                   bool boolean = await model.removeProduct(productId);
-                  if (boolean)
+                  if (boolean) {
                     Navigator.of(context).pop(true);
-                  else
+                  } else {
                     Navigator.of(context).pop(false);
+                    model.showError();
+                  }
                 },
                 child: const Text("TA BORT")),
             DoloresButton(
