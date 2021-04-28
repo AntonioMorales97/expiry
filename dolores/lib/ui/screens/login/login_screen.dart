@@ -58,10 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (success) {
         Navigator.of(context).pushReplacementNamed('/');
-      } else {
-        //TODO: Fail login
-        print("Fail login");
-      }
+      } else {}
     }
   }
 

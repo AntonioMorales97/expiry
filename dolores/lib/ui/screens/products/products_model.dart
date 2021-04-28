@@ -43,7 +43,8 @@ class ProductsModel extends BaseModel {
   }
 
   Future addProduct(String newQrCode, String newName, String newDate) async {
-    ///setState(ViewState.Busy); ///TODO: We have more control now, maybe add adding state
+    ///TODO setState(ViewState.Busy); maybe not needed?
+    ///TODO: We have more control now, maybe add adding state
     try {
       final updatedStore =
           await _productService.addProduct(newQrCode, newName, newDate);
@@ -52,12 +53,10 @@ class ProductsModel extends BaseModel {
     } on DoloresError catch (error) {
       _handleDoloresError(error);
     }
-
-    ///TODO: Needed for now so we get updated store
   }
 
   Future removeProduct(String productId) async {
-    ///TODO more viewstates to show these or make model views of the views?
+    ///TODO more viewstates to show these or make model views of the remove product screen?
     //setState(ViewState.Busy);
     try {
       final updatedStore = await _productService.removeProduct(productId);

@@ -27,6 +27,7 @@ class _DialogManagerState extends State<DialogManager> {
     return widget.child;
   }
 
+  ///TODO en till parameter som kollar om dialogen faktiskt ska visas beroende på sidan vi är på?.
   void _showDialog(AlertRequest request) {
     ///TODO get the right theme colors + make button a wee bit bigger?
     Alert(

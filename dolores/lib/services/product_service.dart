@@ -62,7 +62,7 @@ class ProductService {
   }
 
   //TODO: BROKEN
-  Future<Store> removeProduct(String productId) async {
+  Future<Store> removeProduct2(String productId) async {
     int idx = _currentStore.products
         .lastIndexWhere((product) => product.productId == productId);
     if (idx == -1) {
@@ -82,6 +82,19 @@ class ProductService {
         throw error;
       }
     } finally {}
+  }
+
+  Future<Store> removeProduct(String productId) async {
+    int idx = _currentStore.products
+        .lastIndexWhere((product) => product.productId == productId);
+    if (idx == -1) {
+      return currentStore;
+    }
+    Product product = _currentStore.products[idx];
+    await dumbledoreRepository.deleteProductInStore(
+        _currentStore.storeId, productId);
+    _currentStore.products.removeAt(idx);
+    return currentStore;
   }
 
   Future<Store> modifyProduct(String productId, String newQrCode,

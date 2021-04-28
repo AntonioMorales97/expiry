@@ -31,7 +31,7 @@ class ProductItem extends StatelessWidget {
                     Text(
                       product.name,
                       style: Theme.of(context).textTheme.headline6,
-                      overflow: TextOverflow.ellipsis, //TODO rolling text.
+                      overflow: TextOverflow.ellipsis,
                     ),
                     const SizedBox(
                       height: 8.0,

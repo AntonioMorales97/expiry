@@ -18,7 +18,6 @@ class LoginModel extends BaseModel {
 
   Future<bool> doLogin(String email, String password, bool rememberMe) async {
     setState(ViewState.Busy);
-    //TODO use dialog service to show error message if failure to login.
     var success;
 
     try {
