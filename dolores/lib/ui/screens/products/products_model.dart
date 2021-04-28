@@ -55,15 +55,17 @@ class ProductsModel extends BaseModel {
     }
   }
 
-  Future removeProduct(String productId) async {
+  Future<bool> removeProduct(String productId) async {
     ///TODO more viewstates to show these or make model views of the remove product screen?
     //setState(ViewState.Busy);
     try {
       final updatedStore = await _productService.removeProduct(productId);
       _currentStore = updatedStore;
+      return true;
       //setState(ViewState.Idle);
     } on DoloresError catch (error) {
-      _handleDoloresError(error);
+      return false;
+      //_handleDoloresError(error);
     }
   }
 

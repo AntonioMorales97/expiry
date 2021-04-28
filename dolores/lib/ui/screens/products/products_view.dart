@@ -90,9 +90,7 @@ class ProductsView extends StatelessWidget {
                           return Dismissible(
                             key: ValueKey(product.productId),
                             direction: DismissDirection.endToStart,
-                            onDismissed: (direction) {
-                              model.removeProduct(product.productId);
-
+                            onDismissed: (direction) async {
                               //TODO: Perhaps make a listener of this
                               ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -101,7 +99,8 @@ class ProductsView extends StatelessWidget {
                                           product.date.toString() +
                                           " har tagits bort")));
                             },
-                            confirmDismiss: (_) => promptConfirm(context),
+                            confirmDismiss: (_) => promptConfirm(
+                                context, model, product.productId),
                             background: Container(
                               color: Theme.of(context).colorScheme.error,
                               child: Icon(
@@ -128,7 +127,7 @@ class ProductsView extends StatelessWidget {
     );
   }
 
-  Future<bool> promptConfirm(BuildContext context) async {
+  Future<bool> promptConfirm(BuildContext context, model, productId) async {
     return await showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -138,7 +137,14 @@ class ProductsView extends StatelessWidget {
           content: const Text("Are you sure you wish to delete this item?"),
           actions: <Widget>[
             DoloresButton(
-                onPressed: () => Navigator.of(context).pop(true),
+                onPressed: () async {
+                  await Future.delayed(Duration(seconds: 10));
+                  bool boolean = await model.removeProduct(productId);
+                  if (boolean)
+                    Navigator.of(context).pop(true);
+                  else
+                    Navigator.of(context).pop(false);
+                },
                 child: const Text("TA BORT")),
             DoloresButton(
               onPressed: () => Navigator.of(context).pop(false),
