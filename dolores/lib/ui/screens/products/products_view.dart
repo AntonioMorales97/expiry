@@ -142,6 +142,7 @@ class ProductsView extends StatelessWidget {
                   if (boolean) {
                     Navigator.of(context).pop(true);
                   } else {
+                    ///TODO CHECK MOUNTED
                     Navigator.of(context).pop(false);
                     model.showError();
                   }
