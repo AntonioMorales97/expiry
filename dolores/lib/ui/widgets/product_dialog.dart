@@ -11,6 +11,7 @@ class ProductDialog extends StatefulWidget {
   final String submitButtonText;
   final Function(String, String, String) onSubmit;
   final DateTime initDate;
+  final bool isLoading;
 
   const ProductDialog({
     this.title,
@@ -22,6 +23,7 @@ class ProductDialog extends StatefulWidget {
     this.submitButtonText,
     @required this.onSubmit,
     this.initDate,
+    this.isLoading = false,
   });
 
   @override
@@ -145,19 +147,31 @@ class _ProductDialogState extends State<ProductDialog> {
                 clipBehavior: Clip.hardEdge,
                 child: InkWell(
                   onTap: () {
+                    if (widget.isLoading) return;
                     formKey.currentState.save();
                     widget.onSubmit(
                         _newQrCode, _newName, _dateEditingController.text);
                   },
                   child: Container(
-                    padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                    child: Text(
-                      widget.submitButtonText ?? '',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          letterSpacing: 2),
-                      textAlign: TextAlign.center,
-                    ),
+                    height: 60,
+                    child: widget.isLoading
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  Theme.of(context).colorScheme.onPrimary),
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                            child: Text(
+                              widget.submitButtonText ?? '',
+                              style: TextStyle(
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
+                                  letterSpacing: 2),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
                   ),
                 ),
               ),

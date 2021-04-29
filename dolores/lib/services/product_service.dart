@@ -44,6 +44,7 @@ class ProductService {
   Future<List<Store>> getStores({refresh: false}) async {
     DateTime newDate = DateTime.now();
     if (refresh ||
+        _stores == null ||
         (_cachedTime == null ||
             _cachedTime.difference(newDate).inMinutes > 20)) {
       _stores = await dumbledoreRepository.getStore();
@@ -56,9 +57,8 @@ class ProductService {
       _sortProduct(_preference.sort);
       if (_preference.reverse) await _reverseProducts();
       _cachedTime = newDate;
-
-      return stores;
     }
+    return stores;
   }
 
   //TODO: BROKEN
