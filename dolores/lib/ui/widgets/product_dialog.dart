@@ -1,5 +1,6 @@
 import 'package:dolores/helpers/formatter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 
 class ProductDialog extends StatefulWidget {
   final String title;
@@ -30,6 +31,7 @@ class ProductDialog extends StatefulWidget {
 
 class _ProductDialogState extends State<ProductDialog> {
   final TextEditingController _dateEditingController = TextEditingController();
+  final TextEditingController _newQrCodeController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   String _newName;
   String _newQrCode;
@@ -39,6 +41,14 @@ class _ProductDialogState extends State<ProductDialog> {
     super.initState();
     if (widget.initDate != null)
       _dateEditingController.text = Formatter.dateToString(widget.initDate);
+    _newQrCodeController.text = widget.initQrCode;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _dateEditingController.dispose();
+    _newQrCodeController.dispose();
   }
 
   Future<void> _showDatePicker() async {
@@ -90,7 +100,17 @@ class _ProductDialogState extends State<ProductDialog> {
                             borderRadius: BorderRadius.all(
                               Radius.circular(32.0),
                             ),
-                            onTap: () {},
+                            onTap: () async {
+                              String barcodeScanRes =
+                                  await FlutterBarcodeScanner.scanBarcode(
+                                      "#FF0000",
+                                      "Avbryt",
+                                      true,
+                                      ScanMode.DEFAULT);
+                              if (barcodeScanRes != '-1') {
+                                _newQrCodeController.text = barcodeScanRes;
+                              }
+                            },
                             child: Icon(
                               Icons.camera,
                               color: Theme.of(context).colorScheme.secondary,
@@ -99,7 +119,7 @@ class _ProductDialogState extends State<ProductDialog> {
                         ),
                         Expanded(
                           child: TextFormField(
-                            initialValue: widget.initQrCode,
+                            controller: _newQrCodeController,
                             decoration: InputDecoration(
                               labelText: widget.qrCodeHintText ?? '',
                             ),

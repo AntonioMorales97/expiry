@@ -6,7 +6,6 @@ import 'package:dolores/ui/widgets/dialog/bloc/dialog.dart';
 import 'package:dolores/ui/widgets/dialog/dialog_manager.dart';
 import 'package:dolores/ui/widgets/product_dialog.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductItem extends StatelessWidget {
@@ -49,22 +48,6 @@ class ProductItem extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.camera,
-                ),
-                onPressed: () async {
-                  String barcodeScanRes =
-                      await FlutterBarcodeScanner.scanBarcode(
-                          "#FF0000", "Avbryt", true, ScanMode.DEFAULT);
-                  if (barcodeScanRes == '-1') {
-                    barcodeScanRes = product.qrCode;
-                  }
-                  // prod.modifyProduct(product.productId, barcodeScanRes,
-                  //     product.name, Formatter.dateToString(product.date));
-                  print(barcodeScanRes);
-                },
               ),
               IconButton(
                 icon: Icon(
