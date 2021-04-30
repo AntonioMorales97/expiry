@@ -1,5 +1,6 @@
 import 'package:dolores/ui/screens/account/account_view.dart';
-import 'package:dolores/ui/screens/login/login_screen.dart';
+import 'package:dolores/ui/screens/login/bloc/login.dart';
+import 'package:dolores/ui/screens/login/login_view.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
 import 'package:dolores/ui/screens/products/products_view.dart';
 import 'package:dolores/ui/screens/splash/bloc/auto_login_bloc.dart';
@@ -19,8 +20,14 @@ Route routes(RouteSettings settings) {
           child: ProductsView(),
         ),
       );
-    case LoginScreen.routeName:
-      return buildRoute(settings, LoginScreen());
+    case LoginView.routeName:
+      return buildRoute(
+        settings,
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc()..add(FetchStoredUser()),
+          child: LoginView(),
+        ),
+      );
     case AccountView.routeName:
       return buildRoute(settings, AccountView());
     case SplashView.routeName:
