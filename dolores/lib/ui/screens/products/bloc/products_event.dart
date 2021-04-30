@@ -25,6 +25,11 @@ class AddProduct extends ProductsEvent {
       @required this.newName});
 }
 
+class RemoveProduct extends ProductsEvent {
+  final String productId;
+  RemoveProduct({@required this.productId});
+}
+
 class UpdateProduct extends ProductsEvent {
   final String productId;
   final String newQrCode;

@@ -15,6 +15,7 @@ class ProductsState extends Equatable {
   final Status fetchingStatus;
   final Status addingStatus;
   final Status updatingStatus;
+  final Status removeStatus;
 
   final List<Store> stores;
   final Store currentStore;
@@ -25,6 +26,7 @@ class ProductsState extends Equatable {
       {this.fetchingStatus = Status.Idle,
       this.addingStatus = Status.Idle,
       this.updatingStatus = Status.Idle,
+      this.removeStatus = Status.Idle,
       this.stores,
       this.currentStore,
       this.error});
@@ -33,13 +35,15 @@ class ProductsState extends Equatable {
       {Status fetchingStatus,
       Status addingStatus,
       Status updatingStatus,
+      Status removeStatus,
       List<Store> stores,
       Store currentStore,
       DoloresError error}) {
     return ProductsState(
-      fetchingStatus: fetchingStatus ?? this.fetchingStatus,
-      addingStatus: addingStatus ?? this.addingStatus,
-      updatingStatus: updatingStatus ?? this.updatingStatus,
+      fetchingStatus: fetchingStatus,
+      addingStatus: addingStatus,
+      updatingStatus: updatingStatus,
+      removeStatus: removeStatus,
       stores: stores ?? this.stores,
       currentStore: currentStore ?? this.currentStore,
       error: error,

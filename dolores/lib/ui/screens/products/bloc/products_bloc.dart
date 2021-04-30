@@ -1,8 +1,8 @@
 import 'package:dolores/helpers/dolores_error.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/services/product_service.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   final ProductService _productService = locator<ProductService>();
@@ -21,6 +21,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield* _mapAddProductToState(event);
     } else if (event is UpdateProduct) {
       yield* _mapUpdateProductToState(event);
+    } else if (event is RemoveProduct) {
+      yield* _mapRemoveProductToState(event);
     }
   }
 
@@ -85,6 +87,22 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
           currentStore: updatedStore, updatingStatus: Status.Idle);
     } on DoloresError catch (error) {
       yield state.copyWith(updatingStatus: Status.Idle, error: error);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Stream<ProductsState> _mapRemoveProductToState(RemoveProduct event) async* {
+    yield state.copyWith(removeStatus: Status.Loading);
+    try {
+      final newStore = await _productService.removeProduct2(
+        event.productId,
+      );
+
+      yield state.copyWith(
+          currentStore: newStore, removeStatus: Status.Success);
+    } on DoloresError catch (error) {
+      yield state.copyWith(removeStatus: Status.Idle, error: error);
     } catch (error) {
       throw error;
     }

@@ -157,36 +157,40 @@ class ProductsView extends StatelessWidget {
 
   Future<bool> promptConfirm(
     BuildContext context,
-    model,
+    ProductsBloc productsBloc,
     String productId,
   ) async {
-    return await showDialog(
+    return showDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          actionsPadding: EdgeInsets.only(bottom: 20),
-          title: const Text("Confirm"),
-          content: const Text("Are you sure you wish to delete this item?"),
-          actions: <Widget>[
-            DoloresButton(
-                onPressed: () async {
-                  bool boolean = await model.removeProduct(productId);
-                  if (boolean) {
-                    Navigator.of(context).pop(true);
-                  } else {
-                    ///TODO CHECK MOUNTED
-                    Navigator.of(context).pop(false);
-                    model.showError();
-                  }
-                },
-                child: const Text("TA BORT")),
-            DoloresButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: const Text("AVBRYT"),
-            ),
-          ],
-        );
-      },
+      builder: (BuildContext context) => BlocProvider<ProductsBloc>.value(
+        value: productsBloc,
+        child: BlocConsumer<ProductsBloc, ProductsState>(
+          listener: (context, state) {
+            if (state.removeStatus == Status.Success) {
+              Navigator.of(context).pop();
+            }
+          },
+          builder: (context, state) {
+            return AlertDialog(
+              actionsPadding: EdgeInsets.only(bottom: 20),
+              title: const Text("Confirm"),
+              content: const Text("Are you sure you wish to delete this item?"),
+              actions: <Widget>[
+                DoloresButton(
+                  onPressed: () async {
+                    productsBloc.add(RemoveProduct(productId: productId));
+                  },
+                  child: const Text("TA BORT"),
+                ),
+                DoloresButton(
+                  onPressed: () => Navigator.of(context).pop(false),
+                  child: const Text("AVBRYT"),
+                ),
+              ],
+            );
+          },
+        ),
+      ),
     );
   }
 }

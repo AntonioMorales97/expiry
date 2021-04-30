@@ -117,7 +117,9 @@ class ProductService {
     Product newProd = await dumbledoreRepository.addProductToStore(
         _currentStore.storeId, newName, newQrCode, newDate);
     int index = _findIndexToInsert(_preference.sort, newProd);
+
     _currentStore.products.insert(index, newProd);
+
     return currentStore;
   }
 
