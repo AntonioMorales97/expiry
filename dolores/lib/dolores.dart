@@ -2,6 +2,7 @@ import 'package:dolores/helpers/error_handler/core/error_handler.dart';
 import 'package:dolores/routes.dart';
 import 'package:dolores/theme.dart';
 import 'package:dolores/ui/screens/login/login_screen.dart';
+import 'package:dolores/ui/screens/splash/splash_view.dart';
 import 'package:flutter/material.dart';
 
 class Dolores extends StatelessWidget {
@@ -11,7 +12,7 @@ class Dolores extends StatelessWidget {
       navigatorKey: ErrorHandler.navigatorKey,
       title: 'Expiry',
       theme: DoloresTheme.lightThemeData,
-      initialRoute: LoginScreen.routeName,
+      initialRoute: SplashView.routeName,
       onGenerateRoute: routes,
     );
   }
