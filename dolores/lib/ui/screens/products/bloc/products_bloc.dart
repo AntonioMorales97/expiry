@@ -37,10 +37,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
           fetchingStatus: Status.Idle);
     } on DoloresError catch (error) {
       yield state.copyWith(fetchingStatus: Status.Idle, error: error);
-    } catch (error, stackTrace) {
-      // ErrorHandler.reportCheckedError(
-      //     SilentLogException(error.message), stackTrace);
-      // yield AddNewTemplateFail('Something went wrong. Please try again.');
+    } catch (error) {
       throw error;
     }
   }
