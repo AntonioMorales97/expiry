@@ -1,5 +1,5 @@
-import 'package:dolores/helpers/dolores_error.dart';
 import 'package:dolores/helpers/formatter.dart';
+import 'package:dolores/helpers/status_enum.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/services/dialog_service.dart';

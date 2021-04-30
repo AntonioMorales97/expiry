@@ -1,14 +1,8 @@
 import 'package:dolores/helpers/dolores_error.dart';
+import 'package:dolores/helpers/status_enum.dart';
 import 'package:dolores/models/store.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
-enum Status {
-  Loading,
-  Idle,
-  Success,
-  Fail,
-}
 
 @immutable
 class ProductsState extends Equatable {
@@ -55,6 +49,7 @@ class ProductsState extends Equatable {
         fetchingStatus,
         addingStatus,
         updatingStatus,
+        removeStatus,
         stores,
         currentStore,
         error

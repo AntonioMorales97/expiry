@@ -1,4 +1,5 @@
 import 'package:dolores/ui/screens/account/account_view.dart';
+import 'package:dolores/ui/screens/account/bloc/accounts_bloc.dart';
 import 'package:dolores/ui/screens/login/login_screen.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
 import 'package:dolores/ui/screens/products/products_view.dart';
@@ -20,7 +21,13 @@ Route routes(RouteSettings settings) {
     case LoginScreen.routeName:
       return buildRoute(settings, LoginScreen());
     case AccountView.routeName:
-      return buildRoute(settings, AccountView());
+      return buildRoute(
+        settings,
+        BlocProvider<AccountBloc>(
+          create: (context) => AccountBloc(),
+          child: AccountView(),
+        ),
+      );
 
     default:
       return buildRoute(

@@ -1,4 +1,5 @@
 import 'package:dolores/helpers/dolores_error.dart';
+import 'package:dolores/helpers/status_enum.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/services/product_service.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
