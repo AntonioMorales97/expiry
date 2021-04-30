@@ -1,8 +1,11 @@
 import 'package:dolores/ui/screens/account/account_view.dart';
 import 'package:dolores/ui/screens/account/bloc/accounts_bloc.dart';
-import 'package:dolores/ui/screens/login/login_screen.dart';
+import 'package:dolores/ui/screens/login/bloc/login.dart';
+import 'package:dolores/ui/screens/login/login_view.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
 import 'package:dolores/ui/screens/products/products_view.dart';
+import 'package:dolores/ui/screens/splash/bloc/auto_login_bloc.dart';
+import 'package:dolores/ui/screens/splash/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,8 +21,14 @@ Route routes(RouteSettings settings) {
           child: ProductsView(),
         ),
       );
-    case LoginScreen.routeName:
-      return buildRoute(settings, LoginScreen());
+    case LoginView.routeName:
+      return buildRoute(
+        settings,
+        BlocProvider<LoginBloc>(
+          create: (context) => LoginBloc()..add(FetchStoredUser()),
+          child: LoginView(),
+        ),
+      );
     case AccountView.routeName:
       return buildRoute(
         settings,
@@ -29,6 +38,14 @@ Route routes(RouteSettings settings) {
         ),
       );
 
+    case SplashView.routeName:
+      return buildRoute(
+        settings,
+        BlocProvider<AutoLoginBloc>(
+          create: (context) => AutoLoginBloc()..add(TryAutoLogin()),
+          child: SplashView(),
+        ),
+      );
     default:
       return buildRoute(
         settings,

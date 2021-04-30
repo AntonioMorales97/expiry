@@ -1,18 +1,13 @@
-import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/helpers/status_enum.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/services/dialog_service.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
-import 'package:dolores/ui/widgets/dialog/bloc/dialog.dart';
-import 'package:dolores/ui/widgets/dialog/bloc/dialog_bloc.dart';
-import 'package:dolores/ui/widgets/dialog/dialog_manager.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
-import 'package:dolores/ui/widgets/product_dialog.dart';
+import 'package:dolores/ui/widgets/product_item.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductsView extends StatelessWidget {
@@ -75,7 +70,7 @@ class ProductsView extends StatelessWidget {
                     builder: (BuildContext context) {
                       return BlocProvider<ProductsBloc>.value(
                         value: productsBloc,
-                        child: _ProductDialogManager(
+                        child: ProductDialogManager(
                             title: 'Lägg till',
                             qrCodeHintText: 'Skriv in eller scanna QR kod',
                             productNameHintText: 'Skriv in produktnamn',
@@ -123,7 +118,7 @@ class ProductsView extends StatelessWidget {
                                           product.date.toString() +
                                           " har tagits bort")));
                             },
-                            confirmDismiss: (_) => promptConfirm(
+                            confirmDismiss: (_) => promptDeleteConfirm(
                                 context, productsBloc, product.productId),
                             background: Container(
                               color: Theme.of(context).colorScheme.error,
@@ -139,7 +134,8 @@ class ProductsView extends StatelessWidget {
                                 vertical: 4,
                               ),
                             ),
-                            child: ProductItem1(
+                            child: ProductItem(
+                              productsBloc: productsBloc,
                               product: product,
                               onSubmit: (String newQrCode, String newName,
                                       String newDate) =>
@@ -159,7 +155,7 @@ class ProductsView extends StatelessWidget {
     );
   }
 
-  Future<bool> promptConfirm(
+  Future<bool> promptDeleteConfirm(
     BuildContext context,
     ProductsBloc productsBloc,
     String productId,
@@ -177,8 +173,9 @@ class ProductsView extends StatelessWidget {
           builder: (context, state) {
             return AlertDialog(
               actionsPadding: EdgeInsets.only(bottom: 20),
-              title: const Text("Confirm"),
-              content: const Text("Are you sure you wish to delete this item?"),
+              title: const Text("Bekräfta"),
+              content: const Text(
+                  "Är du säker på att du vill ta bort denna produkt?"),
               actions: <Widget>[
                 DoloresButton(
                   onPressed: () async {
@@ -195,189 +192,6 @@ class ProductsView extends StatelessWidget {
           },
         ),
       ),
-    );
-  }
-}
-
-class ProductItem1 extends StatelessWidget {
-  final Product product;
-  final Function(String newQrCode, String newName, String newDate) onSubmit;
-
-  ProductItem1({@required this.product, @required this.onSubmit});
-
-  @override
-  Widget build(BuildContext context) {
-    final productsBloc = BlocProvider.of<ProductsBloc>(context, listen: false);
-    return Column(
-      children: [
-        Container(
-          alignment: Alignment.centerLeft,
-          margin: const EdgeInsets.all(10.0),
-          constraints: BoxConstraints(minHeight: 60),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      product.name,
-                      style: Theme.of(context).textTheme.headline6,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(
-                      height: 8.0,
-                    ),
-                    Text(
-                      Formatter.dateToString(product.date),
-                      style: Theme.of(context).textTheme.subtitle1,
-                    ),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.camera,
-                ),
-                onPressed: () async {
-                  String barcodeScanRes =
-                      await FlutterBarcodeScanner.scanBarcode(
-                          "#FF0000", "Avbryt", true, ScanMode.DEFAULT);
-                  if (barcodeScanRes == '-1') {
-                    barcodeScanRes = product.qrCode;
-                  }
-                  // prod.modifyProduct(product.productId, barcodeScanRes,
-                  //     product.name, Formatter.dateToString(product.date));
-                  print(barcodeScanRes);
-                },
-              ),
-              IconButton(
-                icon: Icon(
-                  Icons.settings,
-                ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) =>
-                        BlocProvider<ProductsBloc>.value(
-                      value: productsBloc,
-                      child: _ProductDialogManager(
-                        product: product,
-                        onSubmit: onSubmit,
-                        title: 'Ändra produkt',
-                        submitButtonText: 'ÄNDRA',
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
-        Divider(
-          height: 1.0,
-        ),
-      ],
-    );
-  }
-}
-
-class _ProductDialogManager extends StatefulWidget {
-  final Product product;
-  final onSubmit;
-  final String title;
-  final String submitButtonText;
-
-  final String qrCodeHintText;
-  final String productNameHintText;
-  final String dateHintText;
-
-  _ProductDialogManager({
-    this.product,
-    @required this.onSubmit,
-    @required this.title,
-    @required this.submitButtonText,
-    this.qrCodeHintText,
-    this.productNameHintText,
-    this.dateHintText,
-  });
-
-  @override
-  _ProductDialogManagerState createState() => _ProductDialogManagerState();
-}
-
-class _ProductDialogManagerState extends State<_ProductDialogManager> {
-  String _newName;
-  String _newQrCode;
-  DateTime _newDate;
-
-  DialogBloc _dialogBloc;
-
-  @override
-  void initState() {
-    super.initState();
-    if (widget.product != null) {
-      _newName = widget.product.name;
-      _newQrCode = widget.product.qrCode;
-      _newDate = widget.product.date;
-    }
-    _dialogBloc = DialogBloc();
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    _dialogBloc.close();
-  }
-
-  void setFormData(newQrCode, newName, newDate) {
-    _newName = newName;
-    _newQrCode = newQrCode;
-    _newDate = Formatter.stringToDate(newDate);
-  }
-
-  bool isLoading(ProductsState state) {
-    return state.updatingStatus == Status.Loading ||
-        state.addingStatus == Status.Loading;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocConsumer<ProductsBloc, ProductsState>(
-      listener: (context, state) {
-        if (state.updatingStatus == Status.Success ||
-            state.addingStatus == Status.Success) {
-          _dialogBloc.add(Hide());
-        } else if (state.updatingStatus == Status.Loading ||
-            state.addingStatus == Status.Loading) {
-          _dialogBloc.add(Load());
-        } else if (state.updatingStatus == Status.Fail ||
-            state.addingStatus == Status.Fail) {
-          _dialogBloc.add(Show());
-        }
-      },
-      builder: (context, state) {
-        return BlocProvider.value(
-          value: _dialogBloc,
-          child: DialogManager(
-            child: ProductDialog(
-              initQrCode: _newQrCode,
-              initProductName: _newName,
-              initDate: _newDate,
-              qrCodeHintText: widget.qrCodeHintText,
-              productNameHintText: widget.productNameHintText,
-              dateHintText: widget.dateHintText,
-              title: widget.title,
-              submitButtonText: widget.submitButtonText,
-              onSubmit: (newQrCode, newName, newDate) {
-                setFormData(newQrCode, newName, newDate);
-                widget.onSubmit(newQrCode, newName, newDate);
-              },
-            ),
-          ),
-        );
-      },
     );
   }
 }
