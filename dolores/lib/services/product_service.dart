@@ -1,6 +1,5 @@
 import 'dart:collection';
 
-import 'package:dolores/helpers/dolores_error.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/preference.dart';
 import 'package:dolores/models/product.dart';
@@ -61,36 +60,12 @@ class ProductService {
     return stores;
   }
 
-  //TODO: BROKEN
-  Future<Store> removeProduct2(String productId) async {
-    int idx = _currentStore.products
-        .lastIndexWhere((product) => product.productId == productId);
-    if (idx == -1) {
-      return currentStore;
-    }
-    Product product = _currentStore.products[idx];
-    try {
-      _currentStore.products.removeAt(idx);
-      await dumbledoreRepository.deleteProductInStore(
-          _currentStore.storeId, productId);
-      return currentStore;
-    } catch (error) {
-      _currentStore.products.insert(idx, product);
-      if (error is DoloresError) {
-        //_error = error;
-      } else {
-        throw error;
-      }
-    } finally {}
-  }
-
   Future<Store> removeProduct(String productId) async {
     int idx = _currentStore.products
         .lastIndexWhere((product) => product.productId == productId);
     if (idx == -1) {
       return currentStore;
     }
-    Product product = _currentStore.products[idx];
     await dumbledoreRepository.deleteProductInStore(
         _currentStore.storeId, productId);
     _currentStore.products.removeAt(idx);
@@ -123,15 +98,38 @@ class ProductService {
     return currentStore;
   }
 
-  //TODO kanske snabbare att sortera efter insert, med tanke på att vi bara inseratar 1 ?
-  int _findIndexToInsert(ProductSort productSort, newProd) {
+  int _findIndexToInsert(ProductSort productSort, Product newProd) {
+    if (_currentStore.products.isEmpty) {
+      return 0;
+    }
+
+    bool reversed = _preference.reverse;
+    final products = _currentStore.products;
+
+    if (products.isEmpty) {
+      return 0;
+    }
+
+    int idx;
+
     if (productSort == ProductSort.DATE) {
-      return _currentStore.products.indexWhere(
-          (product) => ((product.date.compareTo(newProd.date)) > 0));
+      idx = _currentStore.products.indexWhere((product) {
+        if (reversed) {
+          return product.date.compareTo(newProd.date) < 0;
+        } else {
+          return product.date.compareTo(newProd.date) > 0;
+        }
+      });
     } else {
-      return _currentStore.products.indexWhere(
+      idx = _currentStore.products.indexWhere(
           (product) => ((product.name.compareTo(newProd.name)) > 0));
     }
+
+    if (idx == -1) {
+      return reversed ? products.length : 0;
+    }
+
+    return idx;
   }
 
   Future<Preference> fetchPreference() async {

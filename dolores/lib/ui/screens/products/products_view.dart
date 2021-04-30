@@ -1,9 +1,13 @@
+import 'package:dolores/helpers/dolores_error.dart';
 import 'package:dolores/helpers/formatter.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/product.dart';
 import 'package:dolores/services/dialog_service.dart';
 import 'package:dolores/ui/screens/products/bloc/products.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
+import 'package:dolores/ui/widgets/dialog/bloc/dialog.dart';
+import 'package:dolores/ui/widgets/dialog/bloc/dialog_bloc.dart';
+import 'package:dolores/ui/widgets/dialog/dialog_manager.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/product_dialog.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
@@ -308,6 +312,8 @@ class _ProductDialogManagerState extends State<_ProductDialogManager> {
   String _newQrCode;
   DateTime _newDate;
 
+  DialogBloc _dialogBloc;
+
   @override
   void initState() {
     super.initState();
@@ -316,6 +322,13 @@ class _ProductDialogManagerState extends State<_ProductDialogManager> {
       _newQrCode = widget.product.qrCode;
       _newDate = widget.product.date;
     }
+    _dialogBloc = DialogBloc();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _dialogBloc.close();
   }
 
   void setFormData(newQrCode, newName, newDate) {
@@ -335,24 +348,34 @@ class _ProductDialogManagerState extends State<_ProductDialogManager> {
       listener: (context, state) {
         if (state.updatingStatus == Status.Success ||
             state.addingStatus == Status.Success) {
-          Navigator.pop(context);
+          _dialogBloc.add(Hide());
+        } else if (state.updatingStatus == Status.Loading ||
+            state.addingStatus == Status.Loading) {
+          _dialogBloc.add(Load());
+        } else if (state.updatingStatus == Status.Fail ||
+            state.addingStatus == Status.Fail) {
+          _dialogBloc.add(Show());
         }
       },
       builder: (context, state) {
-        return ProductDialog(
-          isLoading: isLoading(state),
-          initQrCode: _newQrCode,
-          initProductName: _newName,
-          initDate: _newDate,
-          qrCodeHintText: widget.qrCodeHintText,
-          productNameHintText: widget.productNameHintText,
-          dateHintText: widget.dateHintText,
-          title: widget.title,
-          submitButtonText: widget.submitButtonText,
-          onSubmit: (newQrCode, newName, newDate) {
-            setFormData(newQrCode, newName, newDate);
-            widget.onSubmit(newQrCode, newName, newDate);
-          },
+        return BlocProvider.value(
+          value: _dialogBloc,
+          child: DialogManager(
+            child: ProductDialog(
+              initQrCode: _newQrCode,
+              initProductName: _newName,
+              initDate: _newDate,
+              qrCodeHintText: widget.qrCodeHintText,
+              productNameHintText: widget.productNameHintText,
+              dateHintText: widget.dateHintText,
+              title: widget.title,
+              submitButtonText: widget.submitButtonText,
+              onSubmit: (newQrCode, newName, newDate) {
+                setFormData(newQrCode, newName, newDate);
+                widget.onSubmit(newQrCode, newName, newDate);
+              },
+            ),
+          ),
         );
       },
     );
