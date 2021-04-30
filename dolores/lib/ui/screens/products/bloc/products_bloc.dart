@@ -76,7 +76,6 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
   Stream<ProductsState> _mapUpdateProductToState(UpdateProduct event) async* {
     yield state.copyWith(updatingStatus: Status.Loading);
     try {
-      await Future.delayed(Duration(seconds: 2));
       final updatedStore = await _productService.modifyProduct(
         event.productId,
         event.newQrCode,
@@ -85,7 +84,7 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       );
 
       yield state.copyWith(
-          currentStore: updatedStore, updatingStatus: Status.Fail);
+          currentStore: updatedStore, updatingStatus: Status.Success);
     } on DoloresError catch (error) {
       yield state.copyWith(updatingStatus: Status.Idle, error: error);
     } catch (error) {
