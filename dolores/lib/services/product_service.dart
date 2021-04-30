@@ -90,7 +90,6 @@ class ProductService {
     if (idx == -1) {
       return currentStore;
     }
-    Product product = _currentStore.products[idx];
     await dumbledoreRepository.deleteProductInStore(
         _currentStore.storeId, productId);
     _currentStore.products.removeAt(idx);
@@ -121,15 +120,38 @@ class ProductService {
     return currentStore;
   }
 
-  //TODO kanske snabbare att sortera efter insert, med tanke på att vi bara inseratar 1 ?
-  int _findIndexToInsert(ProductSort productSort, newProd) {
+  int _findIndexToInsert(ProductSort productSort, Product newProd) {
+    if (_currentStore.products.isEmpty) {
+      return 0;
+    }
+
+    bool reversed = _preference.reverse;
+    final products = _currentStore.products;
+
+    if (products.isEmpty) {
+      return 0;
+    }
+
+    int idx;
+
     if (productSort == ProductSort.DATE) {
-      return _currentStore.products.indexWhere(
-          (product) => ((product.date.compareTo(newProd.date)) > 0));
+      idx = _currentStore.products.indexWhere((product) {
+        if (reversed) {
+          return product.date.compareTo(newProd.date) < 0;
+        } else {
+          return product.date.compareTo(newProd.date) > 0;
+        }
+      });
     } else {
-      return _currentStore.products.indexWhere(
+      idx = _currentStore.products.indexWhere(
           (product) => ((product.name.compareTo(newProd.name)) > 0));
     }
+
+    if (idx == -1) {
+      return reversed ? products.length : 0;
+    }
+
+    return idx;
   }
 
   Future<Preference> fetchPreference() async {

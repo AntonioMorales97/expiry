@@ -37,9 +37,9 @@ class ProductsState extends Equatable {
       Store currentStore,
       DoloresError error}) {
     return ProductsState(
-      fetchingStatus: fetchingStatus ?? this.fetchingStatus,
-      addingStatus: addingStatus ?? this.addingStatus,
-      updatingStatus: updatingStatus ?? this.updatingStatus,
+      fetchingStatus: fetchingStatus,
+      addingStatus: addingStatus,
+      updatingStatus: updatingStatus,
       stores: stores ?? this.stores,
       currentStore: currentStore ?? this.currentStore,
       error: error,
