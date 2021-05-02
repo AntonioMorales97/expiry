@@ -24,6 +24,8 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
       yield* _mapUpdateProductToState(event);
     } else if (event is RemoveProduct) {
       yield* _mapRemoveProductToState(event);
+    } else if (event is RefreshProducts) {
+      yield* _mapRefreshProductsToState();
     }
   }
 
@@ -38,6 +40,22 @@ class ProductsBloc extends Bloc<ProductsEvent, ProductsState> {
           fetchingStatus: Status.Idle);
     } on DoloresError catch (error) {
       yield state.copyWith(fetchingStatus: Status.Idle, error: error);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  Stream<ProductsState> _mapRefreshProductsToState() async* {
+    yield state.copyWith(refreshStatus: Status.Loading);
+    try {
+      final stores = await _productService.getStores(refresh: true);
+      final currentStore = _productService.currentStore;
+      yield state.copyWith(
+          stores: stores,
+          currentStore: currentStore,
+          refreshStatus: Status.Success);
+    } on DoloresError catch (error) {
+      yield state.copyWith(refreshStatus: Status.Fail, error: error);
     } catch (error) {
       throw error;
     }

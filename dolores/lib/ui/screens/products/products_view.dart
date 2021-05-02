@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dolores/helpers/status_enum.dart';
 import 'package:dolores/locator.dart';
 import 'package:dolores/models/product.dart';
@@ -6,12 +8,25 @@ import 'package:dolores/ui/screens/products/bloc/products.dart';
 import 'package:dolores/ui/widgets/app_drawer.dart';
 import 'package:dolores/ui/widgets/dolores_button.dart';
 import 'package:dolores/ui/widgets/product_item.dart';
+import 'package:dolores/ui/widgets/refresher.dart';
 import 'package:dolores/ui/widgets/scrollable_flexer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ProductsView extends StatelessWidget {
+class ProductsView extends StatefulWidget {
+  @override
+  _ProductsViewState createState() => _ProductsViewState();
+}
+
+class _ProductsViewState extends State<ProductsView> {
   final _dialogService = locator<DialogService>();
+  Completer _refreshCompleter;
+
+  @override
+  void initState() {
+    _refreshCompleter = Completer<void>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +38,11 @@ class ProductsView extends StatelessWidget {
               title: "Felmedelande",
               description: state.error.detail,
               buttonTitle: "Tillbaka");
+        }
+
+        if (state.refreshStatus == Status.Success) {
+          _refreshCompleter?.complete();
+          _refreshCompleter = Completer<void>();
         }
       },
       builder: (context, state) => Scaffold(
@@ -93,7 +113,11 @@ class ProductsView extends StatelessWidget {
             ? Center(
                 child: CircularProgressIndicator(),
               )
-            : Container(
+            : Refresher(
+                onRefresh: () {
+                  productsBloc.add(RefreshProducts());
+                  return _refreshCompleter.future;
+                },
                 child: state.currentStore == null ||
                         state.currentStore.products == null ||
                         state.currentStore.products.length <= 0

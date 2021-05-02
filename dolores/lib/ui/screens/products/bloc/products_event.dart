@@ -8,6 +8,8 @@ abstract class ProductsEvent extends Equatable {
 
 class FetchProducts extends ProductsEvent {}
 
+class RefreshProducts extends ProductsEvent {}
+
 class ChangeStore extends ProductsEvent {
   final String storeId;
 

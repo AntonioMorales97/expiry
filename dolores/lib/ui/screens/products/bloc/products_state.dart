@@ -10,6 +10,7 @@ class ProductsState extends Equatable {
   final Status addingStatus;
   final Status updatingStatus;
   final Status removeStatus;
+  final Status refreshStatus;
 
   final List<Store> stores;
   final Store currentStore;
@@ -21,6 +22,7 @@ class ProductsState extends Equatable {
       this.addingStatus = Status.Idle,
       this.updatingStatus = Status.Idle,
       this.removeStatus = Status.Idle,
+      this.refreshStatus = Status.Idle,
       this.stores,
       this.currentStore,
       this.error});
@@ -30,6 +32,7 @@ class ProductsState extends Equatable {
       Status addingStatus,
       Status updatingStatus,
       Status removeStatus,
+      Status refreshStatus,
       List<Store> stores,
       Store currentStore,
       DoloresError error}) {
@@ -38,6 +41,7 @@ class ProductsState extends Equatable {
       addingStatus: addingStatus,
       updatingStatus: updatingStatus,
       removeStatus: removeStatus,
+      refreshStatus: refreshStatus,
       stores: stores ?? this.stores,
       currentStore: currentStore ?? this.currentStore,
       error: error,
@@ -50,6 +54,7 @@ class ProductsState extends Equatable {
         addingStatus,
         updatingStatus,
         removeStatus,
+        refreshStatus,
         stores,
         currentStore,
         error
@@ -57,6 +62,6 @@ class ProductsState extends Equatable {
 
   @override
   String toString() {
-    return 'ProductsState {fetchingStatus: $fetchingStatus, addingStatus: $addingStatus, updatingStatus: $updatingStatus, currentStore: $currentStore, error: $error, stores: $stores';
+    return 'ProductsState {fetchingStatus: $fetchingStatus, addingStatus: $addingStatus, updatingStatus: $updatingStatus, refreshStatus: $refreshStatus, currentStore: $currentStore, error: $error, stores: $stores}';
   }
 }
