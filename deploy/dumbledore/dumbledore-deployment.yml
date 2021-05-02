@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dumbledore
+  labels:
+    app: dumbledore
+spec:
+  selector:
+    matchLabels:
+      app: dumbledore
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: dumbledore
+    spec:
+      containers:
+      - name: dumbledore
+        image: dumbledore:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        env:
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: dumbledore-secret
+              key: mongo_user
+        - name: MONGO_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dumbledore-secret
+              key: mongo_password
+        - name: MONGO_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: dumbledore-configmap
+              key: mongo_host
+        - name: MONGO_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: dumbledore-configmap
+              key: mongo_port
+        - name: MONGO_DB
+          valueFrom:
+            configMapKeyRef:
+              name: dumbledore-configmap
+              key: mongo_database
+        - name: MONGO_AUTH_DB
+          valueFrom:
+            configMapKeyRef:
+              name: dumbledore-configmap
+              key: mongo_auth_database
+        - name: ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: dumbledore-secret
+              key: admin_username
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dumbledore-secret
+              key: admin_password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dumbledore
+  labels:
+    name: dumbledore
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  clusterIP: None
+  selector:
+    app: dumbledore

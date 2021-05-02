@@ -1,4 +1,4 @@
-package se.expiry.dumbledore.config;
+package se.expiry.dumbledore.config.mongo;
 
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;

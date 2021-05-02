@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ron
+  labels:
+    app: ron
+spec:
+  selector:
+    matchLabels:
+      app: ron
+  serviceName: ron
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: ron
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+      - name: ron
+        image: mongo:4.4.5
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+        - name: ron-pv-claim
+          mountPath: /data/db
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-username
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mongodb-secret
+              key: mongo-root-password
+  volumeClaimTemplates:
+  - metadata:
+      name: ron-pv-claim
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ron
+  labels:
+    name: ron
+spec:
+  ports:
+  - protocol: TCP
+    port: 27017
+    targetPort: 27017
+  clusterIP: None
+  selector:
+    app: ron
