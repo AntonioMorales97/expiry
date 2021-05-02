@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .mvcMatchers("/admin/**").hasRole("ROLE_ADMIN")
+                .mvcMatchers("/admin/**").hasRole("ADMIN")
                 .mvcMatchers("/**").authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new FiltchAuthEntryPoint())
