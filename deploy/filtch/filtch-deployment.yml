@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dumbledore
+  name: filtch
   labels:
-    app: dumbledore
+    app: filtch
 spec:
   selector:
     matchLabels:
-      app: dumbledore
+      app: filtch
   replicas: 1
   template:
     metadata:
       labels:
-        app: dumbledore
+        app: filtch
     spec:
       containers:
-      - name: dumbledore
-        image: dumbledore:latest
+      - name: filtch
+        image: filtch:latest
         imagePullPolicy: Never
         ports:
         - containerPort: 80
@@ -26,50 +26,45 @@ spec:
         - name: MONGO_USER
           valueFrom:
             secretKeyRef:
-              name: dumbledore-secret
+              name: filtch-secret
               key: mongo_user
         - name: MONGO_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: dumbledore-secret
+              name: filtch-secret
               key: mongo_password
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: filtch-secret
+              key: jwt_secret
         - name: MONGO_HOST
           valueFrom:
             configMapKeyRef:
-              name: dumbledore-configmap
+              name: filtch-configmap
               key: mongo_host
         - name: MONGO_PORT
           valueFrom:
             configMapKeyRef:
-              name: dumbledore-configmap
+              name: filtch-configmap
               key: mongo_port
         - name: MONGO_DB
           valueFrom:
             configMapKeyRef:
-              name: dumbledore-configmap
+              name: filtch-configmap
               key: mongo_database
         - name: MONGO_AUTH_DB
           valueFrom:
             configMapKeyRef:
-              name: dumbledore-configmap
+              name: filtch-configmap
               key: mongo_auth_database
-        - name: ADMIN_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: dumbledore-secret
-              key: admin_username
-        - name: ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: dumbledore-secret
-              key: admin_password
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dumbledore
+  name: filtch
   labels:
-    name: dumbledore
+    name: filtch
 spec:
   ports:
   - protocol: TCP
@@ -77,4 +72,4 @@ spec:
     targetPort: 80
   clusterIP: None
   selector:
-    app: dumbledore
+    app: filtch

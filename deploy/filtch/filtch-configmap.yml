@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filtch-configmap
+data:
+  mongo_host: ron
+  mongo_port: "27017"
+  mongo_database: "expiry"
+  mongo_auth_database: "admin"
