@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: expiry-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+    http:
+      paths:
+      - path: /filtch
+        pathType: Prefix
+        backend:
+          service:
+            name: filtch
+            port:
+              number: 80
+      - path: /dumbledore
+        pathType: Prefix
+        backend:
+          service:
+            name: dumbledore
+            port:
+              number: 80
