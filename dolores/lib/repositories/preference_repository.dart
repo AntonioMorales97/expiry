@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:dolores/environment.dart';
 import 'package:dolores/models/preference.dart';
 import 'package:localstorage/localstorage.dart';
 
@@ -7,7 +8,7 @@ import 'filtch_repository.dart';
 import 'http_caller.dart';
 
 class PreferenceRepository {
-  static const String baseUrl = 'http://10.0.2.2:9091';
+  final String baseUrl = env.dumbledoreBaseUrl;
   static const String preferenceUrl = '/user/preference';
 
   final LocalStorage _storage = LocalStorage('preferences');
