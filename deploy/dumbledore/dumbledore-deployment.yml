@@ -19,8 +19,18 @@ spec:
         image: dumbledore:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:
+        - name: FILTCH_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: dumbledore-configmap
+              key: filtch_host
+        - name: FILTCH_AUTH_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: dumbledore-configmap
+              key: filtch_auth_endpoint
         - name: SPRING_PROFILES_ACTIVE
           value: prod
         - name: MONGO_USER
@@ -74,7 +84,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: 8080
   clusterIP: None
   selector:
     app: dumbledore

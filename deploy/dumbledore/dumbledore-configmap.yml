@@ -7,3 +7,6 @@ data:
   mongo_port: "27017"
   mongo_database: "expiry"
   mongo_auth_database: "admin"
+
+  filtch_host: filtch:8080
+  filtch_auth_endpoint: "filtch/authorize"

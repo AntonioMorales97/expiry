@@ -19,7 +19,7 @@ spec:
         image: filtch:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 80
+        - containerPort: 8080
         env:
         - name: SPRING_PROFILES_ACTIVE
           value: prod
@@ -69,7 +69,7 @@ spec:
   ports:
   - protocol: TCP
     port: 80
-    targetPort: 80
+    targetPort: 8080
   clusterIP: None
   selector:
     app: filtch
