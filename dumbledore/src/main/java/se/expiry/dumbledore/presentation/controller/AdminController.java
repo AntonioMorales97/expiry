@@ -52,6 +52,7 @@ public class AdminController {
         return adminService.getStores();
     }
 
+    //TODO: Fix. Currently adds \r\n to end of input. Add Request body model alt request parameter alt path variable
     @PostMapping(STORE)
     public Store addStore(@RequestBody String newStoreName) {
         return adminService.addStore(newStoreName);

@@ -32,7 +32,7 @@ class LoginView extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'Never leave wand',
+                    'Abracadabra',
                     style: TextStyle(
                       height: 2,
                       fontSize: 16,

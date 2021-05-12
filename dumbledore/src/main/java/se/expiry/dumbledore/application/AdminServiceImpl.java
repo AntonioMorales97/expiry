@@ -48,10 +48,13 @@ public class AdminServiceImpl implements AdminService {
     public void removeUserFromStore(String storeId, String userId) {
         //TODO: Maybe check if store exists etc...
         UpdateResult storeResult = storeRepo.removeUserFromStore(storeId, userId);
+
         if(storeResult.getModifiedCount() == 0){
             ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store with user not found.");
             throw new ExpiryException(exceptionDetail);
         }
+
+        //TODO: Maybe separate this to own method as well, buggish as well
         UpdateResult userResult = userRepo.removeStoreFromUser(userId, storeId);
         if(userResult.getModifiedCount() == 0){
             ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Store not found in user.");
@@ -59,6 +62,10 @@ public class AdminServiceImpl implements AdminService {
         }
 
     }
+
+    //TODO: case sensitivity
+
+    //TODO: Implement delete stores
 
     @Override
     public List<User> getUsers(){
