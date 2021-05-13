@@ -37,7 +37,7 @@ public class UserRepositoryImpl implements  UserRepositoryCustom{
 
     @Override
     public UpdateResult removeStoreFromUser(String userId, String storeId){
-        Query query =  new Query(Criteria.where("_id").is(storeId));
+        Query query =  new Query(Criteria.where("_id").is(userId));
         Update update = new Update();
         update.pull("stores", new Store(storeId));
         return mongoTemplate.updateFirst(query, update, User.class);

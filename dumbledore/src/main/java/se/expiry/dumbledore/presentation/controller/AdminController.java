@@ -9,6 +9,7 @@ import se.expiry.dumbledore.application.AdminService;
 import se.expiry.dumbledore.domain.Store;
 
 import se.expiry.dumbledore.domain.User;
+import se.expiry.dumbledore.presentation.request.admin.AddStoreRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.UpdateUserRequestModel;
 
@@ -52,10 +53,10 @@ public class AdminController {
         return adminService.getStores();
     }
 
-    //TODO: Fix. Currently adds \r\n to end of input. Add Request body model alt request parameter alt path variable
+
     @PostMapping(STORE)
-    public Store addStore(@RequestBody String newStoreName) {
-        return adminService.addStore(newStoreName);
+    public Store addStore(@RequestBody AddStoreRequestModel newStore) {
+        return adminService.addStore(newStore.getStoreName());
     }
 
     @PostMapping(USER)
