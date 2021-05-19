@@ -4,6 +4,7 @@ import 'package:dolores/ui/widgets/dolores_checkbox.dart';
 import 'package:dolores/ui/widgets/dolores_password_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 
 class LoginView extends StatelessWidget {
   static const routeName = 'login';
@@ -22,25 +23,16 @@ class LoginView extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    'EXPIRY',
-                    style: TextStyle(
-                      height: 1,
-                      fontSize: 48,
-                      fontFamily: 'Redressed',
-                      color: Color.fromRGBO(203, 178, 106, 1),
+                  Container(
+                    margin: const EdgeInsets.only(top: 20.0),
+                    height: 70,
+                    child: SvgPicture.asset(
+                      'assets/svg/expiry.svg',
+                      color: Theme.of(context).colorScheme.onSurface,
+                      width: double.infinity,
                     ),
                   ),
-                  Text(
-                    'Abracadabra',
-                    style: TextStyle(
-                      height: 2,
-                      fontSize: 16,
-                      fontFamily: 'Roboto',
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 80),
+                  SizedBox(height: 70),
                   BlocConsumer<LoginBloc, LoginState>(
                     listener: (context, state) {
                       if (state.formStatus == Status.Success) {
