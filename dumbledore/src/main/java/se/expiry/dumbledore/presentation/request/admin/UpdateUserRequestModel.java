@@ -1,7 +1,9 @@
 package se.expiry.dumbledore.presentation.request.admin;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import se.expiry.dumbledore.util.FieldMatch;
+import se.expiry.dumbledore.util.ToLowerCaseConverter;
 
 import java.util.List;
 
@@ -10,6 +12,8 @@ import java.util.List;
 public class UpdateUserRequestModel {
 
     private String email;
+
+    @JsonDeserialize(converter = ToLowerCaseConverter.class)
     private String newEmail;
     private String firstName;
     private String lastName;
