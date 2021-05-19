@@ -11,8 +11,8 @@ import java.util.List;
 @Data
 public class UpdateUserRequestModel {
 
+    @JsonDeserialize(converter = ToLowerCaseConverter.class)
     private String email;
-
     @JsonDeserialize(converter = ToLowerCaseConverter.class)
     private String newEmail;
     private String firstName;
