@@ -29,6 +29,7 @@ public class User {
     @DBRef
     private List<Role> roles;
 
+    //TODO: Check if we can remove unnecessary data from stores here since we get all products as well
     @DBRef
     private List<Store> stores;
 
