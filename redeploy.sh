@@ -1,43 +1,78 @@
 #!/bin/bash
+
+#Check if last command was successful
+command_success (){
+    retval=$?
+    if [ $retval -ne 0 ]; then
+        echo 'ERROR :('
+        exit
+    fi
+}
+
 ## Git pull for refresh
-git pull;
-wait;
+echo 'Git pull'
+
+git pull
+
+command_success
+
 ## bulid dumbledore
-cd dumbledore;
-sudo mvn package -Dspring.profiles.active=prod -Dmaven.test.skip=true;
-wait;
-sudo docker build --tag=dumbledore:latest .;
-wait;
+echo 'Building dumbledore...'
+sudo mvn -f ./dumbledore package -Dspring.profiles.active=prod -Dmaven.test.skip=true
+
+command_success
+
+sudo docker build --tag=dumbledore:latest ./dumbledore
+
+command_success
+echo 'OK'
+
 ## build filtch
-cd ..;
-cd filtch;
-sudo mvn package -Dspring.profiles.active=prod -Dmaven.test.skip=true;
-wait
-sudo docker build --tag=filtch:latest .;
-wait;
-cd ..;
-cd ..;
-##remove images for both dumbledore and filtch
-cd images;
-sudo rm filtch.tar;
-sudo rm dumbledore.tar;
+echo 'Building filtch...'
+sudo mvn -f ./filtch package -Dspring.profiles.active=prod -Dmaven.test.skip=true
+
+command_success
+
+sudo docker build --tag=filtch:latest ./filtch
+
+command_success
+echo 'OK'
+
 ## save tar files of dumbledore and filtch
-sudo docker save --output dumbledore.tar dumbledore:latest;
-wait;
-sudo docker save --output filtch.tar filtch:latest;
-wait;
-##rmove images from k3s.
-sudo k3s ctr images remove dumbledore.tar;
-sudo k3s ctr images remove filtch.tar;
+echo 'Saving tar files'
+sudo docker save --output dumbledore.tar dumbledore:latest
+command_success
+sudo docker save --output filtch.tar filtch:latest
+command_success
+echo 'OK'
+##remove images from k3s.
+echo 'Removing images from k3s'
+sudo k3s ctr images remove dumbledore:latest
+sudo k3s ctr images remove filtch:latest
+echo 'OK'
 ##import images to k3s.
-sudo k3s ctr images import dumbledore.tar;
-wait;
-sudo k3s ctr images import filtch.tar;
-wait;
+echo 'Importing images to k3s'
+sudo k3s ctr images import dumbledore.tar
+command_success
+sudo k3s ctr images import filtch.tar
+command_success
+echo 'OK'
+##remove images for both dumbledore and filtch
+echo 'Cleaning tar files'
+sudo rm filtch.tar
+sudo rm dumbledore.tar
+echo 'OK'
 ## remove filtch + dumbledore services and deploys from k3s.
-sudo kubectl remove deployments,services filtch filtch;
-sudo kubectl remove deployments, services dumbledore, dumbledore;
-cd ../deploy/dumbledore;
-sudo ./deploy.sh;
-cd ../filtch;
-sudo ./deploy.sh;
+echo 'Removing deployments and services'
+sudo kubectl remove deployments,services filtch, filtch
+sudo kubectl remove deployments, services dumbledore, dumbledore
+echo 'OK'
+
+## Deploy
+echo 'Deploying...'
+sudo ./deploy/filtch/deploy.sh
+command_success
+sudo ./deploy/dumbledore/deploy.sh
+command_success
+echo 'OK'
+echo 'FINISHED'
