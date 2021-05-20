@@ -1,7 +1,9 @@
 package se.expiry.dumbledore.presentation.request.admin;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 import se.expiry.dumbledore.util.FieldMatch;
+import se.expiry.dumbledore.util.ToLowerCaseConverter;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -16,6 +18,7 @@ public class AddUserRequestModel {
     @NotNull(message = "Last name cannot be null")
     private String lastName;
 
+    @JsonDeserialize(converter = ToLowerCaseConverter.class)
     @NotNull(message = "Email cannot be null")
     private String email;
 
