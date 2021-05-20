@@ -1,6 +1,5 @@
 package se.expiry.dumbledore.application;
 
-import se.expiry.dumbledore.domain.Product;
 import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
@@ -11,8 +10,6 @@ import java.util.List;
 public interface AdminService {
     User addUser(AddUserRequestModel newUser);
 
-    void createTestData(List<String> storeNames);
-
     Store addStore(String storeName);
 
     User getUser(String id);
@@ -21,11 +18,13 @@ public interface AdminService {
 
     User updateUser(String id, UpdateUserRequestModel user);
 
-    Product generateRandomProduct();
-
     void addUserToStore(String storeId, String userId);
 
     List<Store> getStores();
 
     void removeUserFromStore(String storeId, String userId);
+
+    Store updateStore(String storeId, String newName);
+
+    void deleteStore(String storeId);
 }

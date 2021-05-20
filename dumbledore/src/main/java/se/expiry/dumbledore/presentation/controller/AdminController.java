@@ -11,6 +11,7 @@ import se.expiry.dumbledore.domain.Store;
 import se.expiry.dumbledore.domain.User;
 import se.expiry.dumbledore.presentation.request.admin.AddStoreRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.AddUserRequestModel;
+import se.expiry.dumbledore.presentation.request.admin.UpdateStoreRequestModel;
 import se.expiry.dumbledore.presentation.request.admin.UpdateUserRequestModel;
 
 
@@ -37,12 +38,6 @@ public class AdminController {
         adminService.addUserToStore(storeId, userId);
     }
 
-    //TODO: Remove
-    @PostMapping(CREATE_DATA)
-    public void createTestData(@RequestBody List<String> storeNames) {
-        adminService.createTestData(storeNames);
-    }
-
     @GetMapping(USER)
     public List<User> getUsers(){
         return adminService.getUsers();
@@ -53,9 +48,18 @@ public class AdminController {
         return adminService.getStores();
     }
 
+    @DeleteMapping(STORE + "/{storeId}")
+    public void deleteStore(@PathVariable String storeId){
+        adminService.deleteStore(storeId);
+    }
+
+    @PutMapping(STORE)
+    public Store updateStore(@RequestBody @Valid UpdateStoreRequestModel updateStoreRequestModel){
+        return adminService.updateStore(updateStoreRequestModel.getStoreId(), updateStoreRequestModel.getNewStoreName());
+    }
 
     @PostMapping(STORE)
-    public Store addStore(@RequestBody AddStoreRequestModel newStore) {
+    public Store addStore(@RequestBody @Valid AddStoreRequestModel newStore) {
         return adminService.addStore(newStore.getStoreName());
     }
 
@@ -70,7 +74,7 @@ public class AdminController {
     }
 
     @PutMapping(USER + "/{userId}")
-    public User updateUser(@PathVariable String userId, @RequestBody UpdateUserRequestModel updateUserReq) {
+    public User updateUser(@PathVariable String userId, @RequestBody @Valid UpdateUserRequestModel updateUserReq) {
         return adminService.updateUser(userId, updateUserReq);
     }
 

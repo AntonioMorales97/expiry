@@ -16,9 +16,6 @@ import se.expiry.dumbledore.repository.store.StoreRepository;
 import se.expiry.dumbledore.repository.user.UserRepository;
 import se.expiry.dumbledore.util.Roles;
 
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -56,9 +53,22 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    //TODO: case sensitivity
+    @Override
+    public void deleteStore(String storeId){
+        Store store = storeRepo.findById(storeId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No store could be found.")));
+        storeRepo.delete(store);
+    }
 
-    //TODO: Implement delete stores
+    @Override
+    public Store updateStore(String storeId, String newName){
+        Store store = storeRepo.findById(storeId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No store could be found.")));
+
+        store.setName(newName);
+        storeRepo.save(store);
+        return store;
+    }
+
+    //TODO: case sensitivity
 
     @Override
     public List<User> getUsers(){
@@ -114,22 +124,6 @@ public class AdminServiceImpl implements AdminService {
 
         return savedUser;
     }
-    @Override
-    public void createTestData(List<String> storeNames) {
-
-        storeNames.forEach((storeName) -> {
-            Random random = new Random();
-            int amountOfProducts = random.nextInt(4 - 1) + 1;
-
-            List<Product> products = new ArrayList<>();
-            for (int i = 0; i < amountOfProducts; i++) {
-                products.add(generateRandomProduct());
-            }
-
-            storeRepo.addProductsToStore(storeName, products);
-
-        });
-    }
 
     @Override
     public Store addStore(String storeName) {
@@ -170,40 +164,5 @@ public class AdminServiceImpl implements AdminService {
         );
 
         return userRepo.updateUser(id, user);
-    }
-
-    @Override
-    public Product generateRandomProduct() {
-        return new Product(randomString(), randomQrCode(), randomDate());
-    }
-
-    private String randomString() {
-        Random random = new Random();
-        int aLimit = 97;
-        int zLimit = 122;
-        int targetStringLength = random.nextInt(10 - 5) + 1;
-        return random.ints(aLimit, zLimit + 1)
-                .limit(targetStringLength)
-                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
-                .toString();
-    }
-
-    private String randomQrCode() {
-        Random random = new Random();
-        int qrCode = random.nextInt(1000 - 100) + 1;
-        return Integer.toString(qrCode);
-    }
-
-    private String randomDate() {
-        Random random = new Random();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        int startYear = 2021;
-        int endYear = 2021;
-        long start = Timestamp.valueOf(startYear + 1 + "-1-1 0:0:0").getTime();
-        long end = Timestamp.valueOf(endYear + "-1-1 0:0:0").getTime();
-        long ms = (long) ((end - start) * Math.random() + start);
-        Date date = new Date(ms);
-        return dateFormat.format(date);
-
     }
 }
