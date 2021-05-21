@@ -48,9 +48,9 @@ public class AdminController {
         return adminService.getStores();
     }
 
-    @DeleteMapping(STORE + "/{storeId}")
-    public void deleteStore(@PathVariable String storeId){
-        adminService.deleteStore(storeId);
+    @DeleteMapping(STORE + "/{storeId}" + USER + "/{userId}")
+    public void deleteStore(@PathVariable String storeId, @PathVariable String userId){
+        adminService.deleteStore(storeId, userId);
     }
 
     @PutMapping(STORE)

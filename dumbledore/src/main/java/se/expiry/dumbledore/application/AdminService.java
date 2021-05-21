@@ -26,5 +26,5 @@ public interface AdminService {
 
     Store updateStore(String storeId, String newName);
 
-    void deleteStore(String storeId);
+    void deleteStore(String storeId, String userId);
 }

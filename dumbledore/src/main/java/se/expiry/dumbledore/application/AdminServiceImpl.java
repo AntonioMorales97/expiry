@@ -43,7 +43,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public void removeUserFromStore(String storeId, String userId) {
-        //TODO: Maybe check if store exists etc...
+
         UpdateResult storeResult = storeRepo.removeUserFromStore(storeId, userId);
         UpdateResult userResult = userRepo.removeStoreFromUser(userId, storeId);
         if(userResult.getModifiedCount() == 0 || storeResult.getModifiedCount() == 0){
@@ -53,11 +53,16 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
-    //TODO: DELETE FROM USER TOO!!!
     @Override
-    public void deleteStore(String storeId){
+    public void deleteStore(String storeId, String userId){
         Store store = storeRepo.findById(storeId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No store could be found.")));
         storeRepo.delete(store);
+        UpdateResult userResult = userRepo.removeStoreFromUser(userId, storeId);
+        if(userResult.getModifiedCount() == 0){
+            ExceptionDetail exceptionDetail = new ExceptionDetail(404, "Something went wrong, store not removed from user.");
+            throw new ExpiryException(exceptionDetail);
+        }
+
     }
 
     @Override
@@ -70,7 +75,6 @@ public class AdminServiceImpl implements AdminService {
     }
 
     //TODO: case sensitivity
-
     @Override
     public List<User> getUsers(){
         return userRepo.findAll();

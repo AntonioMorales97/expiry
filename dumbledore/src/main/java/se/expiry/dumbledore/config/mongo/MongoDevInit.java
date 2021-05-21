@@ -64,7 +64,6 @@ public class MongoDevInit {
              */
             List<Store> stores = storeRepo.findAll();
             if(stores == null || stores.isEmpty()){
-                //TODO: Add new stores
                 stores = new ArrayList<>();
                 Store gallerian = new Store("Gallerian", new ArrayList<>(), new ArrayList<>());
                 Store nacka = new Store("Nacka",new ArrayList<>(),new ArrayList<>());
