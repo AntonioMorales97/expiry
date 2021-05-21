@@ -64,15 +64,18 @@ sudo rm dumbledore.tar
 echo 'OK'
 ## remove filtch + dumbledore services and deploys from k3s.
 echo 'Removing deployments and services'
-sudo kubectl remove deployments,services filtch, filtch
-sudo kubectl remove deployments, services dumbledore, dumbledore
+sudo kubectl delete deployments,services filtch filtch
+sudo kubectl delete deployments,services dumbledore dumbledore
 echo 'OK'
 
 ## Deploy
 echo 'Deploying...'
-sudo ./deploy/filtch/deploy.sh
-command_success
-sudo ./deploy/dumbledore/deploy.sh
-command_success
+sudo kubectl apply -f ./deploy/filtch/filtch-secret.yml
+sudo kubectl apply -f ./deploy/filtch/filtch-configmap.yml
+sudo kubectl apply -f ./deploy/filtch/filtch-deployment.yml
+echo 'Deploying dumbledore...'
+sudo kubectl apply -f ./deploy/dumbledore/dumbledore-secret.yml
+sudo kubectl apply -f./deploy/dumbledore/dumbledore-configmap.yml
+sudo kubectl apply -f ./deploy/dumbledore/dumbledore-deployment.yml
 echo 'OK'
 echo 'FINISHED'
