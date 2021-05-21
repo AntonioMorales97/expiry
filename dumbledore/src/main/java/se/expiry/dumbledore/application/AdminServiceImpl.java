@@ -53,6 +53,7 @@ public class AdminServiceImpl implements AdminService {
 
     }
 
+    //TODO: DELETE FROM USER TOO!!!
     @Override
     public void deleteStore(String storeId){
         Store store = storeRepo.findById(storeId).orElseThrow(() -> new ExpiryException(new ExceptionDetail(404, "No store could be found.")));
